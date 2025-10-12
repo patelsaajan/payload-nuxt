@@ -1,5 +1,6 @@
 import { GraphQLClient } from 'graphql-request'
 import { GET_PAGE_BY_SLUG } from '../../graphql/queries'
+import { GET_HEADER } from '../../graphql/header'
 
 export const usePayloadGraphQL = () => {
   const config = useRuntimeConfig()
@@ -13,5 +14,10 @@ export const usePayloadGraphQL = () => {
     return data.Pages.docs[0] || null
   }
 
-  return { fetchPageBySlug }
+  const fetchHeader = async () => {
+    const data: any = await client.request(GET_HEADER)
+    return data.Header || null
+  }
+
+  return { fetchPageBySlug, fetchHeader }
 }

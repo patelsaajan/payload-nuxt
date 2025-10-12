@@ -6,11 +6,11 @@
       </div>
 
       <!-- Layout Blocks -->
-      <div v-if="homePage.layout" class="layout-blocks">
-        <div v-for="block in homePage.layout" :key="block.id" class="block">
+      <div v-if="homePage.layout">
+        <div v-for="block in homePage.layout" :key="block.id">
           <!-- ContentBlock -->
-          <div v-if="block.blockType === 'content'" class="content-block">
-            <div v-for="(column, index) in block.columns" :key="index" class="column">
+          <div v-if="block.blockType === 'content'">
+            <div v-for="(column, index) in block.columns" :key="index">
               <div v-if="column.richText">
                 {{ getTextFromRichText(column.richText) }}
               </div>
@@ -18,24 +18,23 @@
           </div>
 
           <!-- CallToActionBlock -->
-          <div v-else-if="block.blockType === 'cta'" class="cta-block">
+          <div v-else-if="block.blockType === 'cta'">
             <div v-if="block.richText">
               {{ getTextFromRichText(block.richText) }}
             </div>
-            <div v-if="block.links" class="cta-links">
-              <a
+            <div v-if="block.links">
+              <UButton
                 v-for="(linkItem, index) in block.links"
                 :key="index"
-                :href="linkItem.link.url"
-                class="cta-link"
+                :to="linkItem.link.url"
               >
                 {{ linkItem.link.label }}
-              </a>
+              </UButton>
             </div>
           </div>
 
           <!-- MediaBlock -->
-          <div v-else-if="block.blockType === 'mediaBlock'" class="media-block">
+          <div v-else-if="block.blockType === 'mediaBlock'">
             <img
               v-if="block.media"
               :src="block.media.url"
