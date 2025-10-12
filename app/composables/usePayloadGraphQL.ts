@@ -1,6 +1,7 @@
 import { GraphQLClient } from 'graphql-request'
 import { GET_PAGE_BY_SLUG } from '../../graphql/queries'
 import { GET_HEADER } from '../../graphql/header'
+import { GET_THEME_SETTINGS } from '../../graphql/theme'
 
 export const usePayloadGraphQL = () => {
   const config = useRuntimeConfig()
@@ -19,5 +20,10 @@ export const usePayloadGraphQL = () => {
     return data.Header || null
   }
 
-  return { fetchPageBySlug, fetchHeader }
+  const fetchThemeSettings = async () => {
+    const data: any = await client.request(GET_THEME_SETTINGS)
+    return data.ThemeSetting || null
+  }
+
+  return { fetchPageBySlug, fetchHeader, fetchThemeSettings }
 }

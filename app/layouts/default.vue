@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-background">
     <header v-if="header">
       <UNavigationMenu color="neutral" :items="items" class="w-full" />
     </header>
