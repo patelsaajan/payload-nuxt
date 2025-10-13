@@ -5,8 +5,12 @@ export const GET_THEME_SETTINGS = gql`
     ThemeSetting {
       primaryColor
       secondaryColor
-      actionColor
+      accentColor
       backgroundColor
+      textColor
+      primaryTextColor
+      secondaryTextColor
+      borderRadius
     }
   }
 `
