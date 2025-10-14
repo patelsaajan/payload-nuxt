@@ -13,6 +13,7 @@
             :to="linkItem.link.url"
             :target="linkItem.link.newTab ? '_blank' : '_self'"
             :variant="linkItem.link.appearance === 'default' ? 'solid' : linkItem.link.appearance"
+            :color="linkItem.link.color || 'primary'"
           >
             {{ linkItem.link.label }}
           </UButton>
@@ -47,6 +48,7 @@
                 :key="index"
                 :to="linkItem.link.url"
                 :variant="linkItem.link.appearance === 'default' ? 'solid' : linkItem.link.appearance"
+                :color="linkItem.link.color || 'primary'"
               >
                 {{ linkItem.link.label }}
               </UButton>
