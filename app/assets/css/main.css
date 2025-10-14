@@ -2,9 +2,17 @@
 @import "@nuxt/ui";
 
 @theme {
-    --ui-primary: var(--theme-primary);
-    --ui-secondary: var(--theme-secondary);
+    --ui-primary          : var(--theme-primary);
+    --ui-secondary        : var(--theme-secondary);
 
-    --color-action: var(--theme-action);
-    --color-background: var(--theme-background);
+    --color-primary       : var(--theme-primary);
+    --color-secondary     : var(--theme-secondary);
+    --color-accent        : var(--theme-accent);
+    --color-action        : var(--theme-action);
+    --color-background    : var(--theme-background);
+    --color-text          : var(--theme-text);
+    --color-primary-text  : var(--theme-primary-text);
+    --color-secondary-text: var(--theme-secondary-text);
+    
+    --border-radius       : var(--theme-border-radius);
 }
