@@ -12,8 +12,7 @@
             :key="index"
             :to="linkItem.link.url"
             :target="linkItem.link.newTab ? '_blank' : '_self'"
-            :color="linkItem.link.appearance"
-            :variant="linkItem.link.appearance === 'outline' ? 'outline' : 'solid'"
+            :variant="linkItem.link.appearance === 'default' ? 'solid' : linkItem.link.appearance"
           >
             {{ linkItem.link.label }}
           </UButton>
@@ -47,8 +46,7 @@
                 v-for="(linkItem, index) in block.links"
                 :key="index"
                 :to="linkItem.link.url"
-                :color="getButtonColor(linkItem.link.appearance)"
-                :variant="linkItem.link.appearance === 'outline' ? 'outline' : 'solid'"
+                :variant="linkItem.link.appearance === 'default' ? 'solid' : linkItem.link.appearance"
               >
                 {{ linkItem.link.label }}
               </UButton>
