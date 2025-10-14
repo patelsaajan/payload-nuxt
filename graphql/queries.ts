@@ -9,7 +9,22 @@ export const GET_PAGE_BY_SLUG = gql`
         slug
         hero {
           type
-          richText
+          heading
+          text
+          links {
+            link {
+              type
+              url
+              label
+              newTab
+              appearance
+            }
+          }
+          media {
+            id
+            alt
+            url
+          }
         }
         layout {
           ... on ContentBlock {
@@ -31,6 +46,7 @@ export const GET_PAGE_BY_SLUG = gql`
                 type
                 url
                 label
+                appearance
               }
             }
           }

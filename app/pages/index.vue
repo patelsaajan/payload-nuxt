@@ -1,8 +1,28 @@
 <template>
     <div v-if="homePage">
       <h1>{{ homePage.title }}</h1>
-      <div v-if="homePage.hero?.richText">
-        <p>{{ getTextFromRichText(homePage.hero.richText) }}</p>
+      <div v-if="homePage.hero && homePage.hero.type !== 'none'">
+        <h2 v-if="homePage.hero.heading">{{ homePage.hero.heading }}</h2>
+        <div v-if="homePage.hero.text">
+          <p>{{ getTextFromRichText(homePage.hero.text) }}</p>
+        </div>
+        <div v-if="homePage.hero.links">
+          <UButton
+            v-for="(linkItem, index) in homePage.hero.links"
+            :key="index"
+            :to="linkItem.link.url"
+            :target="linkItem.link.newTab ? '_blank' : '_self'"
+            :color="linkItem.link.appearance"
+            :variant="linkItem.link.appearance === 'outline' ? 'outline' : 'solid'"
+          >
+            {{ linkItem.link.label }}
+          </UButton>
+        </div>
+        <img
+          v-if="homePage.hero.media"
+          :src="homePage.hero.media.url"
+          :alt="homePage.hero.media.alt || 'Hero image'"
+        />
       </div>
 
       <!-- Layout Blocks -->
@@ -27,6 +47,8 @@
                 v-for="(linkItem, index) in block.links"
                 :key="index"
                 :to="linkItem.link.url"
+                :color="getButtonColor(linkItem.link.appearance)"
+                :variant="linkItem.link.appearance === 'outline' ? 'outline' : 'solid'"
               >
                 {{ linkItem.link.label }}
               </UButton>
