@@ -15,4 +15,5 @@
     --color-secondary-text: var(--theme-secondary-text);
     
     --border-radius       : var(--theme-border-radius);
+    --ui-radius           : var(--theme-border-radius);
 }
