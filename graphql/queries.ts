@@ -11,6 +11,8 @@ export const GET_PAGE_BY_SLUG = gql`
           type
           heading
           text
+          imagePositionMobile
+          imagePositionDesktop
           links {
             link {
               type
