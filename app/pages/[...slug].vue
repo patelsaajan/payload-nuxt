@@ -1,27 +1,7 @@
 <template>
   <div v-if="page">
     <h1>{{ page.title }}</h1>
-      <div v-if="page.hero && page.hero.type !== 'none'">
-        <h2 v-if="page.hero.heading">{{ page.hero.heading }}</h2>
-        <div v-if="page.hero.text">
-          <p>{{ getTextFromRichText(page.hero.text) }}</p>
-        </div>
-        <div v-if="page.hero.links">
-          <UButton
-            v-for="(linkItem, index) in page.hero.links"
-            :key="index"
-            :to="linkItem.link.url"
-            :target="linkItem.link.newTab ? '_blank' : '_self'"
-          >
-            {{ linkItem.link.label }}
-          </UButton>
-        </div>
-        <img
-          v-if="page.hero.media"
-          :src="page.hero.media.url"
-          :alt="page.hero.media.alt || 'Hero image'"
-        />
-      </div>
+    <SectionHero :hero="page.hero" />
 
     <!-- Layout Blocks -->
     <div v-if="page.layout">

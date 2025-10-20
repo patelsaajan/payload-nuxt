@@ -1,43 +1,6 @@
 <template>
     <div v-if="homePage">
-      <div
-        v-if="homePage.hero && homePage.hero.type !== 'none'"
-        :class="{
-          'flex flex-col items-center justify-center text-center': homePage.hero.type === 'contentOnly',
-          'flex flex-col-reverse md:flex-row md:items-center gap-8': homePage.hero.type === 'splitContentImage'
-        }"
-      >
-        <!-- Content section -->
-        <div :class="homePage.hero.type === 'splitContentImage' ? 'flex-1' : ''">
-          <h2 v-if="homePage.hero.heading">{{ homePage.hero.heading }}</h2>
-          <div v-if="homePage.hero.text">
-            <p>{{ getTextFromRichText(homePage.hero.text) }}</p>
-          </div>
-          <div
-            v-if="homePage.hero.links"
-            :class="homePage.hero.type === 'contentOnly' ? 'flex gap-4 justify-center' : ''"
-          >
-            <UButton
-              v-for="(linkItem, index) in homePage.hero.links"
-              :key="index"
-              :to="linkItem.link.url"
-              :target="linkItem.link.newTab ? '_blank' : '_self'"
-              :variant="linkItem.link.appearance === 'default' ? 'solid' : linkItem.link.appearance"
-              :color="linkItem.link.color || 'primary'"
-            >
-              {{ linkItem.link.label }}
-            </UButton>
-          </div>
-        </div>
-
-        <!-- Image section -->
-        <img
-          v-if="homePage.hero.media"
-          :src="`${config.public.payloadBaseURL}${homePage.hero.media.url}`"
-          :alt="homePage.hero.media.alt || 'Hero image'"
-          :class="homePage.hero.type === 'splitContentImage' ? 'flex-1 w-full object-cover' : ''"
-        />
-      </div>
+      <SectionHero :hero="homePage.hero" />
 
       <!-- Layout Blocks -->
       <div v-if="homePage.layout">
@@ -87,7 +50,6 @@
 
   <script setup lang="ts">
   const { fetchPageBySlug } = usePayloadGraphQL()
-  const config = useRuntimeConfig()
 
   // Home page always fetches the 'home' slug
   const homePage = await fetchPageBySlug('home')

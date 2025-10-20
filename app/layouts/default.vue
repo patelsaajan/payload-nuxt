@@ -1,11 +1,13 @@
 <template>
   <div class="bg-background text-text">
-    <header v-if="header">
-      <UNavigationMenu color="neutral" :items="items" class="w-full" />
-    </header>
-    <main>
-      <slot />
-    </main>
+    <div class="container mx-auto">
+      <header v-if="header">
+        <UNavigationMenu color="neutral" :items="items" class="w-full" />
+      </header>
+      <main>
+        <slot />
+      </main>
+    </div>
   </div>
 </template>
 
