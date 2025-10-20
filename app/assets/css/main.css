@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+@import "./typography.css";
 
 @theme {
     --ui-primary          : var(--theme-primary);
@@ -13,7 +14,7 @@
     --color-text          : var(--theme-text);
     --color-primary-text  : var(--theme-primary-text);
     --color-secondary-text: var(--theme-secondary-text);
-    
+
     --border-radius       : var(--theme-border-radius);
     --ui-radius           : var(--theme-border-radius);
 }
