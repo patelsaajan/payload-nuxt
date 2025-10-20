@@ -4,14 +4,14 @@
     :class="getHeroContainerClasses(hero)"
   >
     <!-- Content section -->
-    <div :class="hero.type === 'splitContentImage' ? 'flex-1' : ''">
+    <div :class="hero.type === 'splitContentImage' ? 'flex flex-col gap-4' : ''">
       <h2 v-if="hero.heading">{{ hero.heading }}</h2>
       <div v-if="hero.text">
         <p>{{ getTextFromRichText(hero.text) }}</p>
       </div>
       <div
         v-if="hero.links"
-        :class="hero.type === 'contentOnly' ? 'flex gap-4 justify-center' : ''"
+        :class="hero.type === 'contentOnly' ? 'flex gap-4 justify-center' : 'flex gap-4'"
       >
         <UButton
           v-for="(linkItem, index) in hero.links"
@@ -20,6 +20,7 @@
           :target="linkItem.link.newTab ? '_blank' : '_self'"
           :variant="linkItem.link.appearance === 'default' ? 'solid' : linkItem.link.appearance"
           :color="linkItem.link.color || 'primary'"
+          class="cursor-pointer"
         >
           {{ linkItem.link.label }}
         </UButton>
