@@ -32,6 +32,7 @@
       v-if="hero.media"
       :src="getMediaUrl(hero.media.url)"
       :alt="hero.media.alt || 'Hero image'"
+      class="rounded-[var(--border-radius)]"
       :class="hero.type === 'splitContentImage' ? 'flex-1 w-full object-cover' : ''"
     />
   </div>
