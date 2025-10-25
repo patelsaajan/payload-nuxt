@@ -9,5 +9,15 @@ export default defineNuxtConfig({
     public: {
       payloadBaseURL: 'http://localhost:4000'
     }
+  },
+
+  ui: {
+    theme: {
+      colors: [
+        'primary',
+        'secondary',
+        'accent'
+      ]
+    }
   }
 })

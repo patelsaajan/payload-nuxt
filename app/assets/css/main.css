@@ -2,7 +2,7 @@
 @import "@nuxt/ui";
 @import "./typography.css";
 
-@theme {
+@theme static {
     --ui-primary          : var(--theme-primary);
     --ui-secondary        : var(--theme-secondary);
 

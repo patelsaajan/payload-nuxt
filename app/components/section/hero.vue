@@ -41,10 +41,10 @@
           hero.type === 'splitContentImage' && hero.imagePositionDesktop === 'left' ? (hero.imagePositionMobile === 'top' ? 'col-span-12 row-start-2 md:col-span-6 md:col-start-7 md:row-start-1' : 'col-span-12 row-start-1 md:col-span-6 md:col-start-7 md:row-start-1') : '',
           hero.type === 'splitContentImage' && hero.imagePositionDesktop === 'right' ? (hero.imagePositionMobile === 'top' ? 'col-span-12 row-start-2 md:col-span-6 md:col-start-1 md:row-start-1' : 'col-span-12 row-start-1 md:col-span-6 md:col-start-1 md:row-start-1') : ''
         ]"
-        :style="getTextColorStyle(hero?.textColor)"
       >
         <h2 
         v-if="hero.heading"
+        :style="getTextColorStyle(hero?.textColor)"
         >
         {{ hero.heading }}
       </h2>
