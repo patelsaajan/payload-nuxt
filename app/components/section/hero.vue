@@ -1,40 +1,83 @@
 <template>
+  <!-- Image Only hero type (full-width banner) -->
   <div
-    v-if="hero && hero.type !== 'none'"
-    :class="getHeroContainerClasses(hero)"
+    v-if="hero && hero.type === 'imageOnly' && hero.media"
+    class="w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden"
   >
-    <!-- Content section -->
-    <div :class="hero.type === 'splitContentImage' ? 'flex flex-col gap-4' : ''">
-      <h2 v-if="hero.heading">{{ hero.heading }}</h2>
-      <div v-if="hero.text">
-        <p>{{ getTextFromRichText(hero.text) }}</p>
-      </div>
-      <div
-        v-if="hero.links"
-        :class="hero.type === 'contentOnly' ? 'flex gap-4 justify-center' : 'flex gap-4'"
-      >
-        <UButton
-          v-for="(linkItem, index) in hero.links"
-          :key="index"
-          :to="linkItem.link.url"
-          :target="linkItem.link.newTab ? '_blank' : '_self'"
-          :variant="linkItem.link.appearance === 'default' ? 'solid' : linkItem.link.appearance"
-          :color="linkItem.link.color || 'primary'"
-          class="cursor-pointer"
-        >
-          {{ linkItem.link.label }}
-        </UButton>
-      </div>
-    </div>
-
-    <!-- Image section -->
     <img
-      v-if="hero.media"
       :src="getMediaUrl(hero.media.url)"
       :alt="hero.media.alt || 'Hero image'"
-      class="rounded-[var(--border-radius)]"
-      :class="hero.type === 'splitContentImage' ? 'flex-1 w-full object-cover' : ''"
+      class="w-full h-full object-cover"
+      :style="getFocalPointStyle(hero.media)"
     />
+  </div>
+
+  <!-- Other hero types (with container) -->
+  <div
+    v-else-if="hero && hero.type !== 'none'"
+    class="py-8"
+    :style="getBackgroundStyle(hero?.backgroundColor)"
+  >
+    <div
+      class="container mx-auto"
+      :class="getHeroContainerClasses(hero)"
+    >
+
+      <!-- Image section (for splitContentImage with desktop position left) -->
+      <img
+        v-if="hero.media && hero.type === 'splitContentImage' && hero.imagePositionDesktop === 'left'"
+        :src="getMediaUrl(hero.media.url)"
+        :alt="hero.media.alt || 'Hero image'"
+        class="rounded-[var(--border-radius)] w-full object-cover"
+        :class="hero.imagePositionMobile === 'top' ? 'col-span-12 row-start-1 md:col-span-5' : 'col-span-12 row-start-2 md:col-span-5 md:row-start-1'"
+      />
+
+      <!-- Content section -->
+      <div
+        v-if="hero.type !== 'imageOnly'"
+        :class="[
+          'flex flex-col gap-4',
+          hero.type === 'contentOnly' ? 'col-span-12 col-start-1 md:col-span-8 md:col-start-3' : '',
+          hero.type === 'splitContentImage' && hero.imagePositionDesktop === 'left' ? (hero.imagePositionMobile === 'top' ? 'col-span-12 row-start-2 md:col-span-6 md:col-start-7 md:row-start-1' : 'col-span-12 row-start-1 md:col-span-6 md:col-start-7 md:row-start-1') : '',
+          hero.type === 'splitContentImage' && hero.imagePositionDesktop === 'right' ? (hero.imagePositionMobile === 'top' ? 'col-span-12 row-start-2 md:col-span-6 md:col-start-1 md:row-start-1' : 'col-span-12 row-start-1 md:col-span-6 md:col-start-1 md:row-start-1') : ''
+        ]"
+        :style="getTextColorStyle(hero?.textColor)"
+      >
+        <h2 
+        v-if="hero.heading"
+        >
+        {{ hero.heading }}
+      </h2>
+        <div v-if="hero.text">
+          <p>{{ getTextFromRichText(hero.text) }}</p>
+        </div>
+        <div
+          v-if="hero.links"
+          :class="hero.type === 'contentOnly' ? 'flex gap-4 justify-center' : 'flex gap-4'"
+        >
+          <UButton
+            v-for="(linkItem, index) in hero.links"
+            :key="index"
+            :to="linkItem.link.url"
+            :target="linkItem.link.newTab ? '_blank' : '_self'"
+            :variant="linkItem.link.appearance === 'default' ? 'solid' : linkItem.link.appearance"
+            :color="linkItem.link.color || 'primary'"
+            class="cursor-pointer"
+          >
+            {{ linkItem.link.label }}
+          </UButton>
+        </div>
+      </div>
+
+      <!-- Image section (for splitContentImage with desktop position right) -->
+      <img
+        v-if="hero.media && hero.type === 'splitContentImage' && hero.imagePositionDesktop !== 'left'"
+        :src="getMediaUrl(hero.media.url)"
+        :alt="hero.media.alt || 'Hero image'"
+        class="rounded-[var(--border-radius)] w-full object-cover"
+        :class="hero.imagePositionMobile === 'top' ? 'col-span-12 row-start-1 md:col-span-5 md:col-start-8 md:row-start-1' : 'col-span-12 row-start-2 md:col-span-5 md:col-start-8 md:row-start-1'"
+      />
+    </div>
   </div>
 </template>
 
@@ -42,7 +85,7 @@
 const config = useRuntimeConfig()
 
 // Define props
-const props = defineProps<{
+defineProps<{
   hero: any
 }>()
 
@@ -62,24 +105,23 @@ const getTextFromRichText = (richText: any): string => {
 
 // Helper function to generate hero container classes based on type and position settings
 const getHeroContainerClasses = (hero: any): string => {
+  // Base 12-column grid
+  const baseClasses = 'grid grid-cols-12'
+
   if (hero.type === 'contentOnly') {
-    return 'flex flex-col items-center justify-center text-center'
+    return `${baseClasses} text-center`
   }
 
   if (hero.type === 'splitContentImage') {
     const mobilePosition = hero.imagePositionMobile || 'top'
-    const desktopPosition = hero.imagePositionDesktop || 'right'
 
-    // Mobile classes
-    const mobileClass = mobilePosition === 'top' ? 'flex-col-reverse' : 'flex-col'
+    // Mobile: stack vertically
+    const mobileClass = mobilePosition === 'top' ? 'grid-rows-[auto,1fr]' : 'grid-rows-[1fr,auto]'
 
-    // Desktop classes
-    const desktopClass = desktopPosition === 'right' ? 'md:flex-row' : 'md:flex-row-reverse'
-
-    return `flex ${mobileClass} ${desktopClass} md:items-center gap-8`
+    return `${baseClasses} ${mobileClass} md:grid-rows-1 gap-8 md:items-center`
   }
 
-  return ''
+  return baseClasses
 }
 
 // Helper function to get media URL with base URL prepended if needed
@@ -88,5 +130,50 @@ const getMediaUrl = (url: string): string => {
     return url
   }
   return `${config.public.payloadBaseURL}${url}`
+}
+
+// Helper function to get background color style
+const getBackgroundStyle = (backgroundColor?: string) => {
+  const colorMap: Record<string, string> = {
+    primary: 'var(--color-primary)',
+    secondary: 'var(--color-secondary)',
+    accent: 'var(--color-accent)',
+    background: 'var(--color-background)'
+  }
+
+  const selectedColor = backgroundColor || 'background'
+  const color = colorMap[selectedColor] || 'var(--color-background)'
+
+  return {
+    backgroundColor: color,
+  }
+}
+
+// Helper function to get text color style
+const getTextColorStyle = (textColor?: string) => {
+  const colorMap: Record<string, string> = {
+    text: 'var(--color-text)',
+    primaryText: 'var(--color-primary-text)',
+    secondaryText: 'var(--color-secondary-text)'
+  }
+
+  const selectedColor = textColor || 'text'
+  const color = colorMap[selectedColor] || 'var(--color-text)'
+
+  return {
+    color: color
+  }
+}
+
+// Helper function to get focal point positioning for images
+const getFocalPointStyle = (media: any) => {
+  if (!media?.focalX || !media?.focalY) {
+    return {}
+  }
+
+  // Payload stores focal point as percentages (0-100)
+  return {
+    objectPosition: `${media.focalX}% ${media.focalY}%`
+  }
 }
 </script>

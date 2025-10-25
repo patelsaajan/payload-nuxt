@@ -12,8 +12,8 @@
     --color-action        : var(--theme-action);
     --color-background    : var(--theme-background);
     --color-text          : var(--theme-text);
-    --color-primary-text  : var(--theme-primary-text);
-    --color-secondary-text: var(--theme-secondary-text);
+    --color-primary-text  : var(--theme-text-primary);
+    --color-secondary-text: var(--theme-text-secondary);
 
     --border-radius       : var(--theme-border-radius);
     --ui-radius           : var(--theme-border-radius);

@@ -1,14 +1,14 @@
 <template>
   <div class="bg-background text-text">
-    <div class="container mx-auto">
       <header v-if="header">
-        <UNavigationMenu color="neutral" :items="items" class="w-full" />
+        <div class="container mx-auto">
+          <UNavigationMenu color="neutral" :items="items" class="w-full" />
+        </div>
       </header>
       <main>
         <slot />
       </main>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
