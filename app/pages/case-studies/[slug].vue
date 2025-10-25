@@ -1,94 +1,166 @@
 <template>
-  <div v-if="caseStudy" class="container mx-auto py-12 px-4">
-    <!-- Hero Image -->
-    <div
-      v-if="caseStudy.heroImage"
-      class="w-full h-[400px] mb-8 overflow-hidden"
-      style="border-radius: var(--border-radius)"
-    >
-      <img
-        :src="getMediaUrl(caseStudy.heroImage.url)"
-        :alt="caseStudy.heroImage.alt || caseStudy.title"
-        :style="getFocalPointStyle(caseStudy.heroImage)"
-        class="w-full h-full object-cover"
-      />
-    </div>
-
-    <!-- Content Container -->
-    <div class="max-w-4xl mx-auto">
-      <!-- Meta Info -->
-      <div class="mb-6 flex items-center gap-4 flex-wrap">
-        <span
-          v-if="caseStudy.publishedAt"
-          class="text-sm font-medium"
-          style="color: var(--color-accent)"
+  <div v-if="caseStudy">
+    <!-- Hero Section -->
+    <div class="container mx-auto py-12 px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+        <!-- Left: Hero Image (5 columns) -->
+        <div
+          class="w-full h-[400px] lg:h-[500px] overflow-hidden lg:col-span-5"
+          style="border-radius: var(--border-radius)"
         >
-          {{ new Date(caseStudy.publishedAt).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          }) }}
-        </span>
-
-        <!-- Categories -->
-        <div v-if="caseStudy.categories && caseStudy.categories.length > 0" class="flex gap-2">
-          <span
-            v-for="category in caseStudy.categories"
-            :key="category.id"
-            class="px-3 py-1 text-xs font-medium rounded-full"
-            style="background-color: var(--color-secondary); color: var(--color-secondary-text)"
+          <img
+            v-if="caseStudy.heroImage"
+            :src="getMediaUrl(caseStudy.heroImage.url)"
+            :alt="caseStudy.heroImage.alt || caseStudy.title"
+            :style="getFocalPointStyle(caseStudy.heroImage)"
+            class="w-full h-full object-cover"
+          />
+          <div
+            v-else
+            class="w-full h-full flex items-center justify-center"
+            style="background-color: var(--color-secondary)"
           >
-            {{ category.title }}
-          </span>
+            <span style="color: var(--color-secondary-text)">No Image</span>
+          </div>
+        </div>
+
+        <!-- Right: Meta, Title, Excerpt (6 columns with 1 column gap = starts at column 7) -->
+        <div class="lg:col-span-6">
+          <!-- Published Date -->
+          <div class="mb-4">
+            <span
+              v-if="caseStudy.publishedAt"
+              class="text-sm font-medium"
+              style="color: var(--color-accent)"
+            >
+              {{ new Date(caseStudy.publishedAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              }) }}
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h1 class="text-4xl lg:text-5xl font-bold mb-4" style="color: var(--color-primary)">
+            {{ caseStudy.title }}
+          </h1>
+
+          <!-- Categories -->
+          <div v-if="caseStudy.categories && caseStudy.categories.length > 0" class="flex gap-2 mb-6">
+            <span
+              v-for="category in caseStudy.categories"
+              :key="category.id"
+              class="px-3 py-1 text-xs font-medium rounded-full"
+              style="background-color: var(--color-secondary); color: var(--color-secondary-text)"
+            >
+              {{ category.title }}
+            </span>
+          </div>
+
+          <!-- Excerpt -->
+          <p
+            v-if="caseStudy.excerpt"
+            class="text-lg lg:text-xl"
+            style="color: var(--color-text)"
+          >
+            {{ caseStudy.excerpt }}
+          </p>
         </div>
       </div>
+    </div>
 
-      <!-- Title -->
-      <h1 class="text-4xl md:text-5xl font-bold mb-6" style="color: var(--color-primary)">
-        {{ caseStudy.title }}
-      </h1>
-
-      <!-- Excerpt -->
-      <p
-        v-if="caseStudy.excerpt"
-        class="text-xl mb-8"
-        style="color: var(--color-text)"
-      >
-        {{ caseStudy.excerpt }}
-      </p>
-
-      <!-- Content -->
-      <div
-        v-if="caseStudy.content"
-        class="prose prose-lg max-w-none"
-        style="color: var(--color-text)"
-      >
-        <div v-html="renderContent(caseStudy.content)"></div>
-      </div>
-
-      <!-- Back to Case Studies -->
-      <div class="mt-12 pt-8" style="border-top: 1px solid var(--color-secondary)">
-        <NuxtLink
-          to="/case-studies"
-          class="inline-flex items-center gap-2 font-medium"
-          style="color: var(--color-accent)"
+    <!-- Content Section -->
+    <div class="container mx-auto px-4 py-12">
+      <div class="max-w-4xl mx-auto">
+        <!-- Content -->
+        <div
+          v-if="caseStudy.content"
+          class="prose prose-lg max-w-none mb-12"
+          style="color: var(--color-text)"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          Back to Case Studies
-        </NuxtLink>
+          <div v-html="renderContent(caseStudy.content)"></div>
+        </div>
+
+        <!-- Navigation: Previous/Next + Back -->
+        <div class="mt-16 pt-8 border-t" style="border-color: var(--color-secondary)">
+          <!-- Previous/Next Navigation -->
+          <div class="flex justify-between items-center mb-8">
+            <!-- Previous Case Study -->
+            <NuxtLink
+              v-if="previousCaseStudy"
+              :to="`/case-studies/${previousCaseStudy.slug}`"
+              class="inline-flex items-center gap-2 font-medium nav-link"
+              style="color: var(--color-accent)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              <span>{{ previousCaseStudy.title }}</span>
+            </NuxtLink>
+            <div v-else></div>
+
+            <!-- Next Case Study -->
+            <NuxtLink
+              v-if="nextCaseStudy"
+              :to="`/case-studies/${nextCaseStudy.slug}`"
+              class="inline-flex items-center gap-2 font-medium nav-link"
+              style="color: var(--color-accent)"
+            >
+              <span>{{ nextCaseStudy.title }}</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </NuxtLink>
+          </div>
+
+          <!-- Back to Case Studies -->
+          <div class="text-center">
+            <NuxtLink
+              to="/case-studies"
+              class="inline-flex items-center gap-2 font-medium nav-link"
+              style="color: var(--color-accent)"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Back to All Case Studies
+            </NuxtLink>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -97,7 +169,7 @@
 <script setup lang="ts">
 const route = useRoute()
 const config = useRuntimeConfig()
-const { fetchCaseStudyBySlug } = usePayloadGraphQL()
+const { fetchCaseStudyBySlug, fetchCaseStudies } = usePayloadGraphQL()
 
 // Fetch case study by slug
 const { data: caseStudy } = await useAsyncData(
@@ -113,6 +185,28 @@ if (!caseStudy.value) {
     fatal: true
   })
 }
+
+// Fetch all case studies to find previous and next
+const { data: allCaseStudies } = await useAsyncData(
+  'all-case-studies-nav',
+  () => fetchCaseStudies(100) // Fetch a large number to get all
+)
+
+// Find current index and get previous/next
+const currentIndex = computed(() => {
+  if (!allCaseStudies.value || !caseStudy.value) return -1
+  return allCaseStudies.value.findIndex((cs: any) => cs.id === caseStudy.value.id)
+})
+
+const previousCaseStudy = computed(() => {
+  if (!allCaseStudies.value || currentIndex.value <= 0) return null
+  return allCaseStudies.value[currentIndex.value - 1]
+})
+
+const nextCaseStudy = computed(() => {
+  if (!allCaseStudies.value || currentIndex.value === -1 || currentIndex.value >= allCaseStudies.value.length - 1) return null
+  return allCaseStudies.value[currentIndex.value + 1]
+})
 
 // Helper function to get media URL with base URL prepended if needed
 const getMediaUrl = (url: string): string => {
@@ -236,5 +330,14 @@ const renderContent = (content: any): string => {
 
 :deep(.prose em) {
   font-style: italic;
+}
+
+/* Navigation link styling */
+.nav-link {
+  transition: opacity 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  opacity: 0.7;
 }
 </style>
