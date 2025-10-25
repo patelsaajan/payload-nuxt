@@ -75,3 +75,24 @@ export const GET_PAGE_BY_SLUG = gql`
     }
   }
 `
+
+export const GET_CASE_STUDIES = gql`
+  query GetCaseStudies($limit: Int) {
+    CaseStudies(limit: $limit, sort: "-publishedAt") {
+      docs {
+        id
+        title
+        slug
+        excerpt
+        heroImage {
+          id
+          alt
+          url
+          focalX
+          focalY
+        }
+        publishedAt
+      }
+    }
+  }
+`

@@ -5,11 +5,12 @@
     </div>
 
     <!-- Grid: 1 col mobile, 2 cols sm, 3 cols md, 4 cols lg -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div
-        v-for="caseStudy in dummyCaseStudies"
+    <div v-if="caseStudies && caseStudies.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <NuxtLink
+        v-for="caseStudy in caseStudies"
         :key="caseStudy.id"
-        class="overflow-hidden cursor-pointer transition-transform hover:scale-105 flex flex-col"
+        :to="`/case-studies/${caseStudy.slug}`"
+        class="overflow-hidden cursor-pointer flex flex-col card-transition"
         style="border-radius: var(--border-radius); background-color: var(--color-background)"
       >
         <!-- Card Image -->
@@ -18,16 +19,36 @@
           style="border-radius: var(--border-radius) var(--border-radius) 0 0"
         >
           <img
-            :src="caseStudy.image"
-            :alt="caseStudy.title"
+            v-if="caseStudy.heroImage"
+            :src="getMediaUrl(caseStudy.heroImage.url)"
+            :alt="caseStudy.heroImage.alt || caseStudy.title"
+            :style="getFocalPointStyle(caseStudy.heroImage)"
             class="w-full h-full object-cover"
           />
+          <div
+            v-else
+            class="w-full h-full flex items-center justify-center"
+            style="background-color: var(--color-secondary)"
+          >
+            <span style="color: var(--color-secondary-text)">No Image</span>
+          </div>
         </div>
 
         <!-- Card Content -->
         <div class="flex flex-col flex-grow p-6">
           <!-- Heading and Excerpt -->
           <div class="flex-grow">
+            <!-- Published Date -->
+            <div v-if="caseStudy.publishedAt" class="mb-2">
+              <span class="text-xs font-medium" style="color: var(--color-accent)">
+                {{ new Date(caseStudy.publishedAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                }) }}
+              </span>
+            </div>
+
             <h3
               class="text-xl font-semibold mb-3"
               style="color: var(--color-primary)"
@@ -36,6 +57,7 @@
             </h3>
 
             <p
+              v-if="caseStudy.excerpt"
               class="text-sm line-clamp-3"
               style="color: var(--color-text)"
             >
@@ -67,72 +89,59 @@
             </span>
           </div>
         </div>
-      </div>
+      </NuxtLink>
+    </div>
+
+    <!-- Empty state -->
+    <div v-else class="text-center py-12">
+      <p class="text-lg" style="color: var(--color-text)">
+        No case studies available yet. Check back soon!
+      </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// Dummy case studies data
-const dummyCaseStudies = [
-  {
-    id: 1,
-    title: 'E-commerce Platform Redesign',
-    excerpt: 'How we increased conversion rates by 150% through a complete UX overhaul and modern design system implementation.',
-    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&h=300&fit=crop',
-  },
-  {
-    id: 2,
-    title: 'Healthcare Mobile App',
-    excerpt: 'Building a HIPAA-compliant telehealth platform that connects patients with doctors seamlessly.',
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&h=300&fit=crop',
-  },
-  {
-    id: 3,
-    title: 'SaaS Dashboard Optimization',
-    excerpt: 'Streamlining complex data visualization for enterprise clients, reducing load times by 60%.',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=500&h=300&fit=crop',
-  },
-  {
-    id: 4,
-    title: 'Financial Services Portal',
-    excerpt: 'Creating a secure, user-friendly banking platform with real-time transaction processing.',
-    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=500&h=300&fit=crop',
-  },
-  {
-    id: 5,
-    title: 'Education Platform Launch',
-    excerpt: 'Developed an interactive learning management system serving over 50,000 students worldwide.',
-    image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=500&h=300&fit=crop',
-  },
-  {
-    id: 6,
-    title: 'Restaurant Booking System',
-    excerpt: 'Modern reservation platform that increased bookings by 200% for a multi-location restaurant chain.',
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&h=300&fit=crop',
-  },
-  {
-    id: 7,
-    title: 'Real Estate Marketplace',
-    excerpt: 'End-to-end property listing platform with virtual tours and AI-powered recommendations.',
-    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=500&h=300&fit=crop',
-  },
-  {
-    id: 8,
-    title: 'Fitness Tracking App',
-    excerpt: 'Social fitness platform with gamification features that boosted user engagement by 300%.',
-    image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500&h=300&fit=crop',
-  },
-]
+const config = useRuntimeConfig()
+const { fetchCaseStudies } = usePayloadGraphQL()
+
+// Fetch case studies from Payload CMS
+const { data: caseStudies } = await useAsyncData('caseStudies', () => fetchCaseStudies(12))
+
+// Helper function to get media URL with base URL prepended if needed
+const getMediaUrl = (url: string): string => {
+  if (!url) return ''
+  if (url.startsWith('http')) {
+    return url
+  }
+  return `${config.public.payloadBaseURL}${url}`
+}
+
+// Helper function to get focal point positioning for images
+const getFocalPointStyle = (media: any) => {
+  if (!media?.focalX || !media?.focalY) {
+    return {}
+  }
+
+  return {
+    objectPosition: `${media.focalX}% ${media.focalY}%`
+  }
+}
 </script>
 
 <style scoped>
-/* Add box shadow for cards */
-.grid > div {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* Smooth card transitions */
+.card-transition {
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
-.grid > div:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+/* Add box shadow for cards */
+.grid > a {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.grid > a:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12), 0 4px 10px rgba(0, 0, 0, 0.08);
+  transform: scale(1.03);
 }
 </style>

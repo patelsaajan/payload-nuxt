@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
-import { GET_PAGE_BY_SLUG } from '../../graphql/queries'
+import { GET_PAGE_BY_SLUG, GET_CASE_STUDIES } from '../../graphql/queries'
 import { GET_HEADER } from '../../graphql/header'
 import { GET_THEME_SETTINGS } from '../../graphql/theme'
 
@@ -25,5 +25,10 @@ export const usePayloadGraphQL = () => {
     return data.ThemeSetting || null
   }
 
-  return { fetchPageBySlug, fetchHeader, fetchThemeSettings }
+  const fetchCaseStudies = async (limit: number = 12) => {
+    const data: any = await client.request(GET_CASE_STUDIES, { limit })
+    return data.CaseStudies.docs || []
+  }
+
+  return { fetchPageBySlug, fetchHeader, fetchThemeSettings, fetchCaseStudies }
 }
