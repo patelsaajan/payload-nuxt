@@ -62,9 +62,12 @@
             :target="linkItem.link.newTab ? '_blank' : '_self'"
             :variant="linkItem.link.appearance === 'default' ? 'solid' : linkItem.link.appearance"
             :color="linkItem.link.color || 'primary'"
-            class="cursor-pointer"
+            :label=" linkItem.link.label"
+          />
+          <UButton
+          color="accent"
           >
-            {{ linkItem.link.label }}
+            hello world
           </UButton>
         </div>
       </div>
