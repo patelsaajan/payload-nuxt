@@ -2,7 +2,7 @@
   <div class="bg-background text-text">
       <header v-if="header">
         <div class="container mx-auto">
-          <UNavigationMenu color="neutral" :items="items" class="w-full" />
+          <UNavigationMenu color="primary" variant="link" :items="items" class="w-full" />
         </div>
       </header>
       <main>
