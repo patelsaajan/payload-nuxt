@@ -64,11 +64,6 @@
             :color="linkItem.link.color || 'primary'"
             :label=" linkItem.link.label"
           />
-          <UButton
-          color="accent"
-          >
-            hello world
-          </UButton>
         </div>
       </div>
 
