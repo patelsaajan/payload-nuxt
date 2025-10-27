@@ -1,13 +1,14 @@
 <template>
-  <div class="bg-background text-text">
+  <div class="bg-background text-text min-h-screen flex flex-col">
       <header v-if="header">
         <div class="container mx-auto">
           <UNavigationMenu color="primary" variant="link" :items="items" class="w-full" />
         </div>
       </header>
-      <main>
+      <main class="flex-1">
         <slot />
       </main>
+      <Footer />
     </div>
 </template>
 

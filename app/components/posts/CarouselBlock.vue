@@ -88,40 +88,24 @@ const posts = ref([])
 onMounted(async () => {
   const block = props.block
 
-  console.log('PostsCarousel block config:', {
-    populateBy: block.populateBy,
-    relationTo: block.relationTo,
-    limit: block.limit,
-    categoriesCount: block.categories?.length,
-    selectedDocsCount: block.selectedDocs?.length,
-    selectedDocs: block.selectedDocs
-  })
-
   if (block.populateBy === 'selection' && block.selectedDocs?.length > 0) {
     // Use manually selected posts - need to get the value from each doc
     posts.value = block.selectedDocs.map((doc: any) => {
-      console.log('Selected doc:', doc)
       return doc.value
     }).filter((v: any) => v != null)
-
-    console.log('Using selected docs:', posts.value)
   } else {
     // Fetch posts from collection
     const relationTo = block.relationTo || 'posts'
     const limit = block.limit || 10
     const categoryIds = block.categories?.map((cat: any) => cat.id) || []
 
-    console.log('Fetching from collection:', { relationTo, limit, categoryIds })
-
     try {
       if (relationTo === 'case_studies') {
         const fetchedPosts = await fetchCaseStudiesWithFilter(limit, categoryIds.length > 0 ? categoryIds : undefined)
         posts.value = fetchedPosts
-        console.log('Fetched case studies:', fetchedPosts)
       } else {
         const fetchedPosts = await fetchPosts(limit, categoryIds.length > 0 ? categoryIds : undefined)
         posts.value = fetchedPosts
-        console.log('Fetched posts:', fetchedPosts)
       }
     } catch (error) {
       console.error('Error fetching posts:', error)
