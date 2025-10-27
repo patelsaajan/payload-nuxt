@@ -40,10 +40,13 @@
               :alt="block.media.alt || 'Media'"
             />
           </div>
+
+          <!-- PostsCarouselBlock -->
+          <div v-else-if="block.blockType === 'postsCarousel'">
+            <PostsCarouselBlock :block="block" />
+          </div>
         </div>
       </div>
-
-      <Carousel />
     </div>
     <div v-else>
       <p>Loading...</p>
