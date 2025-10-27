@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full py-8">
+  <div class="w-full pt-8 pb-24 overflow-visible">
     <Swiper
       v-if="caseStudies && caseStudies.length > 0"
       :modules="modules"
@@ -34,7 +34,7 @@
           spaceBetween: 32,
         },
       }"
-      class="px-12 py-8 pb-16"
+      class="px-12 py-8 pb-12 overflow-visible!"
     >
       <SwiperSlide v-for="caseStudy in caseStudies" :key="caseStudy.id">
         <CarouselCard :case-study="caseStudy" />
@@ -63,4 +63,59 @@ const { data: caseStudies } = await useAsyncData('carousel-case-studies', () => 
 </script>
 
 <style scoped>
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--color-text);
+}
+
+/* Swiper navigation button styling */
+:deep(.swiper-button-next),
+:deep(.swiper-button-prev) {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  border: 2px solid var(--color-primary);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg{
+    width: 25px;
+    height: 25px;
+  }
+}
+
+:deep(.swiper-button-next):hover,
+:deep(.swiper-button-prev):hover {
+  background: var(--color-background);
+  color: var(--color-primary);
+}
+
+:deep(.swiper-button-disabled) {
+  opacity: 0.35;
+}
+
+/* Pagination styling */
+:deep(.swiper-pagination-bullet) {
+  width: 10px;
+  height: 10px;
+  background: var(--color-text);
+  opacity: 0.3;
+  transition: all 0.3s ease;
+}
+
+:deep(.swiper-pagination-bullet-active) {
+  background: var(--color-primary);
+  opacity: 1;
+  width: 30px;
+  border-radius: 5px;
+}
+
+:deep(.swiper-pagination) {
+    bottom: -48px !important;
+}
 </style>
