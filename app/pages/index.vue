@@ -42,6 +42,8 @@
           </div>
         </div>
       </div>
+
+      <Carousel />
     </div>
     <div v-else>
       <p>Loading...</p>
