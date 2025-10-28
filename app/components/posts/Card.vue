@@ -55,53 +55,19 @@
 </template>
 
 <script setup lang="ts">
-interface Post {
-  id: string
-  slug: string
-  title: string
-  publishedAt?: string
-  // For regular posts
-  meta?: {
-    description?: string
-    image?: {
-      url: string
-      alt?: string
-      focalX?: number
-      focalY?: number
-    }
-  }
-  // For case studies
-  excerpt?: string
-  heroImage?: {
-    url: string
-    alt?: string
-    focalX?: number
-    focalY?: number
-  }
-  categories?: Array<{
-    id: string
-    title: string
-    slug: string
-  }>
-}
+import type { IPost, typeRelationTo } from '../../../types'
 
 const props = defineProps<{
-  post: Post
-  relationTo: 'posts' | 'case_studies'
+  post: IPost
+  relationTo: typeRelationTo
 }>()
 
 const config = useRuntimeConfig()
 
 // Helper function to get media URL with base URL prepended if needed
 const imageUrl = computed(() => {
-  let url = ''
-
-  if (props.relationTo === 'case_studies') {
-    url = props.post.heroImage?.url || ''
-  } else {
-    // For posts, prioritize heroImage, fallback to meta.image
-    url = props.post.heroImage?.url || props.post.meta?.image?.url || ''
-  }
+  // Both posts and case studies use heroImage, posts can fallback to meta.image
+  const url = props.post.heroImage?.url || props.post.meta?.image?.url || ''
 
   if (!url) return ''
   if (url.startsWith('http')) {
@@ -112,12 +78,8 @@ const imageUrl = computed(() => {
 
 // Get image alt text
 const imageAlt = computed(() => {
-  if (props.relationTo === 'case_studies') {
-    return props.post.heroImage?.alt || props.post.title
-  } else {
-    // For posts, prioritize heroImage, fallback to meta.image
-    return props.post.heroImage?.alt || props.post.meta?.image?.alt || props.post.title
-  }
+  // Both posts and case studies use heroImage, posts can fallback to meta.image
+  return props.post.heroImage?.alt || props.post.meta?.image?.alt || props.post.title
 })
 
 // Get description
@@ -138,14 +100,8 @@ const cardStyle = computed(() => ({
 
 // Helper function to get focal point positioning for images
 const focalPointStyle = computed(() => {
-  let media = null
-
-  if (props.relationTo === 'case_studies') {
-    media = props.post.heroImage
-  } else {
-    // For posts, prioritize heroImage, fallback to meta.image
-    media = props.post.heroImage || props.post.meta?.image
-  }
+  // Both posts and case studies use heroImage, posts can fallback to meta.image
+  const media = props.post.heroImage || props.post.meta?.image
 
   if (!media?.focalX || !media?.focalY) {
     return {}

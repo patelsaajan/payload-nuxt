@@ -33,22 +33,10 @@
 </template>
 
 <script setup lang="ts">
-interface CaseStudy {
-  id: string
-  slug: string
-  title: string
-  excerpt?: string
-  publishedAt?: string
-  heroImage?: {
-    url: string
-    alt?: string
-    focalX?: number
-    focalY?: number
-  }
-}
+import type { ICaseStudy } from '../../types'
 
 const props = defineProps<{
-  caseStudy: CaseStudy
+  caseStudy: ICaseStudy
 }>()
 
 const config = useRuntimeConfig()

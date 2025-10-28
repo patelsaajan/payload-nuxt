@@ -31,16 +31,12 @@
 </template>
 
 <script setup lang="ts">
-interface Social {
-  name: string
-  icon: string
-  url: string
-}
+import type { ISocial } from '../../../types'
 
 const { fetchBranding } = usePayloadGraphQL()
 
 // Fetch branding data
-const branding: { socials?: Social[] } | null = await fetchBranding()
+const branding: { socials?: ISocial[] } | null = await fetchBranding()
 
 // Get current year
 const currentYear = new Date().getFullYear()
