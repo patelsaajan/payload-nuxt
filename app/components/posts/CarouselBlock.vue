@@ -10,6 +10,22 @@
 
       <!-- Carousel -->
       <div class="w-full overflow-visible">
+        <!-- Custom Navigation Controls -->
+        <div v-if="posts && posts.length > 0" class="flex justify-end mb-4">
+          <div class="carousel-navigation-container">
+            <button class="carousel-nav-button carousel-button-prev" aria-label="Previous slide">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button class="carousel-nav-button carousel-button-next" aria-label="Next slide">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+
         <Swiper
           v-if="posts && posts.length > 0"
           :modules="modules"
@@ -17,7 +33,10 @@
           :space-between="16"
           :loop="true"
           :pagination="{ clickable: true }"
-          :navigation="true"
+          :navigation="{
+            nextEl: '.carousel-button-next',
+            prevEl: '.carousel-button-prev',
+          }"
           :breakpoints="{
             480: {
               slidesPerView: 2,
@@ -119,34 +138,52 @@ onMounted(async () => {
   color: var(--color-text);
 }
 
-/* Swiper navigation button styling */
-:deep(.swiper-button-next),
-:deep(.swiper-button-prev) {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  color: var(--color-primary-text);
-  border: 2px solid var(--color-primary);
+/* Custom Navigation Container */
+.carousel-navigation-container {
+  display: flex;
+  gap: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px;
+  background: transparent;
+}
+
+/* Navigation Button Styling */
+.carousel-nav-button {
+  width: 44px;
+  height: 44px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  svg {
-    width: 25px;
-    height: 25px;
-  }
+  cursor: pointer;
 }
 
-:deep(.swiper-button-next):hover,
-:deep(.swiper-button-prev):hover {
-  background: var(--color-background);
-  color: var(--color-primary);
+.carousel-nav-button:hover {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  border-color: var(--color-primary);
 }
 
-:deep(.swiper-button-disabled) {
+.carousel-nav-button:disabled,
+.carousel-nav-button.swiper-button-disabled {
   opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.carousel-nav-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hide default Swiper navigation buttons since we're using custom ones */
+:deep(.swiper-button-next),
+:deep(.swiper-button-prev) {
+  display: none !important;
 }
 
 /* Pagination styling */
