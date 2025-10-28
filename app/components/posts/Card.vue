@@ -99,7 +99,8 @@ const imageUrl = computed(() => {
   if (props.relationTo === 'case_studies') {
     url = props.post.heroImage?.url || ''
   } else {
-    url = props.post.meta?.image?.url || ''
+    // For posts, prioritize heroImage, fallback to meta.image
+    url = props.post.heroImage?.url || props.post.meta?.image?.url || ''
   }
 
   if (!url) return ''
@@ -114,7 +115,8 @@ const imageAlt = computed(() => {
   if (props.relationTo === 'case_studies') {
     return props.post.heroImage?.alt || props.post.title
   } else {
-    return props.post.meta?.image?.alt || props.post.title
+    // For posts, prioritize heroImage, fallback to meta.image
+    return props.post.heroImage?.alt || props.post.meta?.image?.alt || props.post.title
   }
 })
 
@@ -141,7 +143,8 @@ const focalPointStyle = computed(() => {
   if (props.relationTo === 'case_studies') {
     media = props.post.heroImage
   } else {
-    media = props.post.meta?.image
+    // For posts, prioritize heroImage, fallback to meta.image
+    media = props.post.heroImage || props.post.meta?.image
   }
 
   if (!media?.focalX || !media?.focalY) {

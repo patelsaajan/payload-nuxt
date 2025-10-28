@@ -91,6 +91,13 @@ export const GET_PAGE_BY_SLUG = gql`
                   title
                   slug
                   publishedAt
+                  heroImage {
+                    id
+                    alt
+                    url
+                    focalX
+                    focalY
+                  }
                   meta {
                     description
                     image {
