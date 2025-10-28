@@ -1,6 +1,6 @@
 <template>
   <NuxtLink
-    :to="`/${relationTo}/${post.slug}`"
+    :to="generateLink"
     :style="cardStyle"
     class="card flex flex-1 overflow-hidden shadow-md hover:shadow-xl border transition-all duration-300 h-full flex-col no-underline"
   >
@@ -170,6 +170,12 @@ const formattedDate = computed(() => {
     month: 'short',
     day: 'numeric'
   })
+})
+
+//Generates the url for the post due to the relationTo being in snake_case no kabab-case
+const generateLink = computed (() => {
+  if (!props.relationTo || !props.post.slug) return '/'
+  return props.relationTo.replaceAll("_", '-') + '/' + props.post.slug
 })
 </script>
 

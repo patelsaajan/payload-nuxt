@@ -14,14 +14,10 @@
         <div v-if="posts && posts.length > 0" class="flex justify-end mb-4">
           <div class="carousel-navigation-container">
             <button class="carousel-nav-button carousel-button-prev" aria-label="Previous slide">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
+              <Icon name="lucide:chevron-left" class="size-8" />
             </button>
             <button class="carousel-nav-button carousel-button-next" aria-label="Next slide">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
+              <Icon name="lucide:chevron-right" class="size-8" />
             </button>
           </div>
         </div>
@@ -33,6 +29,10 @@
           :space-between="16"
           :loop="true"
           :pagination="{ clickable: true }"
+          :autoplay="{
+            delay: 7500,
+            disableOnInteraction: false,
+            }"
           :navigation="{
             nextEl: '.carousel-button-next',
             prevEl: '.carousel-button-prev',
@@ -47,11 +47,11 @@
               spaceBetween: 24,
             },
             1024: {
-              slidesPerView: 3,
+              slidesPerView: 3.5,
               spaceBetween: 28,
             },
             1280: {
-              slidesPerView: 4,
+              slidesPerView: 4.5,
               spaceBetween: 30,
             },
           }"
@@ -144,7 +144,7 @@ onMounted(async () => {
   gap: 8px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  padding: 8px;
+  padding: 8px 0px;
   background: transparent;
 }
 
@@ -173,11 +173,6 @@ onMounted(async () => {
 .carousel-nav-button.swiper-button-disabled {
   opacity: 0.35;
   cursor: not-allowed;
-}
-
-.carousel-nav-button svg {
-  width: 20px;
-  height: 20px;
 }
 
 /* Hide default Swiper navigation buttons since we're using custom ones */
