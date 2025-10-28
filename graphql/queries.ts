@@ -193,6 +193,13 @@ export const GET_POSTS = gql`
         id
         title
         slug
+        heroImage {
+          id
+          alt
+          url
+          focalX
+          focalY
+        }
         meta {
           description
           image {
@@ -225,6 +232,13 @@ export const GET_POSTS_WITH_FILTER = gql`
         id
         title
         slug
+        heroImage {
+          id
+          alt
+          url
+          focalX
+          focalY
+        }
         meta {
           description
           image {
@@ -265,6 +279,42 @@ export const GET_CASE_STUDIES_WITH_FILTER = gql`
           focalX
           focalY
         }
+        categories {
+          id
+          title
+          slug
+        }
+        publishedAt
+      }
+    }
+  }
+`
+
+export const GET_POST_BY_SLUG = gql`
+  query GetPostBySlug($slug: String!) {
+    Posts(where: { slug: { equals: $slug } }) {
+      docs {
+        id
+        title
+        slug
+        heroImage {
+          id
+          alt
+          url
+          focalX
+          focalY
+        }
+        meta {
+          description
+          image {
+            id
+            alt
+            url
+            focalX
+            focalY
+          }
+        }
+        content
         categories {
           id
           title

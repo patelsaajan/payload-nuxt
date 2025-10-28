@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request'
-import { GET_PAGE_BY_SLUG, GET_CASE_STUDIES, GET_CASE_STUDY_BY_SLUG, GET_POSTS, GET_POSTS_WITH_FILTER, GET_CASE_STUDIES_WITH_FILTER } from '../../graphql/queries'
+import { GET_PAGE_BY_SLUG, GET_CASE_STUDIES, GET_CASE_STUDY_BY_SLUG, GET_POSTS, GET_POSTS_WITH_FILTER, GET_CASE_STUDIES_WITH_FILTER, GET_POST_BY_SLUG } from '../../graphql/queries'
 import { GET_HEADER } from '../../graphql/header'
 import { GET_THEME_SETTINGS } from '../../graphql/theme'
 import { GET_BRANDING } from '../../graphql/branding'
@@ -78,6 +78,11 @@ export const usePayloadGraphQL = () => {
     return data.BrandingSetting || null
   }
 
+  const fetchPostBySlug = async (slug: string) => {
+    const data: any = await client.request(GET_POST_BY_SLUG, { slug })
+    return data.Posts.docs[0] || null
+  }
+
   return {
     fetchPageBySlug,
     fetchHeader,
@@ -86,6 +91,7 @@ export const usePayloadGraphQL = () => {
     fetchCaseStudyBySlug,
     fetchPosts,
     fetchCaseStudiesWithFilter,
-    fetchBranding
+    fetchBranding,
+    fetchPostBySlug
   }
 }
