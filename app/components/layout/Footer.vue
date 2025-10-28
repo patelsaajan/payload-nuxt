@@ -15,9 +15,9 @@
             rel="noopener noreferrer"
             :aria-label="social.name"
             :style="socialLinkStyle"
-            class="p-3 rounded-full transition-all duration-300 hover:scale-110"
+            class="flex p-3 rounded-full transition-all duration-300 hover:scale-110"
           >
-            <Icon :name="social.icon" class="w-6 h-6" />
+            <Icon :name="social.icon" class="size-5" />
           </a>
         </div>
 
