@@ -1,52 +1,50 @@
 <template>
-  <div class="w-full py-16">
-    <!-- Intro Content -->
-    <div v-if="block.introContent" class="container mx-auto px-4 mb-8">
-      <div class="prose max-w-none">
-        {{ getTextFromRichText(block.introContent) }}
+  <div class="container mx-auto">
+    <div class="w-full py-16">
+      <!-- Intro Content -->
+      <div v-if="block.introContent" class="container mx-auto px-4 mb-8">
+        <div class="prose max-w-none">
+          {{ getTextFromRichText(block.introContent) }}
+        </div>
       </div>
-    </div>
 
-    <!-- Carousel -->
-    <div class="w-full overflow-visible">
-      <Swiper
-        v-if="posts && posts.length > 0"
-        :modules="modules"
-        :slides-per-view="1.5"
-        :space-between="16"
-        :loop="true"
-        :pagination="{ clickable: true }"
-        :navigation="true"
-        :autoplay="{
-          delay: 5000,
-          disableOnInteraction: false,
-        }"
-        :breakpoints="{
-          480: {
-            slidesPerView: 2,
-            spaceBetween: 20,
-          },
-          768: {
-            slidesPerView: 2.5,
-            spaceBetween: 24,
-          },
-          1024: {
-            slidesPerView: 3,
-            spaceBetween: 28,
-          },
-          1280: {
-            slidesPerView: 4,
-            spaceBetween: 30,
-          },
-        }"
-        class="px-12 py-8 pb-12 overflow-visible!"
-      >
-        <SwiperSlide v-for="post in posts" :key="post.id">
-          <PostsCard :post="post" :relation-to="block.relationTo || 'posts'" />
-        </SwiperSlide>
-      </Swiper>
-      <div v-else class="empty-state">
-        <p>No posts available yet.</p>
+      <!-- Carousel -->
+      <div class="w-full overflow-visible">
+        <Swiper
+          v-if="posts && posts.length > 0"
+          :modules="modules"
+          :slides-per-view="1.5"
+          :space-between="16"
+          :loop="true"
+          :pagination="{ clickable: true }"
+          :navigation="true"
+          :breakpoints="{
+            480: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+            },
+            768: {
+              slidesPerView: 2.5,
+              spaceBetween: 24,
+            },
+            1024: {
+              slidesPerView: 3,
+              spaceBetween: 28,
+            },
+            1280: {
+              slidesPerView: 4,
+              spaceBetween: 30,
+            },
+          }"
+          class="px-12 py-8 pb-12 overflow-visible!"
+        >
+          <SwiperSlide v-for="post in posts" :key="post.id">
+            <PostsCard :post="post" :relation-to="block.relationTo || 'posts'" />
+          </SwiperSlide>
+        </Swiper>
+        <div v-else class="empty-state">
+          <p>No posts available yet.</p>
+        </div>
       </div>
     </div>
   </div>
