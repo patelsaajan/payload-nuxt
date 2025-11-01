@@ -29,8 +29,6 @@ export const GET_PAGE_BY_SLUG = gql`
             id
             alt
             url
-            focalX
-            focalY
           }
         }
         layout {
@@ -41,18 +39,12 @@ export const GET_PAGE_BY_SLUG = gql`
             columns {
               size
               richText
-            }
-          }
-          ... on CallToActionBlock {
-            id
-            blockType
-            blockName
-            richText
-            links {
+              enableLink
               link {
                 type
                 url
                 label
+                newTab
                 appearance
                 color
               }
@@ -66,125 +58,9 @@ export const GET_PAGE_BY_SLUG = gql`
               id
               alt
               url
-              focalX
-              focalY
-            }
-          }
-          ... on PostsCarouselBlock {
-            id
-            blockType
-            blockName
-            introContent
-            populateBy
-            relationTo
-            limit
-            categories {
-              id
-              title
-              slug
-            }
-            selectedDocs {
-              relationTo
-              value {
-                ... on Post {
-                  id
-                  title
-                  slug
-                  publishedAt
-                  heroImage {
-                    id
-                    alt
-                    url
-                    focalX
-                    focalY
-                  }
-                  meta {
-                    description
-                    image {
-                      id
-                      alt
-                      url
-                      focalX
-                      focalY
-                    }
-                  }
-                  categories {
-                    id
-                    title
-                    slug
-                  }
-                }
-                ... on CaseStudy {
-                  id
-                  title
-                  slug
-                  excerpt
-                  publishedAt
-                  heroImage {
-                    id
-                    alt
-                    url
-                    focalX
-                    focalY
-                  }
-                  categories {
-                    id
-                    title
-                    slug
-                  }
-                }
-              }
             }
           }
         }
-      }
-    }
-  }
-`
-
-export const GET_CASE_STUDIES = gql`
-  query GetCaseStudies($limit: Int) {
-    CaseStudies(limit: $limit, sort: "-publishedAt") {
-      docs {
-        id
-        title
-        slug
-        excerpt
-        heroImage {
-          id
-          alt
-          url
-          focalX
-          focalY
-        }
-        publishedAt
-      }
-    }
-  }
-`
-
-export const GET_CASE_STUDY_BY_SLUG = gql`
-  query GetCaseStudyBySlug($slug: String!) {
-    CaseStudies(where: { slug: { equals: $slug } }) {
-      docs {
-        id
-        title
-        slug
-        excerpt
-        heroImage {
-          id
-          alt
-          url
-          focalX
-          focalY
-        }
-        content
-        categories {
-          id
-          title
-          slug
-        }
-        publishedAt
       }
     }
   }
@@ -204,8 +80,6 @@ export const GET_POSTS = gql`
           id
           alt
           url
-          focalX
-          focalY
         }
         meta {
           description
@@ -213,14 +87,10 @@ export const GET_POSTS = gql`
             id
             alt
             url
-            focalX
-            focalY
           }
         }
         categories {
           id
-          title
-          slug
         }
         publishedAt
       }
@@ -243,8 +113,6 @@ export const GET_POSTS_WITH_FILTER = gql`
           id
           alt
           url
-          focalX
-          focalY
         }
         meta {
           description
@@ -252,44 +120,10 @@ export const GET_POSTS_WITH_FILTER = gql`
             id
             alt
             url
-            focalX
-            focalY
           }
         }
         categories {
           id
-          title
-          slug
-        }
-        publishedAt
-      }
-    }
-  }
-`
-
-export const GET_CASE_STUDIES_WITH_FILTER = gql`
-  query GetCaseStudiesWithFilter($limit: Int, $categoryIds: [JSON]!) {
-    CaseStudies(
-      limit: $limit
-      sort: "-publishedAt"
-      where: { categories: { in: $categoryIds } }
-    ) {
-      docs {
-        id
-        title
-        slug
-        excerpt
-        heroImage {
-          id
-          alt
-          url
-          focalX
-          focalY
-        }
-        categories {
-          id
-          title
-          slug
         }
         publishedAt
       }
@@ -308,8 +142,6 @@ export const GET_POST_BY_SLUG = gql`
           id
           alt
           url
-          focalX
-          focalY
         }
         meta {
           description
@@ -317,15 +149,11 @@ export const GET_POST_BY_SLUG = gql`
             id
             alt
             url
-            focalX
-            focalY
           }
         }
         content
         categories {
           id
-          title
-          slug
         }
         publishedAt
       }

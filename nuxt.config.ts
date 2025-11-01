@@ -5,9 +5,13 @@ export default defineNuxtConfig({
   modules: ['@nuxt/image', '@nuxt/ui'],
   css: ['~/assets/css/main.css'],
 
+  devServer: {
+    port: 4000
+  },
+
   runtimeConfig: {
     public: {
-      payloadBaseURL: 'http://localhost:4000'
+      payloadBaseURL: 'http://localhost:3000'
     }
   },
 
