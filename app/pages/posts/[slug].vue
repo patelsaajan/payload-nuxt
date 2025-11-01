@@ -214,7 +214,7 @@ const getMediaUrl = (url: string): string => {
   if (url.startsWith('http')) {
     return url
   }
-  return `${config.public.payloadBaseURL}${url}`
+  return `${config.public.payloadBaseUrl}${url}`
 }
 
 // Helper function to get focal point positioning for images

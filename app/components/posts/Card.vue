@@ -73,7 +73,7 @@ const imageUrl = computed(() => {
   if (url.startsWith('http')) {
     return url
   }
-  return `${config.public.payloadBaseURL}${url}`
+  return `${config.public.payloadBaseUrl}${url}`
 })
 
 // Get image alt text

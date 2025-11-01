@@ -48,7 +48,7 @@ const imageUrl = computed(() => {
   if (url.startsWith('http')) {
     return url
   }
-  return `${config.public.payloadBaseURL}${url}`
+  return `${config.public.payloadBaseUrl}${url}`
 })
 
 // Card style with theme variables
