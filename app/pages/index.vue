@@ -51,8 +51,6 @@ const getBlockComponent = (blockType: string) => {
 
     const fileName = blockType.replace(/Block$/, "").toLowerCase();
 
-    console.log(fileName);
-
     // Use defineAsyncComponent for dynamic imports
     // This creates a lazy-loaded component that only loads when needed
     return defineAsyncComponent(() =>

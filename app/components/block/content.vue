@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IContentColumn } from '~~/types'
+import type { IContentColumn } from "~~/types";
 
 // Define props to match GraphQL ContentBlock structure
 const props = defineProps<{
@@ -22,15 +22,22 @@ const props = defineProps<{
     columns: IContentColumn[];
 }>();
 
-// Get grid columns class based on number of columns
+// Get grid columns class - use a 12-column grid for flexible sizing
 const getGridColumnsClass = () => {
-    const columnCount = props.columns?.length || 1;
+    // Check if any columns have specific sizes
+    const hasCustomSizes = props.columns?.some(col => col.size);
 
-    // Responsive grid classes
+    if (hasCustomSizes) {
+        // Use 12-column grid for flexible sizing (like Bootstrap)
+        return "grid-cols-1 lg:grid-cols-12";
+    }
+
+    // For equal-width columns, use simpler grid
+    const columnCount = props.columns?.length || 1;
     const gridMap: Record<number, string> = {
         1: "grid-cols-1",
         2: "grid-cols-1 md:grid-cols-2",
-        3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+        3: "grid-cols-1 md:grid-cols-3",
         4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
     };
 
@@ -41,12 +48,12 @@ const getGridColumnsClass = () => {
 const getColumnClass = (size?: string) => {
     if (!size) return "";
 
-    // Map Payload column sizes to Tailwind classes
+    // Map Payload column sizes to Tailwind 12-column grid classes
     const sizeMap: Record<string, string> = {
-        oneThird: "lg:col-span-1",
-        half: "lg:col-span-2",
-        twoThirds: "lg:col-span-2",
-        full: "lg:col-span-full",
+        oneThird: "lg:col-span-4",    // 4 out of 12 = 1/3
+        half: "lg:col-span-6",         // 6 out of 12 = 1/2
+        twoThirds: "lg:col-span-8",    // 8 out of 12 = 2/3
+        full: "lg:col-span-12",        // 12 out of 12 = full width
     };
 
     return sizeMap[size] || "";
