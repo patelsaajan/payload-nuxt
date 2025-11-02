@@ -14,14 +14,6 @@ export interface IMediaBlock {
   focalY?: number;
 }
 
-// Content Column
-export interface IContentColumn {
-  size?: "oneThird" | "half" | "twoThirds" | "full";
-  richText?: any;
-  enableLink?: boolean;
-  link?: IContentLink;
-}
-
 // Content Link
 export interface IContentLink {
   type?: string;
@@ -30,6 +22,14 @@ export interface IContentLink {
   newTab?: boolean;
   appearance?: "primary" | "secondary" | "default";
   color?: string;
+}
+
+// Content Column
+export interface IContentColumn {
+  size?: "oneThird" | "half" | "twoThirds" | "full";
+  richText?: any;
+  enableLink?: boolean;
+  link?: IContentLink;
 }
 
 // Content Block

@@ -21,25 +21,13 @@
 </template>
 
 <script setup lang="ts">
-interface Link {
-    type?: string;
-    url: string;
-    label: string;
-    newTab?: boolean;
-    appearance?: string;
-    color?: string;
-}
+import type { IContentColumn, IContentLink } from "~~/types";
 
 // Define props for a single column
-defineProps<{
-    size?: string;
-    richText?: any;
-    enableLink?: boolean;
-    link?: Link;
-}>();
+defineProps<IContentColumn>();
 
 // Get link styling class based on appearance
-const getLinkClass = (link: Link) => {
+const getLinkClass = (link: IContentLink) => {
     const baseClasses = "px-6 py-3 rounded-lg font-medium transition-colors";
 
     if (link.appearance === "primary") {

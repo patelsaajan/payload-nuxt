@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ICaseStudy } from '../../types'
+import type { ICaseStudy } from '~~/types'
 
 const props = defineProps<{
   caseStudy: ICaseStudy

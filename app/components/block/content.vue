@@ -12,19 +12,14 @@
 </template>
 
 <script setup lang="ts">
-interface Column {
-    size?: string;
-    richText?: any;
-    enableLink?: boolean;
-    link?: any;
-}
+import type { IContentColumn } from '~~/types'
 
 // Define props to match GraphQL ContentBlock structure
 const props = defineProps<{
     id?: string;
     blockType?: string;
     blockName?: string;
-    columns: Column[];
+    columns: IContentColumn[];
 }>();
 
 // Get grid columns class based on number of columns

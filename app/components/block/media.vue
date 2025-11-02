@@ -11,6 +11,8 @@
 </template>
 
 <script setup lang="ts">
+import type { IMediaBlock } from "~~/types";
+
 const config = useRuntimeConfig();
 
 // Define props to match GraphQL MediaBlock structure
@@ -18,13 +20,7 @@ defineProps<{
     id?: string;
     blockType?: string;
     blockName?: string;
-    media: {
-        id: string;
-        alt?: string;
-        url: string;
-        focalX?: number;
-        focalY?: number;
-    };
+    media: IMediaBlock;
 }>();
 
 // Helper function to get media URL with base URL prepended if needed

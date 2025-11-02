@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IPost, typeRelationTo } from '../../../types'
+import type { IPost, typeRelationTo } from '~~/types'
 
 const props = defineProps<{
   post: IPost

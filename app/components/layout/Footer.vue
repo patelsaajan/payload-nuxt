@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ISocial } from '../../../types'
+import type { ISocial } from '~~/types'
 
 const { fetchBranding } = usePayloadGraphQL()
 

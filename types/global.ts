@@ -17,4 +17,4 @@ export interface ISocial {
 }
 
 // Relation type for carousel/card components
-export type typeRelationTo = "posts" | "case_studies";
+export type typeRelationTo = "posts";
