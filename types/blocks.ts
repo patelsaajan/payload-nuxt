@@ -1,3 +1,5 @@
+import type { IMedia } from './global'
+
 // Base block interface
 export interface IBaseBlock {
   id?: string;

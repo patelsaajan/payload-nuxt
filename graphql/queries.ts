@@ -1,4 +1,4 @@
-import { gql } from 'graphql-request'
+import { gql } from "graphql-request";
 
 export const GET_PAGE_BY_SLUG = gql`
   query GetPageBySlug($slug: String!) {
@@ -58,20 +58,19 @@ export const GET_PAGE_BY_SLUG = gql`
               id
               alt
               url
+              focalX
+              focalY
             }
           }
         }
       }
     }
   }
-`
+`;
 
 export const GET_POSTS = gql`
   query GetPosts($limit: Int) {
-    Posts(
-      limit: $limit
-      sort: "-publishedAt"
-    ) {
+    Posts(limit: $limit, sort: "-publishedAt") {
       docs {
         id
         title
@@ -96,7 +95,7 @@ export const GET_POSTS = gql`
       }
     }
   }
-`
+`;
 
 export const GET_POSTS_WITH_FILTER = gql`
   query GetPostsWithFilter($limit: Int, $categoryIds: [JSON]!) {
@@ -129,7 +128,7 @@ export const GET_POSTS_WITH_FILTER = gql`
       }
     }
   }
-`
+`;
 
 export const GET_POST_BY_SLUG = gql`
   query GetPostBySlug($slug: String!) {
@@ -159,4 +158,4 @@ export const GET_POST_BY_SLUG = gql`
       }
     }
   }
-`
+`;

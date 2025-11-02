@@ -1,5 +1,14 @@
 // Global shared types
 
+// Media/Image interface
+export interface IMedia {
+  id?: string;
+  url: string;
+  alt?: string;
+  focalX?: number;
+  focalY?: number;
+}
+
 // Category interface
 export interface ICategory {
   id: string;
@@ -8,6 +17,10 @@ export interface ICategory {
 }
 
 // Meta interface (for SEO)
+export interface IMeta {
+  description?: string;
+  image?: IMedia;
+}
 
 // Social media interface
 export interface ISocial {
