@@ -3,18 +3,22 @@
 @import "./typography.css";
 
 @theme static {
-    --ui-primary          : var(--theme-primary);
-    --ui-secondary        : var(--theme-secondary);
+    --ui-primary: var(--theme-primary);
+    --ui-secondary: var(--theme-secondary);
 
-    --color-primary       : var(--theme-primary);
-    --color-secondary     : var(--theme-secondary);
-    --color-accent        : var(--theme-accent);
-    --color-action        : var(--theme-action);
-    --color-background    : var(--theme-background);
-    --color-text          : var(--theme-text);
-    --color-primary-text  : var(--theme-text-primary);
+    --color-primary: var(--theme-primary);
+    --color-secondary: var(--theme-secondary);
+    --color-accent: var(--theme-accent);
+    --color-action: var(--theme-action);
+    --color-background: var(--theme-background);
+    --color-text: var(--theme-text);
+    --color-primary-text: var(--theme-text-primary);
     --color-secondary-text: var(--theme-text-secondary);
 
-    --border-radius       : var(--theme-border-radius);
-    --ui-radius           : var(--theme-border-radius);
+    --border-radius: var(--theme-border-radius);
+    --ui-radius: var(--theme-border-radius);
+}
+
+img {
+    border-radius: var(--border-radius, 50px) !important;
 }
