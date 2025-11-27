@@ -29,6 +29,8 @@ export const GET_PAGE_BY_SLUG = gql`
             id
             alt
             url
+            focalX
+            focalY
           }
         }
         layout {
@@ -79,6 +81,8 @@ export const GET_POSTS = gql`
           id
           alt
           url
+          focalX
+          focalY
         }
         meta {
           description
@@ -141,6 +145,8 @@ export const GET_POST_BY_SLUG = gql`
           id
           alt
           url
+          focalX
+          focalY
         }
         meta {
           description

@@ -7,7 +7,7 @@
         <img
             :src="getMediaUrl(hero.media.url)"
             :alt="hero.media.alt || 'Hero image'"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-cover rounded-none!"
             :style="getFocalPointStyle(hero.media)"
         />
     </div>

@@ -10,4 +10,5 @@ export interface IPost {
   excerpt?: string
   heroImage?: IMedia
   categories?: ICategory[]
+  content?: any // Lexical richText content
 }

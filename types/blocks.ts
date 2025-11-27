@@ -16,6 +16,14 @@ export interface IMediaBlock {
   focalY?: number;
 }
 
+export interface IButtonBlock extends IBaseBlock {
+  blockType: "buttonBlock";
+  text: string;
+  linkType: "internal" | "external";
+  url: string;
+  variant: "primary" | "secondary" | "accent";
+}
+
 // Content Link
 export interface IContentLink {
   type?: string;
@@ -41,4 +49,4 @@ export interface IContentBlock extends IBaseBlock {
 }
 
 // Union type for all block types
-export type Block = IMediaBlock | IContentBlock;
+export type Block = IMediaBlock | IContentBlock | IButtonBlock;

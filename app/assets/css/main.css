@@ -22,3 +22,7 @@
 img {
     border-radius: var(--border-radius, 50px) !important;
 }
+
+.container {
+    padding: 0rem 20px;
+}
