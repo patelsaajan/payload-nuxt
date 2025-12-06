@@ -85,10 +85,6 @@ if (!post) {
 // Fetch related posts (4 posts to ensure 3 remain after filtering)
 const relatedPostsData = await fetchPosts(4, 1);
 
-// Debug logging
-console.log('Related posts data:', relatedPostsData);
-console.log('Current post slug:', post.slug);
-
 // Filter out current post and limit to 3
 const relatedPosts = computed(() => {
     if (!relatedPostsData?.docs) {
@@ -99,8 +95,6 @@ const relatedPosts = computed(() => {
     const filtered = relatedPostsData.docs
         .filter((p: IPost) => p.slug !== post.slug)
         .slice(0, 3);
-
-    console.log('Filtered related posts:', filtered);
     return filtered;
 });
 

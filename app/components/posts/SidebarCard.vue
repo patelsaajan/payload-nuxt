@@ -1,7 +1,7 @@
 <template>
     <NuxtLink
         :to="`/blog/${post.slug}`"
-        class="sidebar-card flex gap-4 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md no-underline group"
+        class="sidebar-card flex gap-4 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:!bg-[var(--color-primary)] no-underline group"
         :style="cardStyle"
     >
         <!-- Thumbnail -->
@@ -28,15 +28,14 @@
         <!-- Content -->
         <div class="flex-1 flex flex-col justify-center min-w-0">
             <h4
-                class="card-title text-base font-semibold mb-1.5 line-clamp-2 leading-tight transition-colors duration-300"
+                class="text-base font-semibold mb-1.5 line-clamp-2 leading-tight transition-colors duration-300 group-hover:!text-[var(--color-primary-text)]"
                 :style="{ color: 'var(--color-text)' }"
             >
                 {{ post.title }}
             </h4>
             <div
                 v-if="post.publishedAt"
-                class="card-date text-sm transition-colors duration-300"
-                :style="{ color: 'var(--color-secondary-text)' }"
+                class="text-sm transition-colors duration-300 group-hover:!text-[var(--color-primary-text)]"
             >
                 {{ formattedDate }}
             </div>
@@ -110,17 +109,3 @@ const formattedDate = computed(() => {
     });
 });
 </script>
-
-<style scoped>
-.sidebar-card:hover {
-    background: var(--color-primary) !important;
-}
-
-.sidebar-card:hover .card-title {
-    color: var(--color-primary-text) !important;
-}
-
-.sidebar-card:hover .card-date {
-    color: var(--color-primary-text) !important;
-}
-</style>
