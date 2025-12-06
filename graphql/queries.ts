@@ -71,8 +71,8 @@ export const GET_PAGE_BY_SLUG = gql`
 `;
 
 export const GET_POSTS = gql`
-  query GetPosts($limit: Int) {
-    Posts(limit: $limit, sort: "-publishedAt") {
+  query GetPosts($limit: Int, $page: Int) {
+    Posts(limit: $limit, page: $page, sort: "-publishedAt") {
       docs {
         id
         title
@@ -97,6 +97,13 @@ export const GET_POSTS = gql`
         }
         publishedAt
       }
+      totalDocs
+      limit
+      totalPages
+      page
+      pagingCounter
+      hasPrevPage
+      hasNextPage
     }
   }
 `;

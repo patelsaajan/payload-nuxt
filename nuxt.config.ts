@@ -24,5 +24,9 @@ export default defineNuxtConfig({
         'accent'
       ]
     }
-  }
+  },
+
+  app: {
+    pageTransition: { name: 'fade', mode: 'out-in' },
+  },
 })

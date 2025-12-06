@@ -26,21 +26,21 @@ export const usePayloadGraphQL = () => {
     return data.ThemeSetting || null
   }
 
-  const fetchPosts = async (limit: number = 10, categoryIds?: string[]) => {
+  const fetchPosts = async (limit: number = 10, page: number = 1, categoryIds?: string[]) => {
     try {
       if (categoryIds && categoryIds.length > 0) {
         const data: any = await client.request(GET_POSTS_WITH_FILTER, {
           limit,
           categoryIds
         })
-        return data.Posts.docs || []
+        return data.Posts || { docs: [], hasNextPage: false }
       } else {
-        const data: any = await client.request(GET_POSTS, { limit })
-        return data.Posts.docs || []
+        const data: any = await client.request(GET_POSTS, { limit, page })
+        return data.Posts || { docs: [], hasNextPage: false }
       }
     } catch (error) {
       console.error('Error fetching posts:', error)
-      return []
+      return { docs: [], hasNextPage: false }
     }
   }
 
