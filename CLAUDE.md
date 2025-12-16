@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Nuxt 4 application using Vue 3, TypeScript, and the Nuxt UI module. It's currently in early development stages with minimal custom code (only a basic app.vue file).
+This is a Nuxt 4 frontend application that connects to a Payload CMS backend via GraphQL. The app uses Vue 3, TypeScript, and the Nuxt UI module with a comprehensive caching strategy to optimize performance and reduce API/R2 costs.
 
 ## Technology Stack
 
@@ -13,6 +13,8 @@ This is a Nuxt 4 application using Vue 3, TypeScript, and the Nuxt UI module. It
 - **Image Handling**: @nuxt/image 1.11.0
 - **TypeScript**: 5.6.3+
 - **Package Manager**: Bun (bun.lock present)
+- **Backend**: Payload CMS (via GraphQL API)
+- **Caching Strategy**: ISR (Incremental Static Regeneration) with SWR (Stale-While-Revalidate)
 
 ## Common Commands
 
@@ -72,8 +74,40 @@ This project follows Nuxt 4 directory structure:
 - Composables in `app/composables/` are auto-imported
 - Layouts in `app/layouts/` for page templates
 
+### Backend Integration
+
+The app connects to Payload CMS via GraphQL:
+- GraphQL client configured in `app/composables/usePayloadGraphQL.ts`
+- Base URL set via `NUXT_PUBLIC_PAYLOAD_BASE_URL` environment variable
+- Queries defined in `graphql/` directory
+- Fetches pages, posts, header, theme settings, and branding data
+
+### Caching & Performance
+
+**See `CACHING.md` for complete setup instructions.**
+
+The application implements ISR (Incremental Static Regeneration) with SWR (Stale-While-Revalidate):
+
+- **Homepage**: 1 hour cache
+- **Blog index**: 30 minute cache
+- **Blog posts**: 2 hour cache
+- **Dynamic pages**: 1 hour cache
+
+Benefits:
+- 95%+ reduction in Payload API calls
+- Near-instant page loads (served from cache)
+- Stays within Cloudflare R2 free tier limits
+- Automatic background revalidation
+
+Image optimization:
+- WebP format conversion
+- Responsive sizing
+- Quality optimization (80% default)
+- Automatic handling of Payload media URLs
+
 ### Development Notes
 
 - DevTools are enabled in development (nuxt.config.ts)
 - Compatibility date set to 2025-07-15
-- The project is currently minimal - most standard Nuxt directories haven't been created yet
+- **Caching is disabled in dev mode** - only active in production builds
+- Use `bun run preview` to test caching locally

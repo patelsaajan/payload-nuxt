@@ -71,10 +71,10 @@ const config = useRuntimeConfig();
 const { fetchPostBySlug, fetchPosts } = usePayloadGraphQL();
 
 // Fetch post by slug from the route params
-const post = await fetchPostBySlug(route.params.slug as string);
+const { data: post } = await fetchPostBySlug(route.params.slug as string);
 
 // If no post found, show 404
-if (!post) {
+if (!post.value) {
     throw createError({
         statusCode: 404,
         statusMessage: "Post Not Found",
@@ -83,17 +83,17 @@ if (!post) {
 }
 
 // Fetch related posts (4 posts to ensure 3 remain after filtering)
-const relatedPostsData = await fetchPosts(4, 1);
+const { data: relatedPostsData } = await fetchPosts(4, 1);
 
 // Filter out current post and limit to 3
 const relatedPosts = computed(() => {
-    if (!relatedPostsData?.docs) {
+    if (!relatedPostsData.value?.docs) {
         console.log('No docs found in relatedPostsData');
         return [];
     }
 
-    const filtered = relatedPostsData.docs
-        .filter((p: IPost) => p.slug !== post.slug)
+    const filtered = relatedPostsData.value.docs
+        .filter((p: IPost) => p.slug !== post.value.slug)
         .slice(0, 3);
     return filtered;
 });

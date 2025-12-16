@@ -17,7 +17,7 @@ import type { NavigationMenuItem } from '@nuxt/ui'
 
 const route = useRoute()
 const { fetchHeader } = usePayloadGraphQL()
-const header = await fetchHeader()
+const { data: header } = await fetchHeader()
 
 // Helper to ensure URL starts with /
 const ensureLeadingSlash = (url: string): string => {
@@ -42,12 +42,12 @@ const isActive = (navUrl: string): boolean => {
 
 // Transform header nav items into UNavigationMenu format
 const items = computed<NavigationMenuItem[][]>(() => [
-  header.navItems.map((navItem: any) => ({
+  header.value?.navItems?.map((navItem: any) => ({
     label: navItem.link.label,
     icon: navItem.icon,
     to: ensureLeadingSlash(navItem.link.url),
     target: navItem.link.newTab ? '_blank' : undefined,
     active: isActive(navItem.link.url)
-  }))
+  })) || []
 ])
 </script>
