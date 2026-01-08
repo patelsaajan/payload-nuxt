@@ -37,3 +37,13 @@ img {
 .fade-leave-to {
     opacity: 0;
 }
+
+ul {
+    list-style: disc;
+}
+
+ol {
+    list-style:decimal
+}
+
+
