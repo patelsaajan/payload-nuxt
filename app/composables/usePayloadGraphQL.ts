@@ -12,47 +12,80 @@ export const usePayloadGraphQL = () => {
     // Default to 'home' if no slug provided or if at root path
     const pageSlug = slug || 'home'
 
-    const data: any = await client.request(GET_PAGE_BY_SLUG, { slug: pageSlug })
-    return data.Pages.docs[0] || null
+    return useAsyncData(
+      `page-${pageSlug}`,
+      async () => {
+        const data: any = await client.request(GET_PAGE_BY_SLUG, { slug: pageSlug })
+        return data.Pages.docs[0] || null
+      }
+    )
   }
 
   const fetchHeader = async () => {
-    const data: any = await client.request(GET_HEADER)
-    return data.Header || null
+    return useAsyncData(
+      'header',
+      async () => {
+        const data: any = await client.request(GET_HEADER)
+        return data.Header || null
+      }
+    )
   }
 
   const fetchThemeSettings = async () => {
-    const data: any = await client.request(GET_THEME_SETTINGS)
-    return data.ThemeSetting || null
+    return useAsyncData(
+      'theme-settings',
+      async () => {
+        const data: any = await client.request(GET_THEME_SETTINGS)
+        return data.ThemeSetting || null
+      }
+    )
   }
 
   const fetchPosts = async (limit: number = 10, page: number = 1, categoryIds?: string[]) => {
-    try {
-      if (categoryIds && categoryIds.length > 0) {
-        const data: any = await client.request(GET_POSTS_WITH_FILTER, {
-          limit,
-          categoryIds
-        })
-        return data.Posts || { docs: [], hasNextPage: false }
-      } else {
-        const data: any = await client.request(GET_POSTS, { limit, page })
-        return data.Posts || { docs: [], hasNextPage: false }
+    const cacheKey = categoryIds && categoryIds.length > 0
+      ? `posts-${limit}-${categoryIds.join(',')}`
+      : `posts-${limit}-${page}`
+
+    return useAsyncData(
+      cacheKey,
+      async () => {
+        try {
+          if (categoryIds && categoryIds.length > 0) {
+            const data: any = await client.request(GET_POSTS_WITH_FILTER, {
+              limit,
+              categoryIds
+            })
+            return data.Posts || { docs: [], hasNextPage: false }
+          } else {
+            const data: any = await client.request(GET_POSTS, { limit, page })
+            return data.Posts || { docs: [], hasNextPage: false }
+          }
+        } catch (error) {
+          console.error('Error fetching posts:', error)
+          return { docs: [], hasNextPage: false }
+        }
       }
-    } catch (error) {
-      console.error('Error fetching posts:', error)
-      return { docs: [], hasNextPage: false }
-    }
+    )
   }
 
-
   const fetchBranding = async () => {
-    const data: any = await client.request(GET_BRANDING)
-    return data.BrandingSetting || null
+    return useAsyncData(
+      'branding',
+      async () => {
+        const data: any = await client.request(GET_BRANDING)
+        return data.BrandingSetting || null
+      }
+    )
   }
 
   const fetchPostBySlug = async (slug: string) => {
-    const data: any = await client.request(GET_POST_BY_SLUG, { slug })
-    return data.Posts.docs[0] || null
+    return useAsyncData(
+      `post-${slug}`,
+      async () => {
+        const data: any = await client.request(GET_POST_BY_SLUG, { slug })
+        return data.Posts.docs[0] || null
+      }
+    )
   }
 
   return {

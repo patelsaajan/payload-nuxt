@@ -26,7 +26,7 @@
 const { fetchPageBySlug } = usePayloadGraphQL();
 
 // Home page always fetches the 'home' slug
-const homePage = await fetchPageBySlug("home");
+const { data: homePage } = await fetchPageBySlug("home");
 
 // Helper function to extract text from Payload's rich text format
 const getTextFromRichText = (richText: any): string => {
