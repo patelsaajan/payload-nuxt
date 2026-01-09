@@ -139,10 +139,17 @@ const renderRichText = (richText: any): string => {
 .richtext {
     ul {
         list-style: disc;
+        padding: 0px 20px
     }
 
     ol {
         list-style:decimal;
+        padding: 0px 20px
+
+    }
+
+    p, h1, h2, h3, h4, h5, h6 {
+        margin-bottom: 1rem;
     }
 }
 </style>
