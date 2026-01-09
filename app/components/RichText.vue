@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-4" v-html="renderRichText(content)" />
+    <div class="richtext flex flex-col gap-" v-html="renderRichText(content)" />
 </template>
 
 <script setup lang="ts">
@@ -134,4 +134,15 @@ const renderRichText = (richText: any): string => {
 };
 </script>
 
-<style scoped></style>
+<style>
+
+.richtext {
+    ul {
+        list-style: disc;
+    }
+
+    ol {
+        list-style:decimal;
+    }
+}
+</style>
