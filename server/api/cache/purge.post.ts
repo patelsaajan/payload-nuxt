@@ -69,25 +69,27 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
     const dataKeysToPurge = new Set<string>()
     const routeKeysToPurge = new Set<string>()
 
-    // Map cache keys to route paths
-    // post-third-post -> /blog/third-post
-    // posts-* -> /blog and /blog/*
-    // page-home -> /
-    // page-about -> /about
-    const routesToPurge = new Set<string>()
-
     if (body.keys) {
       for (const key of body.keys) {
-        // Handle different key types
+        // Handle different key types and map to route cache keys
         if (key.startsWith('post-')) {
           const slug = key.replace('post-', '')
-          routesToPurge.add(`/blog/${slug}`)
+          // Blog posts: /blog/third-post -> nitro:routes:_:blogthirdpost.*.json
+          const routePattern = `blog${slug.replace(/-/g, '')}`
+          for (const routeKey of routeKeys) {
+            if (routeKey.includes(`:${routePattern}`)) {
+              routeKeysToPurge.add(routeKey)
+            }
+          }
         } else if (key.startsWith('page-')) {
           const slug = key.replace('page-', '')
-          if (slug === 'home') {
-            routesToPurge.add('/')
-          } else {
-            routesToPurge.add(`/${slug}`)
+          // Pages: page-home -> / -> nitro:routes:_:index.*.json
+          //        page-about -> /about -> nitro:routes:_:about.*.json
+          const routePattern = slug === 'home' ? 'index' : slug.replace(/-/g, '')
+          for (const routeKey of routeKeys) {
+            if (routeKey.includes(`:${routePattern}.`)) {
+              routeKeysToPurge.add(routeKey)
+            }
           }
         }
 
@@ -147,7 +149,6 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
       } catch (error) {
         const originalKey = cacheKey.replace('nitro:data:', '').replace(':_payload.json', '')
         failed.push(originalKey)
-        console.error(`Failed to purge data cache key: ${originalKey}`, error)
       }
     }
 
@@ -160,11 +161,8 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
       } catch (error) {
         const route = routeKey.replace('nitro:routes:_:', '').replace(/\.[^.]+\.json$/, '')
         failed.push(route)
-        console.error(`Failed to purge route cache key: ${route}`, error)
       }
     }
-
-    console.log(`Cache purge completed: ${purged.length} keys purged, ${failed.length} failed`)
 
     return {
       success: failed.length === 0,
@@ -173,7 +171,7 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
       timestamp: new Date().toISOString(),
     }
   } catch (error) {
-    console.error('Cache purge error:', error)
+    console.error('[Cache Purge] Error:', error)
     throw createError({
       statusCode: 500,
       statusMessage: 'Internal server error during cache purge',
