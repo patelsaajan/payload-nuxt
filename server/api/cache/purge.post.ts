@@ -1,6 +1,4 @@
 import { useStorage } from '#imports'
-import { promises as fs } from 'fs'
-import { resolve } from 'path'
 
 interface PurgeCacheRequest {
   keys?: string[]
@@ -24,24 +22,10 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
 
   // Try accessing node request headers directly
   const nodeReq = event.node.req
-  const nodeHeaders = nodeReq.headers
-  const authFromNode = nodeHeaders['x-cache-purge-secret']
-
-  // Debug: log all headers
-  const allHeaders = getHeaders(event)
-  console.log('[Cache Purge] All headers from h3:', Object.keys(allHeaders))
-  console.log('[Cache Purge] All headers from node:', Object.keys(nodeHeaders))
-  console.log('[Cache Purge] Auth from node headers:', !!authFromNode)
-
-  // Debug logging
-  console.log('[Cache Purge] Secret configured:', !!secret, 'Length:', secret?.length)
-  console.log('[Cache Purge] Auth header (h3):', !!authHeader, 'Length:', authHeader?.length)
-  console.log('[Cache Purge] Auth header (node):', !!authFromNode, 'Length:', authFromNode?.length)
+  const authFromNode = nodeReq.headers['x-cache-purge-secret']
 
   // Use the auth header from wherever we can get it
   const finalAuthHeader = authHeader || authHeaderLower || authFromNode
-  console.log('[Cache Purge] Final auth header:', !!finalAuthHeader)
-  console.log('[Cache Purge] Secrets match:', finalAuthHeader === secret)
 
   if (!secret) {
     throw createError({
@@ -67,42 +51,19 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
     })
   }
 
-  // Use both data cache and route cache storage
-  const dataStorage = useStorage('cache')
-  const routeStorage = useStorage('cache:nitro:routes')
+  // Use cache storage (contains both data cache and route cache with different prefixes)
+  const storage = useStorage('cache')
 
   const purged: string[] = []
   const failed: string[] = []
 
   try {
-    // Try to access different storage mounts
-    const storages = {
-      cache: useStorage('cache'),
-      'cache:nitro': useStorage('cache:nitro'),
-      'cache:nitro:routes': useStorage('cache:nitro:routes'),
-      nitro: useStorage('nitro'),
-      'nitro:routes': useStorage('nitro:routes'),
-    }
+    // Get all cache keys (routes are stored in 'cache' storage with nitro:routes:_: prefix)
+    const allCacheKeys = await storage.getKeys()
 
-    console.log('[Cache Purge] Checking all storage mounts...')
-    for (const [name, storage] of Object.entries(storages)) {
-      try {
-        const keys = await storage.getKeys()
-        console.log(`[Cache Purge] ${name}: ${keys.length} keys`)
-        if (keys.length > 0) {
-          console.log(`[Cache Purge] ${name} sample:`, keys.slice(0, 5))
-        }
-      } catch (err) {
-        console.log(`[Cache Purge] ${name}: Error accessing - ${err.message}`)
-      }
-    }
-
-    // Get all cache keys from both storages
-    const dataKeys = await dataStorage.getKeys()
-    const routeKeys = await routeStorage.getKeys()
-
-    console.log('[Cache Purge] Looking for keys:', body.keys)
-    console.log('[Cache Purge] Looking for patterns:', body.patterns)
+    // Separate data cache keys from route cache keys
+    const dataKeys = allCacheKeys.filter(key => !key.startsWith('nitro:routes:'))
+    const routeKeys = allCacheKeys.filter(key => key.startsWith('nitro:routes:_:'))
 
     // Collect keys to purge from both storages
     const dataKeysToPurge = new Set<string>()
@@ -143,24 +104,24 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
       for (const pattern of body.patterns) {
         if (pattern === 'posts-*') {
           // Purge blog index and all blog posts
-          routesToPurge.add('/blog')
-          // Find all route keys that match /blog/*
+          // Route keys format: nitro:routes:_:blog*.json
           for (const routeKey of routeKeys) {
-            if (routeKey.includes('/blog/') || routeKey.includes('blog')) {
+            if (routeKey.includes(':blog')) {
               routeKeysToPurge.add(routeKey)
             }
           }
         } else if (pattern === 'page-*') {
-          // Purge all pages
+          // Purge all pages (excluding blog and API routes)
           for (const routeKey of routeKeys) {
-            if (!routeKey.includes('/blog') && !routeKey.includes('/api')) {
+            if (!routeKey.includes(':blog') && !routeKey.includes(':api')) {
               routeKeysToPurge.add(routeKey)
             }
           }
         } else if (pattern === 'post-*') {
           // Purge all blog post routes
           for (const routeKey of routeKeys) {
-            if (routeKey.includes('/blog/')) {
+            // Match blog posts but not blog index
+            if (routeKey.match(/nitro:routes:_:blog[a-z0-9-]+\./)) {
               routeKeysToPurge.add(routeKey)
             }
           }
@@ -177,14 +138,10 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
       }
     }
 
-    console.log('[Cache Purge] Routes to purge:', Array.from(routesToPurge))
-    console.log('[Cache Purge] Route keys to purge:', routeKeysToPurge.size)
-    console.log('[Cache Purge] Data keys to purge:', dataKeysToPurge.size)
-
     // Purge data cache keys
     for (const cacheKey of dataKeysToPurge) {
       try {
-        await dataStorage.removeItem(cacheKey)
+        await storage.removeItem(cacheKey)
         const originalKey = cacheKey.replace('nitro:data:', '').replace(':_payload.json', '')
         purged.push(originalKey)
       } catch (error) {
@@ -197,11 +154,13 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
     // Purge route cache keys
     for (const routeKey of routeKeysToPurge) {
       try {
-        await routeStorage.removeItem(routeKey)
-        purged.push(`route:${routeKey}`)
+        await storage.removeItem(routeKey)
+        const route = routeKey.replace('nitro:routes:_:', '').replace(/\.[^.]+\.json$/, '')
+        purged.push(route)
       } catch (error) {
-        failed.push(`route:${routeKey}`)
-        console.error(`Failed to purge route cache key: ${routeKey}`, error)
+        const route = routeKey.replace('nitro:routes:_:', '').replace(/\.[^.]+\.json$/, '')
+        failed.push(route)
+        console.error(`Failed to purge route cache key: ${route}`, error)
       }
     }
 
