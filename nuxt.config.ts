@@ -11,6 +11,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    // Private server-side config
+    cachePurgeSecret: '', // Set via NUXT_CACHE_PURGE_SECRET env var
+
     public: {
       payloadBaseUrl: '' // Set in env
     }
@@ -29,6 +32,9 @@ export default defineNuxtConfig({
 
     // Dynamic pages: Cache for 1 hour
     '/**': { swr: 3600 },
+
+    // Cache purge API - no caching, no SWR
+    '/api/cache/purge': { cache: false, swr: false },
 
     // API routes remain dynamic (no caching)
     '/api/**': { cors: true },

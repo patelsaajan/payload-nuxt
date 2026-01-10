@@ -15,8 +15,13 @@ export const usePayloadGraphQL = () => {
     return useAsyncData(
       `page-${pageSlug}`,
       async () => {
-        const data: any = await client.request(GET_PAGE_BY_SLUG, { slug: pageSlug })
-        return data.Pages.docs[0] || null
+        try {
+          const data: any = await client.request(GET_PAGE_BY_SLUG, { slug: pageSlug })
+          return data.Pages.docs[0] || null
+        } catch (error) {
+          console.error('Error fetching page by slug:', error)
+          return null
+        }
       }
     )
   }
@@ -25,8 +30,13 @@ export const usePayloadGraphQL = () => {
     return useAsyncData(
       'header',
       async () => {
-        const data: any = await client.request(GET_HEADER)
-        return data.Header || null
+        try {
+          const data: any = await client.request(GET_HEADER)
+          return data.Header || null
+        } catch (error) {
+          console.error('Error fetching header:', error)
+          return null
+        }
       }
     )
   }
@@ -35,8 +45,13 @@ export const usePayloadGraphQL = () => {
     return useAsyncData(
       'theme-settings',
       async () => {
-        const data: any = await client.request(GET_THEME_SETTINGS)
-        return data.ThemeSetting || null
+        try {
+          const data: any = await client.request(GET_THEME_SETTINGS)
+          return data.ThemeSetting || null
+        } catch (error) {
+          console.error('Error fetching theme settings:', error)
+          return null
+        }
       }
     )
   }
@@ -72,8 +87,13 @@ export const usePayloadGraphQL = () => {
     return useAsyncData(
       'branding',
       async () => {
-        const data: any = await client.request(GET_BRANDING)
-        return data.BrandingSetting || null
+        try {
+          const data: any = await client.request(GET_BRANDING)
+          return data.BrandingSetting || null
+        } catch (error) {
+          console.error('Error fetching branding:', error)
+          return null
+        }
       }
     )
   }
@@ -82,8 +102,13 @@ export const usePayloadGraphQL = () => {
     return useAsyncData(
       `post-${slug}`,
       async () => {
-        const data: any = await client.request(GET_POST_BY_SLUG, { slug })
-        return data.Posts.docs[0] || null
+        try {
+          const data: any = await client.request(GET_POST_BY_SLUG, { slug })
+          return data.Posts.docs[0] || null
+        } catch (error) {
+          console.error('Error fetching post by slug:', error)
+          return null
+        }
       }
     )
   }
