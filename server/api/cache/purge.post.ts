@@ -140,6 +140,16 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
       }
     }
 
+    // Debug logging
+    console.log('[Cache Purge] Request received:', { keys: body.keys, patterns: body.patterns })
+    console.log('[Cache Purge] Found cache keys:', {
+      totalKeys: allCacheKeys.length,
+      dataKeys: dataKeys.length,
+      routeKeys: routeKeys.length,
+      dataToPurge: dataKeysToPurge.size,
+      routesToPurge: routeKeysToPurge.size
+    })
+
     // Purge data cache keys
     for (const cacheKey of dataKeysToPurge) {
       try {
@@ -163,6 +173,8 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
         failed.push(route)
       }
     }
+
+    console.log('[Cache Purge] Result:', { purged, failed })
 
     return {
       success: failed.length === 0,
