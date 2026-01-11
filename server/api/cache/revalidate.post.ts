@@ -5,7 +5,8 @@ interface RevalidateRequest {
 
 interface RevalidateResponse {
   success: boolean
-  revalidated: string[]
+  purged: string[]  // Match the format Payload expects
+  failed: string[]
   timestamp: string
 }
 
@@ -41,7 +42,9 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
     })
   }
 
-  const revalidated: string[] = []
+  const purged: string[] = []
+  const failed: string[] = []
+
   // Use the request host to build the base URL
   const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
   const host = getHeader(event, 'host') || 'localhost:4000'
@@ -52,20 +55,18 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
   try {
     console.log('[Cache Revalidate] Request received:', { keys: body.keys, patterns: body.patterns })
 
-    // Build list of paths to revalidate
-    const pathsToRevalidate: string[] = []
+    // Build list of paths to revalidate with key mapping
+    const pathsToRevalidate: Array<{ path: string; key: string }> = []
 
     if (body.keys) {
       for (const key of body.keys) {
         if (key.startsWith('post-')) {
           const slug = key.replace('post-', '')
-          pathsToRevalidate.push(`/blog/${slug}`)
-          revalidated.push(key)
+          pathsToRevalidate.push({ path: `/blog/${slug}`, key })
         } else if (key.startsWith('page-')) {
           const slug = key.replace('page-', '')
           const path = slug === 'home' ? '/' : `/${slug}`
-          pathsToRevalidate.push(path)
-          revalidated.push(key)
+          pathsToRevalidate.push({ path, key })
         }
       }
     }
@@ -73,17 +74,16 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
     if (body.patterns) {
       for (const pattern of body.patterns) {
         if (pattern === 'posts-*') {
-          pathsToRevalidate.push('/blog')
-          revalidated.push('blog-index')
+          pathsToRevalidate.push({ path: '/blog', key: 'blog-index' })
         }
       }
     }
 
-    console.log('[Cache Revalidate] Paths to revalidate:', pathsToRevalidate)
+    console.log('[Cache Revalidate] Paths to revalidate:', pathsToRevalidate.map(p => p.path))
 
     // Make GET requests with cache-busting to trigger revalidation
     // This forces Vercel to fetch fresh content and update the edge cache
-    const revalidatePromises = pathsToRevalidate.map(async (path) => {
+    const revalidatePromises = pathsToRevalidate.map(async ({ path, key }) => {
       try {
         // Add timestamp to bust cache
         const cacheBuster = `?_revalidate=${Date.now()}`
@@ -94,18 +94,27 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
           },
         })
         console.log(`[Cache Revalidate] Revalidated ${path}: ${response.status}`)
+
+        // Track success/failure
+        if (response.ok) {
+          purged.push(key)
+        } else {
+          failed.push(key)
+        }
       } catch (error) {
         console.error(`[Cache Revalidate] Failed to revalidate ${path}:`, error)
+        failed.push(key)
       }
     })
 
     await Promise.all(revalidatePromises)
 
-    console.log('[Cache Revalidate] Complete:', revalidated)
+    console.log('[Cache Revalidate] Complete:', { purged, failed })
 
     return {
-      success: true,
-      revalidated,
+      success: failed.length === 0,
+      purged,
+      failed,
       timestamp: new Date().toISOString(),
     }
   } catch (error) {
