@@ -81,35 +81,32 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
 
     console.log('[Cache Revalidate] Paths to revalidate:', pathsToRevalidate.map(p => p.path))
 
-    // Make GET requests with cache-busting to trigger revalidation
-    // This forces Vercel to fetch fresh content
+    // Use HTTP PURGE method to clear Vercel's edge cache
     const revalidatePromises = pathsToRevalidate.map(async ({ path, key }) => {
       try {
-        // Make two requests:
-        // 1. One with cache-busting to get fresh content
-        // 2. One to the normal path to warm the cache with fresh content
+        const fullUrl = `${baseUrl}${path}`
 
-        const cacheBuster = `?_revalidate=${Date.now()}`
-        const response = await fetch(`${baseUrl}${path}${cacheBuster}`, {
-          method: 'GET',
+        // Step 1: Send PURGE request to clear Vercel's edge cache
+        console.log(`[Cache Revalidate] Purging cache for ${fullUrl}`)
+        const purgeResponse = await fetch(fullUrl, {
+          method: 'PURGE',
           headers: {
-            'x-prerender-revalidate': secret,
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'x-vercel-purge': '1',
           },
         })
-        console.log(`[Cache Revalidate] Fetched fresh content for ${path}: ${response.status}`)
+        console.log(`[Cache Revalidate] PURGE response for ${path}: ${purgeResponse.status}`)
 
-        // Now make a normal request to warm the cache with fresh content
-        if (response.ok) {
-          await fetch(`${baseUrl}${path}`, {
-            method: 'GET',
-            headers: {
-              'x-prerender-revalidate': secret,
-              'Cache-Control': 'no-cache, no-store, must-revalidate',
-            },
-          })
+        // Step 2: Fetch fresh content to warm the cache
+        const warmResponse = await fetch(fullUrl, {
+          method: 'GET',
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        })
+        console.log(`[Cache Revalidate] Warmed cache for ${path}: ${warmResponse.status}`)
+
+        if (warmResponse.ok) {
           purged.push(key)
-          console.log(`[Cache Revalidate] Warmed cache for ${path}`)
         } else {
           failed.push(key)
         }

@@ -19,33 +19,33 @@ export default defineNuxtConfig({
     }
   },
 
-  // Caching Strategy for Vercel
+  // Caching Strategy for Vercel - Long cache with on-demand purging
   routeRules: {
-    // Homepage: Cache for 1 minute on edge (shorter for quicker updates)
+    // Homepage: Cache for 1 day on edge
     '/': {
       headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120'
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=172800'
       }
     },
 
-    // Blog index: Cache for 1 minute (updates more frequently)
+    // Blog index: Cache for 1 day
     '/blog': {
       headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120'
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=172800'
       }
     },
 
-    // Individual blog posts: Cache for 2 minutes
+    // Individual blog posts: Cache for 1 day
     '/blog/**': {
       headers: {
-        'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=240'
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=172800'
       }
     },
 
-    // Dynamic pages: Cache for 1 minute
+    // Dynamic pages: Cache for 1 day
     '/**': {
       headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120'
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=172800'
       }
     },
 
