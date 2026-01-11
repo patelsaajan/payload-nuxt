@@ -2,7 +2,7 @@
  * Cache Revalidation Endpoint
  *
  * NOTE: This endpoint doesn't actually purge Vercel's edge cache.
- * Vercel's edge cache expires naturally based on Cache-Control headers (1 hour).
+ * Vercel's edge cache expires naturally based on Cache-Control headers (20 minutes).
  * This endpoint exists to:
  * 1. Provide logging/visibility when content is updated in Payload CMS
  * 2. Maintain compatibility with Payload's cache purge hooks
@@ -58,17 +58,17 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
   try {
     console.log('[Cache Revalidate] Request received:', { keys: body.keys, patterns: body.patterns })
 
-    // Log which content was updated (cache will expire naturally in 1 hour)
+    // Log which content was updated (cache will expire naturally in 20 minutes)
     if (body.keys) {
       body.keys.forEach(key => {
         purged.push(key)
         if (key.startsWith('post-')) {
           const slug = key.replace('post-', '')
-          console.log(`[Cache Revalidate] Content updated: /blog/${slug} (cache expires in 1 hour)`)
+          console.log(`[Cache Revalidate] Content updated: /blog/${slug} (cache expires in 20 minutes)`)
         } else if (key.startsWith('page-')) {
           const slug = key.replace('page-', '')
           const path = slug === 'home' ? '/' : `/${slug}`
-          console.log(`[Cache Revalidate] Content updated: ${path} (cache expires in 1 hour)`)
+          console.log(`[Cache Revalidate] Content updated: ${path} (cache expires in 20 minutes)`)
         }
       })
     }
@@ -77,7 +77,7 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
       body.patterns.forEach(pattern => {
         if (pattern === 'posts-*') {
           purged.push('blog-index')
-          console.log(`[Cache Revalidate] Content updated: /blog (cache expires in 1 hour)`)
+          console.log(`[Cache Revalidate] Content updated: /blog (cache expires in 20 minutes)`)
         }
       })
     }

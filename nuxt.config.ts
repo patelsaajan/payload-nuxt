@@ -19,33 +19,33 @@ export default defineNuxtConfig({
     }
   },
 
-  // Caching Strategy for Vercel - 45 seconds for TESTING (change to 3600 for production)
+  // Caching Strategy for Vercel - 20 minute cache
   routeRules: {
-    // Homepage: Cache for 45 seconds on edge, no browser cache
+    // Homepage: Cache for 20 minutes on edge, no browser cache
     '/': {
       headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=45, must-revalidate'
+        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
       }
     },
 
-    // Blog index: Cache for 45 seconds
+    // Blog index: Cache for 20 minutes
     '/blog': {
       headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=45, must-revalidate'
+        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
       }
     },
 
-    // Individual blog posts: Cache for 45 seconds
+    // Individual blog posts: Cache for 20 minutes
     '/blog/**': {
       headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=45, must-revalidate'
+        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
       }
     },
 
-    // Dynamic pages: Cache for 45 seconds
+    // Dynamic pages: Cache for 20 minutes
     '/**': {
       headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=45, must-revalidate'
+        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
       }
     },
 
