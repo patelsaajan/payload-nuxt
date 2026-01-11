@@ -13,7 +13,6 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private server-side config
     cachePurgeSecret: '', // Set via NUXT_CACHE_PURGE_SECRET env var
-    vercelToken: '', // Set via NUXT_VERCEL_TOKEN env var
 
     public: {
       payloadBaseUrl: '' // Set in env
@@ -22,31 +21,31 @@ export default defineNuxtConfig({
 
   // Caching Strategy for Vercel
   routeRules: {
-    // Homepage: Cache for 5 minutes on edge
+    // Homepage: Cache for 1 minute on edge (shorter for quicker updates)
     '/': {
       headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600'
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120'
       }
     },
 
-    // Blog index: Cache for 5 minutes (updates more frequently)
+    // Blog index: Cache for 1 minute (updates more frequently)
     '/blog': {
       headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600'
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120'
       }
     },
 
-    // Individual blog posts: Cache for 10 minutes
+    // Individual blog posts: Cache for 2 minutes
     '/blog/**': {
       headers: {
-        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=1200'
+        'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=240'
       }
     },
 
-    // Dynamic pages: Cache for 5 minutes
+    // Dynamic pages: Cache for 1 minute
     '/**': {
       headers: {
-        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600'
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120'
       }
     },
 
