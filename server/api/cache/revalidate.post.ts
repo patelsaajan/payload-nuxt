@@ -1,3 +1,13 @@
+/**
+ * Cache Revalidation Endpoint
+ *
+ * NOTE: This endpoint doesn't actually purge Vercel's edge cache.
+ * Vercel's edge cache expires naturally based on Cache-Control headers (1 hour).
+ * This endpoint exists to:
+ * 1. Provide logging/visibility when content is updated in Payload CMS
+ * 2. Maintain compatibility with Payload's cache purge hooks
+ * 3. Allow for future implementation of actual cache purging if needed
+ */
 
 interface RevalidateRequest {
   keys?: string[]
@@ -6,7 +16,7 @@ interface RevalidateRequest {
 
 interface RevalidateResponse {
   success: boolean
-  purged: string[]  // Match the format Payload expects
+  purged: string[]
   failed: string[]
   timestamp: string
 }
@@ -34,10 +44,6 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
     })
   }
 
-  // Check if we're running on Vercel (for cache tag purging)
-  const isVercel = !!process.env.VERCEL
-  console.log('[Cache Revalidate] Running on Vercel:', isVercel)
-
   const body = await readBody<RevalidateRequest>(event)
 
   if (!body || (!body.keys && !body.patterns)) {
@@ -48,83 +54,40 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
   }
 
   const purged: string[] = []
-  const failed: string[] = []
-
-  // Use the request host to build the base URL
-  const protocol = getHeader(event, 'x-forwarded-proto') || 'http'
-  const host = getHeader(event, 'host') || 'localhost:4000'
-  const baseUrl = `${protocol}://${host}`
-
-  console.log('[Cache Revalidate] Using base URL:', baseUrl)
 
   try {
     console.log('[Cache Revalidate] Request received:', { keys: body.keys, patterns: body.patterns })
 
-    // Build list of paths to revalidate with key mapping
-    const pathsToRevalidate: Array<{ path: string; key: string }> = []
-
+    // Log which content was updated (cache will expire naturally in 1 hour)
     if (body.keys) {
-      for (const key of body.keys) {
+      body.keys.forEach(key => {
+        purged.push(key)
         if (key.startsWith('post-')) {
           const slug = key.replace('post-', '')
-          pathsToRevalidate.push({ path: `/blog/${slug}`, key })
+          console.log(`[Cache Revalidate] Content updated: /blog/${slug} (cache expires in 1 hour)`)
         } else if (key.startsWith('page-')) {
           const slug = key.replace('page-', '')
           const path = slug === 'home' ? '/' : `/${slug}`
-          pathsToRevalidate.push({ path, key })
+          console.log(`[Cache Revalidate] Content updated: ${path} (cache expires in 1 hour)`)
         }
-      }
+      })
     }
 
     if (body.patterns) {
-      for (const pattern of body.patterns) {
+      body.patterns.forEach(pattern => {
         if (pattern === 'posts-*') {
-          pathsToRevalidate.push({ path: '/blog', key: 'blog-index' })
+          purged.push('blog-index')
+          console.log(`[Cache Revalidate] Content updated: /blog (cache expires in 1 hour)`)
         }
-      }
+      })
     }
 
-    console.log('[Cache Revalidate] Cache tags to purge:', pathsToRevalidate.map(p => p.key))
-
-    // On Vercel, try to use cache tag purging
-    if (isVercel) {
-      try {
-        // Import purgeCache from nitro if available
-        const { purgeCache } = await import('#nitro').catch(() => ({ purgeCache: null }))
-
-        if (purgeCache) {
-          console.log('[Cache Revalidate] Using Nitro purgeCache')
-          for (const { key } of pathsToRevalidate) {
-            try {
-              await purgeCache({ tags: [key] })
-              purged.push(key)
-              console.log(`[Cache Revalidate] Successfully purged tag: ${key}`)
-            } catch (error) {
-              console.error(`[Cache Revalidate] Failed to purge tag ${key}:`, error)
-              failed.push(key)
-            }
-          }
-        } else {
-          console.log('[Cache Revalidate] purgeCache not available, skipping')
-          // Mark all as purged since we can't actually purge
-          pathsToRevalidate.forEach(({ key }) => purged.push(key))
-        }
-      } catch (error) {
-        console.error('[Cache Revalidate] Error with cache purging:', error)
-        pathsToRevalidate.forEach(({ key }) => failed.push(key))
-      }
-    } else {
-      // Local dev fallback
-      console.log('[Cache Revalidate] Not on Vercel, marking as purged')
-      pathsToRevalidate.forEach(({ key }) => purged.push(key))
-    }
-
-    console.log('[Cache Revalidate] Complete:', { purged, failed })
+    console.log('[Cache Revalidate] Complete:', { purged })
 
     return {
-      success: failed.length === 0,
+      success: true,
       purged,
-      failed,
+      failed: [],
       timestamp: new Date().toISOString(),
     }
   } catch (error) {
