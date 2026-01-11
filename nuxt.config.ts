@@ -13,6 +13,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     // Private server-side config
     cachePurgeSecret: '', // Set via NUXT_CACHE_PURGE_SECRET env var
+    vercelToken: '', // Set via NUXT_VERCEL_TOKEN env var
 
     public: {
       payloadBaseUrl: '' // Set in env

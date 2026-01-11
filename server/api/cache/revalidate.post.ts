@@ -13,6 +13,7 @@ interface RevalidateResponse {
 export default defineEventHandler(async (event): Promise<RevalidateResponse> => {
   const config = useRuntimeConfig()
   const secret = config.cachePurgeSecret
+  const vercelToken = config.vercelToken || process.env.VERCEL_TOKEN
 
   // Validate authentication
   const authHeader = getHeader(event, 'X-Cache-Purge-Secret') ||
@@ -46,11 +47,13 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
   const failed: string[] = []
 
   // Use the request host to build the base URL
-  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
+  const isProduction = process.env.VERCEL_ENV === 'production' || process.env.NODE_ENV === 'production'
+  const protocol = isProduction ? 'https' : 'http'
   const host = getHeader(event, 'host') || 'localhost:4000'
   const baseUrl = `${protocol}://${host}`
 
   console.log('[Cache Revalidate] Using base URL:', baseUrl)
+  console.log('[Cache Revalidate] Vercel token configured:', !!vercelToken)
 
   try {
     console.log('[Cache Revalidate] Request received:', { keys: body.keys, patterns: body.patterns })
@@ -108,6 +111,38 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
     })
 
     await Promise.all(revalidatePromises)
+
+    // Additionally, purge Vercel's edge cache using their API (if token is available)
+    if (vercelToken && isProduction && purged.length > 0) {
+      try {
+        const urlsToPurge = pathsToRevalidate
+          .filter(p => purged.includes(p.key))
+          .map(p => `${baseUrl}${p.path}`)
+
+        console.log('[Cache Revalidate] Purging Vercel edge cache for:', urlsToPurge)
+
+        // Vercel's purge API expects URLs to purge
+        const vercelPurgeResponse = await fetch(
+          `https://api.vercel.com/v1/purge?url=${urlsToPurge.join(',')}`,
+          {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${vercelToken}`,
+            },
+          }
+        )
+
+        if (vercelPurgeResponse.ok) {
+          console.log('[Cache Revalidate] Vercel edge cache purged successfully')
+        } else {
+          const errorText = await vercelPurgeResponse.text()
+          console.error('[Cache Revalidate] Vercel purge failed:', errorText)
+        }
+      } catch (error) {
+        console.error('[Cache Revalidate] Error purging Vercel cache:', error)
+        // Don't fail the whole operation if Vercel purge fails
+      }
+    }
 
     console.log('[Cache Revalidate] Complete:', { purged, failed })
 
