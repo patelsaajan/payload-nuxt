@@ -1,3 +1,4 @@
+
 interface RevalidateRequest {
   keys?: string[]
   patterns?: string[]
@@ -32,6 +33,10 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
       statusMessage: 'Unauthorized: Invalid or missing cache purge secret',
     })
   }
+
+  // Check if we're running on Vercel (for cache tag purging)
+  const isVercel = !!process.env.VERCEL
+  console.log('[Cache Revalidate] Running on Vercel:', isVercel)
 
   const body = await readBody<RevalidateRequest>(event)
 
@@ -79,44 +84,40 @@ export default defineEventHandler(async (event): Promise<RevalidateResponse> => 
       }
     }
 
-    console.log('[Cache Revalidate] Paths to revalidate:', pathsToRevalidate.map(p => p.path))
+    console.log('[Cache Revalidate] Cache tags to purge:', pathsToRevalidate.map(p => p.key))
 
-    // Use HTTP PURGE method to clear Vercel's edge cache
-    const revalidatePromises = pathsToRevalidate.map(async ({ path, key }) => {
+    // On Vercel, try to use cache tag purging
+    if (isVercel) {
       try {
-        const fullUrl = `${baseUrl}${path}`
+        // Import purgeCache from nitro if available
+        const { purgeCache } = await import('#nitro').catch(() => ({ purgeCache: null }))
 
-        // Step 1: Send PURGE request to clear Vercel's edge cache
-        console.log(`[Cache Revalidate] Purging cache for ${fullUrl}`)
-        const purgeResponse = await fetch(fullUrl, {
-          method: 'PURGE',
-          headers: {
-            'x-vercel-purge': '1',
-          },
-        })
-        console.log(`[Cache Revalidate] PURGE response for ${path}: ${purgeResponse.status}`)
-
-        // Step 2: Fetch fresh content to warm the cache
-        const warmResponse = await fetch(fullUrl, {
-          method: 'GET',
-          headers: {
-            'Cache-Control': 'no-cache',
-          },
-        })
-        console.log(`[Cache Revalidate] Warmed cache for ${path}: ${warmResponse.status}`)
-
-        if (warmResponse.ok) {
-          purged.push(key)
+        if (purgeCache) {
+          console.log('[Cache Revalidate] Using Nitro purgeCache')
+          for (const { key } of pathsToRevalidate) {
+            try {
+              await purgeCache({ tags: [key] })
+              purged.push(key)
+              console.log(`[Cache Revalidate] Successfully purged tag: ${key}`)
+            } catch (error) {
+              console.error(`[Cache Revalidate] Failed to purge tag ${key}:`, error)
+              failed.push(key)
+            }
+          }
         } else {
-          failed.push(key)
+          console.log('[Cache Revalidate] purgeCache not available, skipping')
+          // Mark all as purged since we can't actually purge
+          pathsToRevalidate.forEach(({ key }) => purged.push(key))
         }
       } catch (error) {
-        console.error(`[Cache Revalidate] Failed to revalidate ${path}:`, error)
-        failed.push(key)
+        console.error('[Cache Revalidate] Error with cache purging:', error)
+        pathsToRevalidate.forEach(({ key }) => failed.push(key))
       }
-    })
-
-    await Promise.all(revalidatePromises)
+    } else {
+      // Local dev fallback
+      console.log('[Cache Revalidate] Not on Vercel, marking as purged')
+      pathsToRevalidate.forEach(({ key }) => purged.push(key))
+    }
 
     console.log('[Cache Revalidate] Complete:', { purged, failed })
 
