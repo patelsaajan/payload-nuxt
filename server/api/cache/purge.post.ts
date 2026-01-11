@@ -176,6 +176,25 @@ export default defineEventHandler(async (event): Promise<PurgeCacheResponse> => 
 
     console.log('[Cache Purge] Result:', { purged, failed })
 
+    // Additionally, clear ALL route caches to force Vercel edge revalidation
+    try {
+      const allRouteKeys = await storage.getKeys()
+      let clearedCount = 0
+      for (const key of allRouteKeys) {
+        if (key.startsWith('nitro:routes:')) {
+          try {
+            await storage.removeItem(key)
+            clearedCount++
+          } catch (e) {
+            // Ignore individual removal errors
+          }
+        }
+      }
+      console.log('[Cache Purge] Cleared all route cache entries:', clearedCount)
+    } catch (e) {
+      console.error('[Cache Purge] Error clearing route cache:', e)
+    }
+
     return {
       success: failed.length === 0,
       purged,
