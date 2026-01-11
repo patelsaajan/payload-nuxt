@@ -19,30 +19,41 @@ export default defineNuxtConfig({
     }
   },
 
-  // ISR (Incremental Static Regeneration) & Caching Strategy
+  // Caching Strategy for Vercel
   routeRules: {
-    // Homepage: Cache for 1 hour, serve stale while revalidating
-    '/': { isr: 3600 },
+    // Homepage: Cache for 5 minutes on edge
+    '/': {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600'
+      }
+    },
 
-    // Blog index: Cache for 30 minutes (updates more frequently)
-    '/blog': { isr: 1800 },
+    // Blog index: Cache for 5 minutes (updates more frequently)
+    '/blog': {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600'
+      }
+    },
 
-    // Individual blog posts: Cache for 2 hours
-    '/blog/**': { isr: 7200 },
+    // Individual blog posts: Cache for 10 minutes
+    '/blog/**': {
+      headers: {
+        'Cache-Control': 'public, s-maxage=600, stale-while-revalidate=1200'
+      }
+    },
 
-    // Dynamic pages: Cache for 1 hour
-    '/**': { isr: 3600 },
+    // Dynamic pages: Cache for 5 minutes
+    '/**': {
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600'
+      }
+    },
 
-    // Cache purge API - no caching, no SWR
-    '/api/cache/purge': { cache: false, swr: false },
+    // Cache API endpoints - no caching
+    '/api/cache/**': { cache: false },
 
     // API routes remain dynamic (no caching)
     '/api/**': { cors: true },
-  },
-
-  // Experimental features for ISR
-  experimental: {
-    payloadExtraction: false
   },
 
   // Image optimization configuration
