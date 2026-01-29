@@ -6,54 +6,16 @@ export default defineNuxtConfig({
   modules: ['@nuxt/image', '@nuxt/ui'],
   css: ['~/assets/css/main.css'],
 
+  ssr: true,
+
   devServer: {
     port: 4000
   },
 
   runtimeConfig: {
-    // Private server-side config
-    cachePurgeSecret: '', // Set via NUXT_CACHE_PURGE_SECRET env var
-
     public: {
       payloadBaseUrl: '' // Set in env
     }
-  },
-
-  // Caching Strategy for Vercel - 20 minute cache
-  routeRules: {
-    // Homepage: Cache for 20 minutes on edge, no browser cache
-    '/': {
-      headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
-      }
-    },
-
-    // Blog index: Cache for 20 minutes
-    '/blog': {
-      headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
-      }
-    },
-
-    // Individual blog posts: Cache for 20 minutes
-    '/blog/**': {
-      headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
-      }
-    },
-
-    // Dynamic pages: Cache for 20 minutes
-    '/**': {
-      headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
-      }
-    },
-
-    // Cache API endpoints - no caching
-    '/api/cache/**': { cache: false },
-
-    // API routes remain dynamic (no caching)
-    '/api/**': { cors: true },
   },
 
   // Image optimization configuration
@@ -90,16 +52,5 @@ export default defineNuxtConfig({
 
   app: {
     pageTransition: { name: 'fade', mode: 'out-in' },
-  },
-
-  // Nitro (server) configuration for caching
-  nitro: {
-    compressPublicAssets: true,
-
-    // Add cache headers for static assets
-    routeRules: {
-      '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
-      '/favicon.ico': { headers: { 'cache-control': 'public, max-age=31536000' } }
-    }
   }
 })
