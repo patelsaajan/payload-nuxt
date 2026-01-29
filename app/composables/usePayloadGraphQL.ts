@@ -7,6 +7,10 @@ export const usePayloadGraphQL = () => {
   const config = useRuntimeConfig()
   const client = new GraphQLClient(`${config.public.payloadBaseUrl}/api/graphql`)
 
+  // Use cached data from static generation instead of re-fetching
+  const getCachedData = (key: string, nuxtApp: any) =>
+    nuxtApp.payload.data[key] ?? nuxtApp.static.data[key]
+
   const fetchPageBySlug = async (slug?: string) => {
     // Default to 'home' if no slug provided or if at root path
     const pageSlug = slug || 'home'
@@ -21,7 +25,8 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching page by slug:', error)
           return null
         }
-      }
+      },
+      { getCachedData }
     )
   }
 
@@ -36,7 +41,8 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching header:', error)
           return null
         }
-      }
+      },
+      { getCachedData }
     )
   }
 
@@ -63,7 +69,8 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching posts:', error)
           return { docs: [], hasNextPage: false }
         }
-      }
+      },
+      { getCachedData }
     )
   }
 
@@ -78,7 +85,8 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching branding:', error)
           return null
         }
-      }
+      },
+      { getCachedData }
     )
   }
 
@@ -93,7 +101,8 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching post by slug:', error)
           return null
         }
-      }
+      },
+      { getCachedData }
     )
   }
 
