@@ -1,7 +1,6 @@
 import { GraphQLClient } from 'graphql-request'
 import { GET_PAGE_BY_SLUG, GET_POSTS, GET_POSTS_WITH_FILTER, GET_POST_BY_SLUG } from '../../graphql/queries'
 import { GET_HEADER } from '../../graphql/header'
-import { GET_THEME_SETTINGS } from '../../graphql/theme'
 import { GET_BRANDING } from '../../graphql/branding'
 
 export const usePayloadGraphQL = () => {
@@ -35,21 +34,6 @@ export const usePayloadGraphQL = () => {
           return data.Header || null
         } catch (error) {
           console.error('Error fetching header:', error)
-          return null
-        }
-      }
-    )
-  }
-
-  const fetchThemeSettings = async () => {
-    return useAsyncData(
-      'theme-settings',
-      async () => {
-        try {
-          const data: any = await client.request(GET_THEME_SETTINGS)
-          return data.ThemeSetting || null
-        } catch (error) {
-          console.error('Error fetching theme settings:', error)
           return null
         }
       }
@@ -116,7 +100,6 @@ export const usePayloadGraphQL = () => {
   return {
     fetchPageBySlug,
     fetchHeader,
-    fetchThemeSettings,
     fetchPosts,
     fetchBranding,
     fetchPostBySlug
