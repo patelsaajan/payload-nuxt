@@ -1,12 +1,15 @@
 import { GraphQLClient } from 'graphql-request'
 import { GET_PAGE_BY_SLUG, GET_POSTS, GET_POSTS_WITH_FILTER, GET_POST_BY_SLUG } from '../../graphql/queries'
 import { GET_HEADER } from '../../graphql/header'
-import { GET_THEME_SETTINGS } from '../../graphql/theme'
 import { GET_BRANDING } from '../../graphql/branding'
 
 export const usePayloadGraphQL = () => {
   const config = useRuntimeConfig()
   const client = new GraphQLClient(`${config.public.payloadBaseUrl}/api/graphql`)
+
+  // Use cached data from static generation instead of re-fetching
+  const getCachedData = (key: string, nuxtApp: any) =>
+    nuxtApp.payload.data[key] ?? nuxtApp.static.data[key]
 
   const fetchPageBySlug = async (slug?: string) => {
     // Default to 'home' if no slug provided or if at root path
@@ -22,7 +25,8 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching page by slug:', error)
           return null
         }
-      }
+      },
+      { getCachedData }
     )
   }
 
@@ -37,22 +41,8 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching header:', error)
           return null
         }
-      }
-    )
-  }
-
-  const fetchThemeSettings = async () => {
-    return useAsyncData(
-      'theme-settings',
-      async () => {
-        try {
-          const data: any = await client.request(GET_THEME_SETTINGS)
-          return data.ThemeSetting || null
-        } catch (error) {
-          console.error('Error fetching theme settings:', error)
-          return null
-        }
-      }
+      },
+      { getCachedData }
     )
   }
 
@@ -79,7 +69,8 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching posts:', error)
           return { docs: [], hasNextPage: false }
         }
-      }
+      },
+      { getCachedData }
     )
   }
 
@@ -94,7 +85,8 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching branding:', error)
           return null
         }
-      }
+      },
+      { getCachedData }
     )
   }
 
@@ -109,14 +101,14 @@ export const usePayloadGraphQL = () => {
           console.error('Error fetching post by slug:', error)
           return null
         }
-      }
+      },
+      { getCachedData }
     )
   }
 
   return {
     fetchPageBySlug,
     fetchHeader,
-    fetchThemeSettings,
     fetchPosts,
     fetchBranding,
     fetchPostBySlug

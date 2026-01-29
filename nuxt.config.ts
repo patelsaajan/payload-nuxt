@@ -1,59 +1,97 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+import { writeFileSync } from 'fs'
+import { resolve } from 'path'
+import { GET_THEME_SETTINGS } from './graphql/theme'
+import { GraphQLClient } from 'graphql-request'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxt/image', '@nuxt/ui'],
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/theme-variables.css', '~/assets/css/main.css'],
+  ssr: true,
 
   devServer: {
     port: 4000
   },
 
-  runtimeConfig: {
-    // Private server-side config
-    cachePurgeSecret: '', // Set via NUXT_CACHE_PURGE_SECRET env var
+  nitro: {
+  prerender: {
+    crawlLinks: true,
+    routes: ['/']
+  }
+  },
 
+  runtimeConfig: {
     public: {
-      payloadBaseUrl: '' // Set in env
+      payloadBaseUrl: '', // Set in env
+      cssConstants: '' // fetched from payload cms
     }
   },
 
-  // Caching Strategy for Vercel - 20 minute cache
-  routeRules: {
-    // Homepage: Cache for 20 minutes on edge, no browser cache
-    '/': {
-      headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
+  hooks: {
+    'build:before': async () => {
+      const themeVarsPath = resolve(__dirname, 'app/assets/css/theme-variables.css')
+
+      const defaultCss = `:root {
+        --theme-primary: #000000;
+        --theme-secondary: #666666;
+        --theme-accent: #0066cc;
+        --theme-background: #ffffff;
+        --theme-text: #000000;
+        --theme-text-primary: #ffffff;
+        --theme-text-secondary: #ffffff;
+        --theme-border-radius: 6px;
+      }
+`
+
+      const isUp = await fetch(`${process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL}/api/build-test`).catch(() => null)
+      if (!isUp) {
+        console.warn('CMS not found. Using default theme.')
+        writeFileSync(themeVarsPath, defaultCss)
+        return
+      }
+
+      console.log(await isUp.text())
+      const client = new GraphQLClient(`${process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL}/api/graphql`)
+      const themeData: any = await client.request(GET_THEME_SETTINGS)
+
+      if (themeData?.ThemeSetting) {
+        console.log('Fetched theme settings from Payload CMS during build.')
+        const themeSettings = themeData.ThemeSetting
+        const cssVars = `:root {
+          --theme-primary: ${themeSettings.primaryColor || '#000000'};
+          --theme-secondary: ${themeSettings.secondaryColor || '#666666'};
+          --theme-accent: ${themeSettings.accentColor || '#0066cc'};
+          --theme-background: ${themeSettings.backgroundColor || '#ffffff'};
+          --theme-text: ${themeSettings.textColor || '#000000'};
+          --theme-text-primary: ${themeSettings.primaryTextColor || '#ffffff'};
+          --theme-text-secondary: ${themeSettings.secondaryTextColor || '#ffffff'};
+          --theme-border-radius: ${themeSettings.borderRadius || '6px'};
+        }
+`
+        writeFileSync(themeVarsPath, cssVars)
+        console.log('Theme variables written to', themeVarsPath)
+      } else {
+        console.warn('No theme settings found in Payload CMS. Using defaults.')
+        writeFileSync(themeVarsPath, defaultCss)
       }
     },
-
-    // Blog index: Cache for 20 minutes
-    '/blog': {
-      headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
+    'nitro:config': async (nitroConfig) => {
+      // Fetch all blog slugs from Payload
+      const response = await fetch(`${process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL}/api/posts?limit=1000`).catch(() => null)
+      
+      if (response?.ok) {
+        const data = await response.json()
+        const blogRoutes = data.docs.map((post: any) => `/blog/${post.slug}`)
+        
+        // Add to prerender routes
+        nitroConfig.prerender = nitroConfig.prerender || {}
+        nitroConfig.prerender.routes = nitroConfig.prerender.routes || []
+        nitroConfig.prerender.routes.push(...blogRoutes)
       }
-    },
-
-    // Individual blog posts: Cache for 20 minutes
-    '/blog/**': {
-      headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
-      }
-    },
-
-    // Dynamic pages: Cache for 20 minutes
-    '/**': {
-      headers: {
-        'Cache-Control': 'public, max-age=0, s-maxage=1200, must-revalidate'
-      }
-    },
-
-    // Cache API endpoints - no caching
-    '/api/cache/**': { cache: false },
-
-    // API routes remain dynamic (no caching)
-    '/api/**': { cors: true },
+    }
   },
 
   // Image optimization configuration
@@ -90,16 +128,5 @@ export default defineNuxtConfig({
 
   app: {
     pageTransition: { name: 'fade', mode: 'out-in' },
-  },
-
-  // Nitro (server) configuration for caching
-  nitro: {
-    compressPublicAssets: true,
-
-    // Add cache headers for static assets
-    routeRules: {
-      '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
-      '/favicon.ico': { headers: { 'cache-control': 'public, max-age=31536000' } }
-    }
   }
 })

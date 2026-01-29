@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Nuxt 4 frontend application that connects to a Payload CMS backend via GraphQL. The app uses Vue 3, TypeScript, and the Nuxt UI module with a comprehensive caching strategy to optimize performance and reduce API/R2 costs.
+This is a Nuxt 4 frontend application that connects to a Payload CMS backend via GraphQL. The app uses Vue 3, TypeScript, and the Nuxt UI module.
 
 ## Technology Stack
 
@@ -14,7 +14,6 @@ This is a Nuxt 4 frontend application that connects to a Payload CMS backend via
 - **TypeScript**: 5.6.3+
 - **Package Manager**: Bun (bun.lock present)
 - **Backend**: Payload CMS (via GraphQL API)
-- **Caching Strategy**: ISR (Incremental Static Regeneration) with SWR (Stale-While-Revalidate)
 
 ## Common Commands
 
@@ -82,22 +81,7 @@ The app connects to Payload CMS via GraphQL:
 - Queries defined in `graphql/` directory
 - Fetches pages, posts, header, theme settings, and branding data
 
-### Caching & Performance
-
-**See `CACHING.md` for complete setup instructions.**
-
-The application implements ISR (Incremental Static Regeneration) with SWR (Stale-While-Revalidate):
-
-- **Homepage**: 1 hour cache
-- **Blog index**: 30 minute cache
-- **Blog posts**: 2 hour cache
-- **Dynamic pages**: 1 hour cache
-
-Benefits:
-- 95%+ reduction in Payload API calls
-- Near-instant page loads (served from cache)
-- Stays within Cloudflare R2 free tier limits
-- Automatic background revalidation
+### Performance
 
 Image optimization:
 - WebP format conversion
@@ -109,5 +93,3 @@ Image optimization:
 
 - DevTools are enabled in development (nuxt.config.ts)
 - Compatibility date set to 2025-07-15
-- **Caching is disabled in dev mode** - only active in production builds
-- Use `bun run preview` to test caching locally
