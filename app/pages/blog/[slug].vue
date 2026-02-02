@@ -13,7 +13,7 @@
                         :src="getMediaUrl(post.heroImage.url)"
                         :alt="post.heroImage.alt || post.title"
                         :style="getFocalPointStyle(post.heroImage)"
-                        class="w-full h-auto object-cover"
+                        class="w-full h-auto object-cover aspect-4/3"
                     />
                 </div>
 
