@@ -1,7 +1,7 @@
 <template>
     <!-- Image Only hero type (full-width banner) -->
     <div
-        v-if="hero && hero.type === 'imageOnly' && hero.media"
+        v-if="hero && hero.type === 'bannerImage' && hero.media"
         class="w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden"
     >
         <NuxtImg
@@ -19,6 +19,15 @@
         :style="getBackgroundStyle(hero?.backgroundColor)"
     >
         <div class="container mx-auto" :class="getHeroContainerClasses(hero)">
+            <!-- Image section (for imageOnly - centered with 4/3 ratio) -->
+            <NuxtImg
+                v-if="hero.media && hero.type === 'imageOnly'"
+                :src="getMediaUrl(hero.media.url)"
+                :alt="hero.media.alt || 'Hero image'"
+                class="w-full object-cover aspect-4/3 col-span-12 md:col-span-8 md:col-start-3"
+                :style="getFocalPointStyle(hero.media)"
+            />
+
             <!-- Image section (for splitContentImage with desktop position left) -->
             <NuxtImg
                 v-if="
@@ -39,7 +48,7 @@
 
             <!-- Content section -->
             <div
-                v-if="hero.type !== 'imageOnly'"
+                v-if="hero.type !== 'bannerImage' && hero.type !== 'imageOnly'"
                 :class="[
                     'flex flex-col gap-4',
                     hero.type === 'contentOnly'
