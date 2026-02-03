@@ -8,7 +8,8 @@
             :items="items"
             class="w-full"
           :ui="{
-              link: 'pl-0 pr-8',
+              item: 'ml-0',
+              link: 'pl-0 pr-8 ml-0',
 
             }"
            />
