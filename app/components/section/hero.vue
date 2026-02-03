@@ -4,11 +4,11 @@
         v-if="hero && hero.type === 'imageOnly' && hero.media"
         class="w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden"
     >
-        <img
+        <NuxtImg
             :src="getMediaUrl(hero.media.url)"
             :alt="hero.media.alt || 'Hero image'"
-            class="w-full h-full object-cover rounded-none!"
             :style="getFocalPointStyle(hero.media)"
+            class="w-full h-full object-cover rounded-none! aspect-4/3!"
         />
     </div>
 
@@ -20,7 +20,7 @@
     >
         <div class="container mx-auto" :class="getHeroContainerClasses(hero)">
             <!-- Image section (for splitContentImage with desktop position left) -->
-            <img
+            <NuxtImg
                 v-if="
                     hero.media &&
                     hero.type === 'splitContentImage' &&
@@ -28,12 +28,13 @@
                 "
                 :src="getMediaUrl(hero.media.url)"
                 :alt="hero.media.alt || 'Hero image'"
-                class="w-full object-cover"
+                class="w-full object-cover aspect-4/3"
                 :class="
                     hero.imagePositionMobile === 'top'
                         ? 'col-span-12 row-start-1 md:col-span-5'
                         : 'col-span-12 row-start-2 md:col-span-5 md:row-start-1'
                 "
+                :style="getFocalPointStyle(hero.media)"
             />
 
             <!-- Content section -->
@@ -92,7 +93,7 @@
             </div>
 
             <!-- Image section (for splitContentImage with desktop position right) -->
-            <img
+            <NuxtImg
                 v-if="
                     hero.media &&
                     hero.type === 'splitContentImage' &&
@@ -100,7 +101,8 @@
                 "
                 :src="getMediaUrl(hero.media.url)"
                 :alt="hero.media.alt || 'Hero image'"
-                class="rounded-[var(--border-radius)] w-full object-cover"
+                class="rounded-[var(--border-radius)] w-full object-cover aspect-4/3"
+                :style="getFocalPointStyle(hero.media)"
                 :class="
                     hero.imagePositionMobile === 'top'
                         ? 'col-span-12 row-start-1 md:col-span-5 md:col-start-8 md:row-start-1'
