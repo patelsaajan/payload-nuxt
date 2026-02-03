@@ -2,7 +2,16 @@
   <div class="bg-background text-text min-h-screen flex flex-col">
       <header v-if="header">
         <div class="container mx-auto">
-          <UNavigationMenu color="primary" variant="link" :items="items" class="w-full" />
+          <UNavigationMenu
+            color="primary"
+            variant="link"
+            :items="items"
+            class="w-full"
+          :ui="{
+              link: 'pl-0 pr-8',
+
+            }"
+           />
         </div>
       </header>
       <main class="flex-1">

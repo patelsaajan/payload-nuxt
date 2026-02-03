@@ -64,4 +64,8 @@
             font-size: 1.125rem; /* 18px desktop */
         }
     }
+
+    li {
+        margin-left: 40px; /* 20px */
+    }
 }
