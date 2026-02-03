@@ -15,7 +15,7 @@ export default defineAppConfig({
           {
             color: 'secondary',
             variant: 'solid',
-            class: 'text-primary cursor-pointer'
+            class: 'text-secondary-text cursor-pointer'
           },
           {
             color: 'accent',

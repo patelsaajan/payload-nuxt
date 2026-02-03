@@ -154,20 +154,20 @@ const posts = ref<any[]>([]);
 const hasNextPage = ref(false);
 const isLoading = ref(false);
 
-// Initial fetch
-const initialData = await fetchPosts(postsPerPage, 1);
-posts.value = initialData.docs || [];
-hasNextPage.value = initialData.hasNextPage || false;
+// Initial fetch (cached with useAsyncData)
+const { data: initialData } = await fetchPosts(postsPerPage, 1);
+posts.value = initialData.value?.docs || [];
+hasNextPage.value = initialData.value?.hasNextPage || false;
 
-// Load more function
+// Load more function (client-side only, not cached)
 const loadMore = async () => {
     isLoading.value = true;
     currentPage.value += 1;
 
     try {
-        const newData = await fetchPosts(postsPerPage, currentPage.value);
-        posts.value = [...posts.value, ...(newData.docs || [])];
-        hasNextPage.value = newData.hasNextPage || false;
+        const { data: newData } = await fetchPosts(postsPerPage, currentPage.value);
+        posts.value = [...posts.value, ...(newData.value?.docs || [])];
+        hasNextPage.value = newData.value?.hasNextPage || false;
     } catch (error) {
         console.error('Error loading more posts:', error);
     } finally {

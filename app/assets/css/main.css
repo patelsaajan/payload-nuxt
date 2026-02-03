@@ -9,7 +9,6 @@
     --color-primary: var(--theme-primary);
     --color-secondary: var(--theme-secondary);
     --color-accent: var(--theme-accent);
-    --color-action: var(--theme-action);
     --color-background: var(--theme-background);
     --color-text: var(--theme-text);
     --color-primary-text: var(--theme-text-primary);
@@ -37,3 +36,5 @@ img {
 .fade-leave-to {
     opacity: 0;
 }
+
+

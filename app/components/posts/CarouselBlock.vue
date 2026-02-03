@@ -118,11 +118,11 @@ onMounted(async () => {
 
     try {
       if (relationTo === 'case_studies') {
-        const fetchedPosts = await fetchCaseStudiesWithFilter(limit, categoryIds.length > 0 ? categoryIds : undefined)
-        posts.value = fetchedPosts
+        const { data: fetchedPosts } = await fetchCaseStudiesWithFilter(limit, categoryIds.length > 0 ? categoryIds : undefined)
+        posts.value = fetchedPosts.value
       } else {
-        const fetchedPosts = await fetchPosts(limit, categoryIds.length > 0 ? categoryIds : undefined)
-        posts.value = fetchedPosts
+        const { data: fetchedPosts } = await fetchPosts(limit, 1, categoryIds.length > 0 ? categoryIds : undefined)
+        posts.value = fetchedPosts.value?.docs || []
       }
     } catch (error) {
       console.error('Error fetching posts:', error)

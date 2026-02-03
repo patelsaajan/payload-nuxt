@@ -56,7 +56,7 @@ const slug = Array.isArray(route.params.slug)
   ? route.params.slug.join('/')
   : route.params.slug || 'home'
 
-const page = await fetchPageBySlug(slug)
+const { data: page } = await fetchPageBySlug(slug)
 
 // Helper function to extract text from Payload's rich text format
 const getTextFromRichText = (richText: any): string => {

@@ -1,64 +1,114 @@
 import { GraphQLClient } from 'graphql-request'
 import { GET_PAGE_BY_SLUG, GET_POSTS, GET_POSTS_WITH_FILTER, GET_POST_BY_SLUG } from '../../graphql/queries'
 import { GET_HEADER } from '../../graphql/header'
-import { GET_THEME_SETTINGS } from '../../graphql/theme'
 import { GET_BRANDING } from '../../graphql/branding'
 
 export const usePayloadGraphQL = () => {
   const config = useRuntimeConfig()
   const client = new GraphQLClient(`${config.public.payloadBaseUrl}/api/graphql`)
 
+  // Use cached data from static generation instead of re-fetching
+  const getCachedData = (key: string, nuxtApp: any) =>
+    nuxtApp.payload.data[key] ?? nuxtApp.static.data[key]
+
   const fetchPageBySlug = async (slug?: string) => {
     // Default to 'home' if no slug provided or if at root path
     const pageSlug = slug || 'home'
 
-    const data: any = await client.request(GET_PAGE_BY_SLUG, { slug: pageSlug })
-    return data.Pages.docs[0] || null
+    return useAsyncData(
+      `page-${pageSlug}`,
+      async () => {
+        try {
+          const data: any = await client.request(GET_PAGE_BY_SLUG, { slug: pageSlug })
+          return data.Pages.docs[0] || null
+        } catch (error) {
+          console.error('Error fetching page by slug:', error)
+          return null
+        }
+      },
+      { getCachedData }
+    )
   }
 
   const fetchHeader = async () => {
-    const data: any = await client.request(GET_HEADER)
-    return data.Header || null
-  }
-
-  const fetchThemeSettings = async () => {
-    const data: any = await client.request(GET_THEME_SETTINGS)
-    return data.ThemeSetting || null
+    return useAsyncData(
+      'header',
+      async () => {
+        try {
+          const data: any = await client.request(GET_HEADER)
+          return data.Header || null
+        } catch (error) {
+          console.error('Error fetching header:', error)
+          return null
+        }
+      },
+      { getCachedData }
+    )
   }
 
   const fetchPosts = async (limit: number = 10, page: number = 1, categoryIds?: string[]) => {
-    try {
-      if (categoryIds && categoryIds.length > 0) {
-        const data: any = await client.request(GET_POSTS_WITH_FILTER, {
-          limit,
-          categoryIds
-        })
-        return data.Posts || { docs: [], hasNextPage: false }
-      } else {
-        const data: any = await client.request(GET_POSTS, { limit, page })
-        return data.Posts || { docs: [], hasNextPage: false }
-      }
-    } catch (error) {
-      console.error('Error fetching posts:', error)
-      return { docs: [], hasNextPage: false }
-    }
+    const cacheKey = categoryIds && categoryIds.length > 0
+      ? `posts-${limit}-${categoryIds.join(',')}`
+      : `posts-${limit}-${page}`
+
+    return useAsyncData(
+      cacheKey,
+      async () => {
+        try {
+          if (categoryIds && categoryIds.length > 0) {
+            const data: any = await client.request(GET_POSTS_WITH_FILTER, {
+              limit,
+              categoryIds
+            })
+            return data.Posts || { docs: [], hasNextPage: false }
+          } else {
+            const data: any = await client.request(GET_POSTS, { limit, page })
+            return data.Posts || { docs: [], hasNextPage: false }
+          }
+        } catch (error) {
+          console.error('Error fetching posts:', error)
+          return { docs: [], hasNextPage: false }
+        }
+      },
+      { getCachedData }
+    )
   }
 
-
   const fetchBranding = async () => {
-    const data: any = await client.request(GET_BRANDING)
-    return data.BrandingSetting || null
+    return useAsyncData(
+      'branding',
+      async () => {
+        try {
+          const data: any = await client.request(GET_BRANDING)
+          return data.BrandingSetting || null
+        } catch (error) {
+          console.error('Error fetching branding:', error)
+          return null
+        }
+      },
+      { getCachedData }
+    )
   }
 
   const fetchPostBySlug = async (slug: string) => {
-    const data: any = await client.request(GET_POST_BY_SLUG, { slug })
-    return data.Posts.docs[0] || null
+    return useAsyncData(
+      `post-${slug}`,
+      async () => {
+        try {
+          const data: any = await client.request(GET_POST_BY_SLUG, { slug })
+          return data.Posts.docs[0] || null
+        } catch (error) {
+          console.error('Error fetching post by slug:', error)
+          return null
+        }
+      },
+      { getCachedData }
+    )
   }
 
   return {
     fetchPageBySlug,
     fetchHeader,
-    fetchThemeSettings,
     fetchPosts,
     fetchBranding,
     fetchPostBySlug

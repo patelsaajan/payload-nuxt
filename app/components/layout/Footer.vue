@@ -8,7 +8,7 @@
         <!-- Social Media Links -->
         <div v-if="branding?.socials && branding.socials.length > 0" class="flex gap-4 flex-wrap justify-center">
           <a
-            v-for="social in branding.socials"
+            v-for="social in branding?.socials"
             :key="social.name"
             :href="social.url"
             target="_blank"
@@ -36,7 +36,7 @@ import type { ISocial } from '~~/types'
 const { fetchBranding } = usePayloadGraphQL()
 
 // Fetch branding data
-const branding: { socials?: ISocial[] } | null = await fetchBranding()
+const { data: branding } = await fetchBranding()
 
 // Get current year
 const currentYear = new Date().getFullYear()
