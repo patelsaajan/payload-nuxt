@@ -20,13 +20,13 @@
                 <p class="text-sm leading-relaxed before:content-[open-quote] after:content-[close-quote] line-clamp-5">
                     {{ testimonial.quote }}
                 </p>
-                <div class="pt-3" style="border-top: 1px solid color-mix(in srgb, var(--color-secondary-text) 20%, transparent)">
+                <div class="flex items-center justify-between pt-3" style="border-top: 1px solid color-mix(in srgb, var(--color-secondary-text) 20%, transparent)">
                     <p class="text-sm font-semibold truncate">
                         {{ testimonial.by || 'Anonymous' }}
                     </p>
                     <p
                         v-if="testimonial.date"
-                        class="text-xs opacity-60"
+                        class="text-xs opacity-60 shrink-0"
                     >
                         {{ new Date(testimonial.date).toLocaleDateString() }}
                     </p>
