@@ -3,7 +3,10 @@
         <SectionHero :hero="homePage.hero" />
 
         <!-- Render layout blocks dynamically -->
-        <div v-if="homePage.layout && homePage.layout.length > 0">
+        <div
+            v-if="homePage.layout && homePage.layout.length > 0"
+            class="mt-12 flex flex-col gap-8 justify-center max-w-2xl mx-auto"
+        >
             <div
                 v-for="(block, index) in homePage.layout"
                 :key="block.id || index"
@@ -27,20 +30,6 @@ const { fetchPageBySlug } = usePayloadGraphQL();
 
 // Home page always fetches the 'home' slug
 const { data: homePage } = await fetchPageBySlug("home");
-
-// Helper function to extract text from Payload's rich text format
-const getTextFromRichText = (richText: any): string => {
-    if (!richText?.root?.children) return "";
-
-    return richText.root.children
-        .map((child: any) => {
-            if (child.children) {
-                return child.children.map((c: any) => c.text || "").join("");
-            }
-            return "";
-        })
-        .join(" ");
-};
 
 // Dynamic block component resolver
 // Maps Payload blockType to dynamically imported component
