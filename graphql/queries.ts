@@ -79,6 +79,17 @@ export const GET_PAGE_BY_SLUG = gql`
               icon
             }
           }
+          ... on TestimonialsBlock {
+            id
+            blockType
+            blockName
+            title
+            testimonials {
+              by
+              date
+              quote
+            }
+          }
         }
       }
     }
