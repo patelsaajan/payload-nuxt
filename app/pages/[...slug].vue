@@ -1,5 +1,5 @@
 <template>
-    <div class="mt-12 flex flex-col gap-8 justify-center max-w-2xl mx-auto" v-if="page">
+    <div class="mt-12 flex flex-col gap-8 justify-center max-w-2xl px-5 sm:mx-auto" v-if="page">
         <h2>{{ page.title }}</h2>
         <SectionHero :hero="page.hero" />
 
