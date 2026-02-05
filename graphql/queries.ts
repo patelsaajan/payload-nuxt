@@ -71,6 +71,7 @@ export const GET_PAGE_BY_SLUG = gql`
             title
             variant
             defaultValue
+            orientation
             items {
               date
               title

@@ -6,6 +6,7 @@
       :default-value="normalisedDefaultValue"
       :color="variant"
       :reverse="true"
+      :orientation="orientation ? orientation : 'vertical'"
       size="2xl"
       :ui="{
         indicator: variant === 'secondary' ? 'text-secondary-text!' : 'text-primary-text!',
@@ -24,6 +25,7 @@ const props = defineProps<{
   blockName?: string
   title?: string
   defaultValue: number | null
+  orientation: 'vertical' | 'horizontal'
   variant?: 'primary' | 'secondary' | 'accent'
   items: TimelineItem[]
 }>()
