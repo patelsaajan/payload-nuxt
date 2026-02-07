@@ -159,6 +159,10 @@ export default defineNuxtConfig({
     }
   },
 
+  experimental: {
+    payloadExtraction: false
+  },
+
   app: {
     pageTransition: { name: 'fade', mode: 'out-in' },
     head: {
