@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-import { writeFileSync } from 'fs'
+import { writeFileSync, mkdirSync, existsSync, copyFileSync } from 'fs'
 import { resolve } from 'path'
 import { GET_THEME_SETTINGS } from './graphql/theme'
 import { GraphQLClient } from 'graphql-request'
@@ -33,6 +33,7 @@ export default defineNuxtConfig({
   hooks: {
     'build:before': async () => {
       const themeVarsPath = resolve(__dirname, 'app/assets/css/theme-variables.css')
+      const baseUrl = process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL
 
       const defaultCss = `:root {
         --theme-primary: #000000;
@@ -46,7 +47,13 @@ export default defineNuxtConfig({
       }
 `
 
-      const isUp = await fetch(`${process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL}/api/build-test`).catch(() => null)
+      if (!baseUrl) {
+        console.warn('NUXT_PUBLIC_PAYLOAD_BASE_URL not set. Using default theme.')
+        writeFileSync(themeVarsPath, defaultCss)
+        return
+      }
+
+      const isUp = await fetch(`${baseUrl}/api/build-test`).catch(() => null)
       if (!isUp) {
         console.warn('CMS not found. Using default theme.')
         writeFileSync(themeVarsPath, defaultCss)
@@ -54,7 +61,7 @@ export default defineNuxtConfig({
       }
 
       console.log(await isUp.text())
-      const client = new GraphQLClient(`${process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL}/api/graphql`)
+      const client = new GraphQLClient(`${baseUrl}/api/graphql`)
       const themeData: any = await client.request(GET_THEME_SETTINGS)
 
       if (themeData?.ThemeSetting) {
@@ -76,6 +83,32 @@ export default defineNuxtConfig({
       } else {
         console.warn('No theme settings found in Payload CMS. Using defaults.')
         writeFileSync(themeVarsPath, defaultCss)
+      }
+
+      // Fetch and save favicon
+      const faviconUrl = process.env.NUXT_FAVICON_URL
+      const publicDir = resolve(__dirname, 'public')
+      const faviconPath = resolve(publicDir, 'favicon.ico')
+      const fallbackPath = resolve(publicDir, 'favicon-fallback.ico')
+
+      if (faviconUrl) {
+        const fullFaviconUrl = `${baseUrl}${faviconUrl}`
+        const faviconResponse = await fetch(fullFaviconUrl).catch(() => null)
+
+        if (faviconResponse?.ok) {
+          const faviconBuffer = await faviconResponse.arrayBuffer()
+          writeFileSync(faviconPath, Buffer.from(faviconBuffer))
+          console.log('Favicon downloaded and saved to', faviconPath)
+        } else {
+          console.warn('Failed to fetch favicon from', fullFaviconUrl)
+          if (existsSync(fallbackPath)) {
+            copyFileSync(fallbackPath, faviconPath)
+            console.log('Using fallback favicon')
+          }
+        }
+      } else if (existsSync(fallbackPath)) {
+        copyFileSync(fallbackPath, faviconPath)
+        console.log('No NUXT_FAVICON_URL set, using fallback favicon')
       }
     },
     'nitro:config': async (nitroConfig) => {
@@ -128,5 +161,10 @@ export default defineNuxtConfig({
 
   app: {
     pageTransition: { name: 'fade', mode: 'out-in' },
+    head: {
+      link: [
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      ]
+    }
   }
 })
