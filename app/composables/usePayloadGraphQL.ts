@@ -8,8 +8,16 @@ export const usePayloadGraphQL = () => {
   const client = new GraphQLClient(`${config.public.payloadBaseUrl}/api/graphql`)
 
   // Use cached data from static generation instead of re-fetching
-  const getCachedData = (key: string, nuxtApp: any) =>
-    nuxtApp.payload.data[key] ?? nuxtApp.static.data[key]
+  // Return undefined to trigger fresh fetch if no cached data exists
+  const getCachedData = (key: string, nuxtApp: any) => {
+    if (nuxtApp.payload.data[key] !== undefined) {
+      return nuxtApp.payload.data[key]
+    }
+    if (nuxtApp.static.data[key] !== undefined) {
+      return nuxtApp.static.data[key]
+    }
+    return undefined // Will trigger fresh fetch
+  }
 
   const fetchPageBySlug = async (slug?: string) => {
     // Default to 'home' if no slug provided or if at root path
@@ -26,7 +34,9 @@ export const usePayloadGraphQL = () => {
           return null
         }
       },
-      { getCachedData }
+      {
+        dedupe: 'defer'
+      }
     )
   }
 
