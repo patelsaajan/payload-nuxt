@@ -1,5 +1,5 @@
 <template>
-    <div class="richtext flex flex-col">
+    <div class="richtext flex flex-col h-full w-full">
         <template v-for="(segment, i) in segments" :key="i">
             <div v-if="segment.type === 'html'" v-html="segment.content" />
             <component

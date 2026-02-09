@@ -1,7 +1,7 @@
 <template>
-    <div class="container mx-auto">
+    <div class="container mx-auto h-full">
         <div
-            class="p-8 md:p-12 rounded-2xl text-center flex flex-col items-center gap-6"
+            class="h-full p-8 md:p-12 rounded-2xl text-center flex flex-col items-center justify-between gap-6"
             :style="variantStyles"
         >
             <h3 v-if="title">{{ title }}</h3>
