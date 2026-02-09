@@ -1,8 +1,8 @@
 <template>
-    <div class="container mx-auto">
+    <div class="container mx-auto h-full">
         <div
-            class="p-8 md:p-12 rounded-2xl text-center flex flex-col items-center gap-6"
-            :class="vairantClasses"
+            class="h-full p-8 md:p-12 rounded-2xl text-center flex flex-col items-center justify-between gap-6"
+            :style="variantStyles"
         >
             <h3 v-if="title">{{ title }}</h3>
             <p v-if="content" class="max-w-xl opacity-80">{{ content }}</p>
@@ -45,6 +45,7 @@ const props = defineProps<{
     title?: string;
     content?: string;
     link?: CtaLink;
+    variant?: 'accent' | 'primary' | 'secondary';
     ctaVariant?: 'accent' | 'primary' | 'secondary';
 }>();
 
@@ -70,16 +71,29 @@ const getLinkUrl = () => {
     return '/';
 };
 
-const vairantClasses = computed(() => {
-    switch (props.ctaVariant) {
+const variantStyles = computed(() => {
+    const v = props.ctaVariant || props.variant;
+    switch (v) {
         case 'accent':
-            return 'bg-accent text-primary-text';
+            return {
+                backgroundColor: 'var(--color-accent)',
+                color: 'var(--color-primary-text)',
+            };
         case 'primary':
-            return 'bg-primary text-primary-text';
+            return {
+                backgroundColor: 'var(--color-primary)',
+                color: 'var(--color-primary-text)',
+            };
         case 'secondary':
-            return 'bg-secondary text-secondary-text';
+            return {
+                backgroundColor: 'var(--color-secondary)',
+                color: 'var(--color-secondary-text)',
+            };
         default:
-            return '';
+            return {
+                backgroundColor: 'var(--color-secondary)',
+                color: 'var(--color-secondary-text)',
+            };
     }
 });
 </script>
