@@ -17,10 +17,6 @@
             </div>
         </div>
     </div>
-
-    <div v-else>
-        <PageNotFound />
-    </div>
 </template>
 
 <script setup lang="ts">
@@ -33,6 +29,10 @@ const slug = Array.isArray(route.params.slug)
     : route.params.slug || "home";
 
 const { data: page } = await fetchPageBySlug(slug);
+
+if (!page.value) {
+    throw createError({ statusCode: 404, statusMessage: "Page not found" });
+}
 
 // Dynamic block component resolver
 // Maps Payload blockType to dynamically imported component
