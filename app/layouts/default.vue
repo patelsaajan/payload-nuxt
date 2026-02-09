@@ -1,6 +1,9 @@
 <template>
   <div class="bg-background text-text min-h-screen flex flex-col">
-      <header v-if="header">
+      <header
+        v-if="header"
+        class="mb-4"
+      >
         <div class="container mx-auto">
           <UNavigationMenu
             color="primary"

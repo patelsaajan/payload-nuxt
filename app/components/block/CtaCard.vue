@@ -1,5 +1,5 @@
 <template>
-    <div class="flex h-full">
+    <div class="flex h-full w-full">
         <div
             class="h-full p-8 md:p-12 rounded-2xl text-center flex flex-col items-center justify-between gap-6"
             :style="variantStyles"
