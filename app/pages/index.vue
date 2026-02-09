@@ -32,12 +32,13 @@ const { data: homePage } = await fetchPageBySlug("home");
 // Dynamic block component resolver
 // Maps Payload blockType to dynamically imported component
 const getBlockComponent = (blockType: string) => {
-    // Convert blockType to kebab-case for file names
+    // Remove 'Block' suffix, convert to PascalCase
     // Examples:
-    // 'mediaBlock' -> 'media'
+    // 'mediaBlock' -> 'Media'
+    // 'cardCarousel' -> 'CardCarousel'
 
-    const fileName = blockType.replace(/Block$/, "").toLowerCase();
-
+    const name = blockType.replace(/Block$/, "");
+    const fileName = name.charAt(0).toUpperCase() + name.slice(1);
     // Use defineAsyncComponent for dynamic imports
     // This creates a lazy-loaded component that only loads when needed
     return defineAsyncComponent(() =>
