@@ -1,12 +1,15 @@
 <template>
-    <div class="mt-12 flex flex-col gap-8 justify-center" v-if="page">
+    <div class="mt-12 flex flex-col gap-30 justify-center" v-if="page">
         <span class="container mx-auto">
             <h2>{{ page.title }}</h2>
         </span>
         <SectionHero :hero="page.hero" />
 
         <!-- Render layout blocks dynamically -->
-        <div v-if="page.layout && page.layout.length > 0">
+        <div
+            v-if="page.layout && page.layout.length > 0"
+            class="flex flex-col gap-30"
+        >
             <div
                 v-for="(block, index) in page.layout"
                 :key="block.id || index"

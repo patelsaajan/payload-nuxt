@@ -1,11 +1,11 @@
 <template>
-    <div class="flex flex-col gap-16" v-if="homePage">
+    <div class="flex flex-col gap-30" v-if="homePage">
         <SectionHero :hero="homePage.hero" />
 
         <!-- Render layout blocks dynamically -->
         <div
             v-if="homePage.layout && homePage.layout.length > 0"
-            class="flex flex-col gap-16 justify-center"
+            class="flex flex-col gap-30 justify-center"
         >
             <div
                 v-for="(block, index) in homePage.layout"
