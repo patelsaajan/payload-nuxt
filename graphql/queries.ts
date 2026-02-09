@@ -69,7 +69,7 @@ export const GET_PAGE_BY_SLUG = gql`
             blockType
             blockName
             title
-            variant
+            timelineVariant: variant
             defaultValue
             orientation
             items {
@@ -88,6 +88,22 @@ export const GET_PAGE_BY_SLUG = gql`
               footer
               date
               content
+            }
+          }
+          ... on CtaCardBlock {
+            id
+            blockType
+            blockName
+            title
+            content
+            ctaVariant: variant
+            link {
+              type
+              url
+              label
+              newTab
+              appearance
+              color
             }
           }
         }

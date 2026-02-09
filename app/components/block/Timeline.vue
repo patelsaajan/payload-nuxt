@@ -5,7 +5,7 @@
       <UTimeline
         :items="items"
         :default-value="normalisedDefaultValue"
-        :color="variant"
+        :color="timelineVariant"
         :reverse="true"
         :orientation="orientation ? orientation : 'vertical'"
         size="2xl"
@@ -28,7 +28,7 @@ const props = defineProps<{
   title?: string
   defaultValue: number | null
   orientation: 'vertical' | 'horizontal'
-  variant?: 'primary' | 'secondary' | 'accent'
+  timelineVariant?: 'primary' | 'secondary' | 'accent'
   items: TimelineItem[]
 }>()
 
