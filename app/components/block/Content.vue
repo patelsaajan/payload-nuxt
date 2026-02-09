@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto">
-        <div class="grid gap-8" :class="getGridColumnsClass()">
+        <div class="grid gap-y-30 gap-x-8" :class="getGridColumnsClass()">
             <BlockContentColumn
                 v-for="(column, index) in columns"
                 :key="index"
