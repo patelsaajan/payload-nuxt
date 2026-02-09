@@ -1,6 +1,8 @@
 <template>
     <div v-if="cards.length" class="flex flex-col gap-12 relative w-screen left-1/2 -translate-x-1/2">
-        <h3 v-if="title" class="max-w-2xl mx-auto w-full px-5">{{ title }}</h3>
+        <span v-if="title" class="container mx-auto">
+            <h3 v-if="title" class="w-full">{{ title }}</h3>
+        </span>
         <UMarquee
             pause-on-hover
             :overlay="false"

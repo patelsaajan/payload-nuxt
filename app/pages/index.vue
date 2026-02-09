@@ -5,7 +5,7 @@
         <!-- Render layout blocks dynamically -->
         <div
             v-if="homePage.layout && homePage.layout.length > 0"
-            class="mt-12 flex flex-col gap-8 justify-center max-w-2xl mx-auto"
+            class="mt-12 flex flex-col gap-8 justify-center"
         >
             <div
                 v-for="(block, index) in homePage.layout"

@@ -1,18 +1,20 @@
 <template>
-  <div v-if="items.length" class="flex flex-col gap-8">
-    <h3>{{ title }}</h3>
-    <UTimeline
-      :items="items"
-      :default-value="normalisedDefaultValue"
-      :color="variant"
-      :reverse="true"
-      :orientation="orientation ? orientation : 'vertical'"
-      size="2xl"
-      :ui="{
-        indicator: variant === 'secondary' ? 'text-secondary-text!' : 'text-primary-text!',
-        title: 'text-lg font-semibold text-text',
-      }"
-    />
+  <div v-if="items.length" class="max-w-2xl mx-auto">
+    <div v-if="items.length" class="flex flex-col gap-8">
+      <h3>{{ title }}</h3>
+      <UTimeline
+        :items="items"
+        :default-value="normalisedDefaultValue"
+        :color="variant"
+        :reverse="true"
+        :orientation="orientation ? orientation : 'vertical'"
+        size="2xl"
+        :ui="{
+          indicator: variant === 'secondary' ? 'text-secondary-text!' : 'text-primary-text!',
+          title: 'text-lg font-semibold text-text',
+        }"
+      />
+    </div>
   </div>
 </template>
 
