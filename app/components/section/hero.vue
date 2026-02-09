@@ -24,7 +24,7 @@
                 v-if="hero.media && hero.type === 'imageOnly'"
                 :src="getMediaUrl(hero.media.url)"
                 :alt="hero.media.alt || 'Hero image'"
-                class="w-full object-cover aspect-4/3 col-span-12"
+                class="w-full object-cover aspect-4/3 col-span-6 col-start-4"
                 :style="getFocalPointStyle(hero.media)"
             />
 

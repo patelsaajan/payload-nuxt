@@ -5,7 +5,7 @@
         <!-- Render layout blocks dynamically -->
         <div
             v-if="homePage.layout && homePage.layout.length > 0"
-            class="mt-12 flex flex-col gap-8 justify-center max-w-2xl mx-auto"
+            class="mt-12 flex flex-col gap-8 justify-center"
         >
             <div
                 v-for="(block, index) in homePage.layout"
@@ -20,9 +20,7 @@
         </div>
     </div>
 
-    <div v-else>
-        <p>Loading...</p>
-    </div>
+    <PageSkeleton v-else />
 </template>
 
 <script setup lang="ts">
@@ -34,12 +32,13 @@ const { data: homePage } = await fetchPageBySlug("home");
 // Dynamic block component resolver
 // Maps Payload blockType to dynamically imported component
 const getBlockComponent = (blockType: string) => {
-    // Convert blockType to kebab-case for file names
+    // Remove 'Block' suffix, convert to PascalCase
     // Examples:
-    // 'mediaBlock' -> 'media'
+    // 'mediaBlock' -> 'Media'
+    // 'cardCarousel' -> 'CardCarousel'
 
-    const fileName = blockType.replace(/Block$/, "").toLowerCase();
-
+    const name = blockType.replace(/Block$/, "");
+    const fileName = name.charAt(0).toUpperCase() + name.slice(1);
     // Use defineAsyncComponent for dynamic imports
     // This creates a lazy-loaded component that only loads when needed
     return defineAsyncComponent(() =>

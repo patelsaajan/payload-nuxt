@@ -1,6 +1,8 @@
 <template>
-    <div class="mt-12 flex flex-col gap-8 justify-center max-w-2xl px-5 sm:mx-auto" v-if="page">
-        <h2>{{ page.title }}</h2>
+    <div class="mt-12 flex flex-col gap-8 justify-center" v-if="page">
+        <span class="container mx-auto">
+            <h2>{{ page.title }}</h2>
+        </span>
         <SectionHero :hero="page.hero" />
 
         <!-- Render layout blocks dynamically -->
@@ -18,9 +20,7 @@
         </div>
     </div>
 
-    <div v-else>
-        <PageNotFound />
-    </div>
+    <PageSkeleton v-else />
 </template>
 
 <script setup lang="ts">
@@ -34,14 +34,20 @@ const slug = Array.isArray(route.params.slug)
 
 const { data: page } = await fetchPageBySlug(slug);
 
+if (!page.value) {
+    throw createError({ statusCode: 404, statusMessage: "Page not found" });
+}
+
 // Dynamic block component resolver
 // Maps Payload blockType to dynamically imported component
 const getBlockComponent = (blockType: string) => {
-    // Convert blockType to kebab-case for file names
+    // Remove 'Block' suffix, convert to PascalCase
     // Examples:
-    // 'mediaBlock' -> 'media'
+    // 'mediaBlock' -> 'Media'
+    // 'cardCarousel' -> 'CardCarousel'
 
-    const fileName = blockType.replace(/Block$/, "").toLowerCase();
+    const name = blockType.replace(/Block$/, "");
+    const fileName = name.charAt(0).toUpperCase() + name.slice(1);
 
     // Use defineAsyncComponent for dynamic imports
     // This creates a lazy-loaded component that only loads when needed

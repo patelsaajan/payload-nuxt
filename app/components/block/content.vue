@@ -13,6 +13,7 @@
 
 <script setup lang="ts">
 import type { IContentColumn } from "~~/types";
+import BlockContentColumn from "./ContentColumn.vue";
 
 // Define props to match GraphQL ContentBlock structure
 const props = defineProps<{

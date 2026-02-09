@@ -1,6 +1,8 @@
 <template>
-    <div v-if="testimonials.length" class="flex flex-col gap-12 relative w-screen left-1/2 -translate-x-1/2">
-        <h3 v-if="title" class="max-w-2xl mx-auto w-full px-5">{{ title }}</h3>
+    <div v-if="cards.length" class="flex flex-col gap-12 relative w-screen left-1/2 -translate-x-1/2">
+        <span v-if="title" class="container mx-auto">
+            <h3 v-if="title" class="w-full">{{ title }}</h3>
+        </span>
         <UMarquee
             pause-on-hover
             :overlay="false"
@@ -8,7 +10,7 @@
             class="overflow-x-clip"
         >
             <div
-                v-for="(testimonial, index) in testimonials"
+                v-for="(card, index) in cards"
                 :key="index"
                 class="w-80 h-52 shrink-0 p-5 flex flex-col justify-between gap-4"
                 :style="{
@@ -18,17 +20,17 @@
                 }"
             >
                 <p class="text-sm leading-relaxed before:content-[open-quote] after:content-[close-quote] line-clamp-5">
-                    {{ testimonial.quote }}
+                    {{ card.content }}
                 </p>
                 <div class="flex items-center justify-between pt-3" style="border-top: 1px solid color-mix(in srgb, var(--color-secondary-text) 20%, transparent)">
                     <p class="text-sm font-semibold truncate">
-                        {{ testimonial.by || 'Anonymous' }}
+                        {{ card.footer || 'Anonymous' }}
                     </p>
                     <p
-                        v-if="testimonial.date"
+                        v-if="card.date"
                         class="text-xs opacity-60 shrink-0"
                     >
-                        {{ new Date(testimonial.date).toLocaleDateString() }}
+                        {{ formatDate(card.date) }}
                     </p>
                 </div>
             </div>
@@ -37,10 +39,10 @@
 </template>
 
 <script setup lang="ts">
-interface Testimonial {
-    by?: string;
+interface Card {
+    footer?: string;
     date?: string;
-    quote: string;
+    content: string;
 }
 
 defineProps<{
@@ -48,6 +50,15 @@ defineProps<{
     blockType: string;
     blockName?: string;
     title?: string;
-    testimonials: Testimonial[];
+    cards: Card[];
 }>();
+
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    });
+};
 </script>
