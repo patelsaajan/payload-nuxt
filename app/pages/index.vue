@@ -20,9 +20,7 @@
         </div>
     </div>
 
-    <div v-else>
-        <p>Loading...</p>
-    </div>
+    <PageSkeleton v-else />
 </template>
 
 <script setup lang="ts">

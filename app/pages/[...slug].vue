@@ -17,6 +17,8 @@
             </div>
         </div>
     </div>
+
+    <PageSkeleton v-else />
 </template>
 
 <script setup lang="ts">
