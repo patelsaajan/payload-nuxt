@@ -10,7 +10,6 @@
             <div
                 v-for="(block, index) in page.layout"
                 :key="block.id || index"
-                class="my-16"
             >
                 <component
                     :is="getBlockComponent(block.blockType)"

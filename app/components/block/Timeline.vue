@@ -1,6 +1,6 @@
 <template>
   <div v-if="items.length" class="max-w-2xl mx-auto">
-    <div v-if="items.length" class="flex flex-col gap-8">
+    <div v-if="items.length" class="flex flex-col gap-8 max-sm:p-5">
       <h3>{{ title }}</h3>
       <UTimeline
         :items="items"
@@ -10,7 +10,7 @@
         :orientation="orientation ? orientation : 'vertical'"
         size="2xl"
         :ui="{
-          indicator: variant === 'secondary' ? 'text-secondary-text!' : 'text-primary-text!',
+          indicator: timelineVariant === 'secondary' ? 'text-secondary-text!' : 'text-primary-text!',
           title: 'text-lg font-semibold text-text',
         }"
       />

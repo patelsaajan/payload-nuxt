@@ -1,16 +1,15 @@
 <template>
-    <div v-if="homePage">
+    <div class="flex flex-col gap-16" v-if="homePage">
         <SectionHero :hero="homePage.hero" />
 
         <!-- Render layout blocks dynamically -->
         <div
             v-if="homePage.layout && homePage.layout.length > 0"
-            class="mt-12 flex flex-col gap-8 justify-center"
+            class="flex flex-col gap-16 justify-center"
         >
             <div
                 v-for="(block, index) in homePage.layout"
                 :key="block.id || index"
-                class="my-16"
             >
                 <component
                     :is="getBlockComponent(block.blockType)"
