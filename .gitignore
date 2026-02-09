@@ -25,3 +25,6 @@ logs
 
 # Ignore Dynamic css varaibles file
 app/assets/css/theme-variables.css
+
+# Ignore generated favicon
+public/favicon.ico
