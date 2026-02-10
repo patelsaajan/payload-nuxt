@@ -6,13 +6,13 @@
         <UMarquee
             pause-on-hover
             :overlay="false"
-            :ui="{ root: '[--gap:--spacing(4)] [--duration:40s]', content: 'w-auto py-1' }"
+            :ui="{ root: '[--gap:--spacing(6)] [--duration:60s]', content: 'w-auto py-1' }"
             class="overflow-x-clip"
         >
             <div
                 v-for="(card, index) in cards"
                 :key="index"
-                class="w-80 h-52 shrink-0 p-5 flex flex-col justify-between gap-4"
+                class="w-100 h-52 shrink-0 p-5 flex flex-col justify-between gap-4"
                 :style="{
                     backgroundColor: 'var(--color-secondary)',
                     borderRadius: 'var(--border-radius)',

@@ -61,11 +61,7 @@ const processNode = (node: any): string => {
         case "linebreak":
             return "<br>";
         case "upload":
-            if (node.value?.url) {
-                const focal = node.value.focalX ? `object-position: ${node.value.focalX}% ${node.value.focalY}%;` : "";
-                return `<img src="${getMediaUrl(node.value.url)}" alt="${node.value.alt || ""}" style="${focal}" class="w-full h-auto object-cover p-4" loading="lazy" />`;
-            }
-            return "";
+            return ""; // Handled as component in segments
         default:
             return children;
     }
@@ -84,6 +80,12 @@ const segments = computed(() => {
                 html = "";
             }
             result.push({ type: "block", blockType: node.fields.blockType, fields: node.fields });
+        } else if (node.type === 'upload' && node.value?.url) {
+            if (html) {
+                result.push({ type: "html", content: html });
+                html = "";
+            }
+            result.push({ type: "block", blockType: "media", fields: { media: node.value } });
         } else {
             html += processNode(node);
         }

@@ -1,17 +1,20 @@
 <template>
   <div v-if="items.length" class="max-w-2xl mx-auto">
     <div v-if="items.length" class="flex flex-col gap-8 max-sm:p-5">
-      <h3>{{ title }}</h3>
+      <h2>{{ title }}</h2>
       <UTimeline
         :items="items"
         :default-value="normalisedDefaultValue"
         :color="timelineVariant"
         :reverse="true"
         :orientation="orientation ? orientation : 'vertical'"
-        size="2xl"
+        size="3xl"
         :ui="{
           indicator: timelineVariant === 'secondary' ? 'text-secondary-text!' : 'text-primary-text!',
-          title: 'text-lg font-semibold text-text',
+          title: 'text-2xl font-semibold text-text',
+          description: 'text-base text-text/80 text-text/90',
+          date: 'text-sm text-text/60 text-text/80',
+          separator: 'w-1',
         }"
       />
     </div>
@@ -20,6 +23,7 @@
 
 <script setup lang="ts">
 import type { TimelineItem } from '@nuxt/ui'
+import type { sep } from 'node:path';
 
 const props = defineProps<{
   id: string

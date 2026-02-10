@@ -4,7 +4,7 @@
             v-if="media"
             :src="getMediaUrl(media.url)"
             :alt="media.alt || 'Media image'"
-            class="auto h-80 md:h-140 rounded-[var(--border-radius)] object-cover mx-auto"
+            class="w-full rounded-[var(--border-radius)] object-cover mx-auto aspect-4/3!"
             :style="getFocalPointStyle(media)"
         />
     </div>
