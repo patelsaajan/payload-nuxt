@@ -1,12 +1,14 @@
 <template>
-    <div class="container mx-auto">
-        <div class="grid gap-y-20 gap-x-8" :class="getGridColumnsClass()">
-            <BlockContentColumn
-                v-for="(column, index) in columns"
-                :key="index"
-                :class="getColumnClass(column.size)"
-                v-bind="column"
-            />
+    <div :class="['block-content', getBackgroundClass()]">
+        <div class="container mx-auto">
+            <div class="grid gap-y-20 gap-x-8" :class="getGridColumnsClass()">
+                <BlockContentColumn
+                    v-for="(column, index) in columns"
+                    :key="index"
+                    :class="getColumnClass(column.size)"
+                    v-bind="column"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -21,7 +23,11 @@ const props = defineProps<{
     blockType?: string;
     blockName?: string;
     columns: IContentColumn[];
+    hasBackground?: boolean;
 }>();
+
+// Get the background class based on the hasBackground prop
+const getBackgroundClass = () => (props.hasBackground ? "bg-primary text-primary-text py-8" : "");
 
 // Get grid columns class - use a 12-column grid for flexible sizing
 const getGridColumnsClass = () => {
@@ -51,7 +57,8 @@ const getColumnClass = (size?: string) => {
 
     // Map Payload column sizes to Tailwind 12-column grid classes
     const sizeMap: Record<string, string> = {
-        oneThird: "lg:col-span-4",    // 4 out of 12 = 1/3
+        oneFourth: "lg:col-span-3",    // 3 out of 12 = 1/4
+        oneThird: "lg:col-span-4",     // 4 out of 12 = 1/3
         half: "lg:col-span-6",         // 6 out of 12 = 1/2
         twoThirds: "lg:col-span-8",    // 8 out of 12 = 2/3
         full: "lg:col-span-12",        // 12 out of 12 = full width

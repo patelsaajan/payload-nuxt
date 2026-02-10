@@ -12,7 +12,9 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{ content: any }>();
+const props = defineProps<{ 
+    content: any
+}>();
 const config = useRuntimeConfig();
 
 // Blocks rendered as Vue components (others become HTML)
@@ -43,14 +45,21 @@ const processNode = (node: any): string => {
 
     const children = node.children?.map(processNode).join("") || "";
 
+    // Get alignment style for block elements
+    const getAlignStyle = (format: string | undefined) => {
+        if (!format || format === "left") return "";
+        return ` style="text-align: ${format};"`;
+    };
+
     switch (node.type) {
         case "paragraph":
-            return `<p>${children}</p>`;
+            return `<p${getAlignStyle(node.format)}>${children}</p>`;
         case "heading":
-            return `<${node.tag || "h2"}>${children}</${node.tag || "h2"}>`;
+            const headingTag = node.tag || "h2";
+            return `<${headingTag}${getAlignStyle(node.format)}>${children}</${headingTag}>`;
         case "list":
-            const tag = node.listType === "number" ? "ol" : "ul";
-            return `<${tag}>${children}</${tag}>`;
+            const listTag = node.listType === "number" ? "ol" : "ul";
+            return `<${listTag}>${children}</${listTag}>`;
         case "listitem":
             return `<li>${children}</li>`;
         case "link":
