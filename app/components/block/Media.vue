@@ -1,13 +1,11 @@
 <template>
-    <div class="container mx-auto">
-        <NuxtImg
-            v-if="media"
-            :src="getMediaUrl(media.url)"
-            :alt="media.alt || 'Media image'"
-            class="w-full rounded-[var(--border-radius)] object-cover mx-auto aspect-4/3!"
-            :style="getFocalPointStyle(media)"
-        />
-    </div>
+    <NuxtImg
+        v-if="media"
+        :src="getMediaUrl(media.url)"
+        :alt="media.alt || 'Media image'"
+        class="w-full rounded-[var(--border-radius)] object-cover mx-auto aspect-4/3!"
+        :style="getFocalPointStyle(media)"
+    />
 </template>
 
 <script setup lang="ts">

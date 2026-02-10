@@ -36,7 +36,7 @@ export interface IContentLink {
 
 // Content Column
 export interface IContentColumn {
-  size?: "oneThird" | "half" | "twoThirds" | "full";
+  size?: "oneThird" | "oneFourth" | "half" | "twoThirds" | "full";
   richText?: any;
   enableLink?: boolean;
   link?: IContentLink;

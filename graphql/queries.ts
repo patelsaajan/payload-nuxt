@@ -38,10 +38,10 @@ export const GET_PAGE_BY_SLUG = gql`
             id
             blockType
             blockName
+            hasBackground
             columns {
               size
               richText
-              enableLink
               link {
                 type
                 url
