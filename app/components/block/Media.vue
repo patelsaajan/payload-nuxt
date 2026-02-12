@@ -11,7 +11,7 @@
             :src="getMediaUrl(media.url)"
             :alt="media.alt || 'Media image'"
             :class="[
-                'max-sm:w-2/3 w-full rounded-[var(--border-radius)] object-cover mx-auto',
+                'w-full rounded-[var(--border-radius)] object-cover mx-auto',
                 aspectRatioClass,
                 isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
             ]"
@@ -46,7 +46,7 @@ const getAspectRatioClass = (ratio?: string): string => {
             return "h-48 sm:h-64 md:h-80 lg:h-96 xl:h-140";
         case "square":
         default:
-            return "aspect-4/3";
+            return "aspect-4/3 max-sm:w-2/3";
     }
 };
 
