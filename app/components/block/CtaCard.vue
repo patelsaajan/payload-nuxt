@@ -1,17 +1,16 @@
 <template>
     <div class="flex h-full w-full">
         <div
-            class="h-full p-8 md:p-12 rounded-2xl text-center flex flex-col items-center justify-between gap-6"
+            class="h-full p-4 md:p-3.5 rounded-[var(--border-radius)] text-center flex flex-col items-center justify-between gap-6"
             :style="variantStyles"
         >
             <h3 v-if="title">{{ title }}</h3>
-            <p v-if="content" class="max-w-xl opacity-80">{{ content }}</p>
+            <p v-if="content" class="max-w-xl opacity-90">{{ content }}</p>
             <UButton
                 v-if="link"
                 :to="getLinkUrl()"
                 :target="link.newTab ? '_blank' : '_self'"
-                :variant="link.appearance === 'default' ? 'solid' : link.appearance"
-                :color="link.color || 'primary'"
+                class="bg-white text-primary"
                 :label="link.label"
                 size="lg"
             />
