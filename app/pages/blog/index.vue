@@ -21,39 +21,33 @@
             >
                 <!-- Card Image -->
                 <div
-                    class="w-full h-48 overflow-hidden"
+                    class="w-full h-48 overflow-hidden relative"
                     style="
                         border-radius: var(--border-radius) var(--border-radius)
                             0 0;
                     "
                 >
-                    <img
-                        v-if="post.heroImage || post.meta?.image"
-                        :src="
-                            getMediaUrl(
-                                (post.heroImage || post.meta?.image).url,
-                            )
-                        "
-                        :alt="
-                            (post.heroImage || post.meta?.image).alt ||
-                            post.title
-                        "
-                        :style="
-                            getFocalPointStyle(
-                                post.heroImage || post.meta?.image,
-                            )
-                        "
-                        class="w-full h-full object-cover"
-                        style="border-radius: 0 !important"
-                    />
+                    <template v-if="post.heroImage || post.meta?.image">
+                        <div
+                            v-if="imageLoading[post.id]"
+                            class="absolute inset-0 bg-gray-200 animate-pulse"
+                        />
+                        <NuxtImg
+                            :src="getMediaUrl((post.heroImage || post.meta?.image).url)"
+                            :alt="(post.heroImage || post.meta?.image).alt || post.title"
+                            :style="getFocalPointStyle(post.heroImage || post.meta?.image)"
+                            :class="[
+                                'w-full h-full object-cover rounded-none!',
+                                imageLoading[post.id] ? 'opacity-0' : 'opacity-100'
+                            ]"
+                            @load="onImageLoad(post.id)"
+                        />
+                    </template>
                     <div
                         v-else
-                        class="w-full h-full flex items-center justify-center"
-                        style="background-color: var(--color-secondary)"
+                        class="w-full h-full flex items-center justify-center bg-secondary"
                     >
-                        <span style="color: var(--color-secondary-text)"
-                            >No Image</span
-                        >
+                        <span class="text-secondary-text">No Image</span>
                     </div>
                 </div>
 
@@ -65,7 +59,7 @@
                         <div v-if="post.publishedAt" class="mb-2">
                             <span
                                 class="text-xs font-medium"
-                                style="color: var(--color-accent)"
+                                style="color: var(--color-text)"
                             >
                                 {{
                                     new Date(
@@ -99,7 +93,7 @@
                     <div class="mt-4 flex justify-end">
                         <span
                             class="text-sm font-medium inline-flex items-center gap-1"
-                            style="color: var(--color-accent)"
+                            style="color: var(--color-text)"
                         >
                             Read More
                             <svg
@@ -154,10 +148,22 @@ const posts = ref<any[]>([]);
 const hasNextPage = ref(false);
 const isLoading = ref(false);
 
+// Image loading states
+const imageLoading = ref<Record<string, boolean>>({});
+
+const onImageLoad = (postId: string) => {
+    imageLoading.value[postId] = false;
+};
+
 // Initial fetch (cached with useAsyncData)
 const { data: initialData } = await fetchPosts(postsPerPage, 1);
 posts.value = initialData.value?.docs || [];
 hasNextPage.value = initialData.value?.hasNextPage || false;
+
+// Initialize loading states for initial posts
+posts.value.forEach((post: any) => {
+    imageLoading.value[post.id] = true;
+});
 
 // Load more function (client-side only, not cached)
 const loadMore = async () => {
@@ -166,7 +172,12 @@ const loadMore = async () => {
 
     try {
         const { data: newData } = await fetchPosts(postsPerPage, currentPage.value);
-        posts.value = [...posts.value, ...(newData.value?.docs || [])];
+        const newPosts = newData.value?.docs || [];
+        // Initialize loading states for new posts
+        newPosts.forEach((post: any) => {
+            imageLoading.value[post.id] = true;
+        });
+        posts.value = [...posts.value, ...newPosts];
         hasNextPage.value = newData.value?.hasNextPage || false;
     } catch (error) {
         console.error('Error loading more posts:', error);
