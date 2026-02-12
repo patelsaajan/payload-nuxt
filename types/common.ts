@@ -1,4 +1,4 @@
-// Global shared types
+// Common shared types
 
 // Media/Image interface
 export interface IMedia {
@@ -28,6 +28,3 @@ export interface ISocial {
   icon: string;
   url: string;
 }
-
-// Relation type for carousel/card components
-export type typeRelationTo = "posts";

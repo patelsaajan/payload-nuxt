@@ -39,18 +39,14 @@
 </template>
 
 <script setup lang="ts">
-interface Card {
-    footer?: string;
-    date?: string;
-    content: string;
-}
+import type { ICard } from '~~/types'
 
 defineProps<{
     id: string;
     blockType: string;
     blockName?: string;
     title?: string;
-    cards: Card[];
+    cards: ICard[];
 }>();
 
 const formatDate = (dateString: string) => {

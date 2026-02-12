@@ -19,23 +19,7 @@
 </template>
 
 <script setup lang="ts">
-interface LinkReference {
-    relationTo: string;
-    value: {
-        slug?: string;
-        id?: string;
-    } | string;
-}
-
-interface CtaLink {
-    type: 'reference' | 'custom';
-    reference?: LinkReference;
-    url?: string;
-    label: string;
-    newTab?: boolean;
-    appearance?: 'default' | 'outline' | 'link' | 'ghost';
-    color?: 'primary' | 'secondary' | 'accent';
-}
+import type { ICtaLink } from '~~/types'
 
 const props = defineProps<{
     id?: string;
@@ -43,7 +27,7 @@ const props = defineProps<{
     blockName?: string;
     title?: string;
     content?: string;
-    link?: CtaLink;
+    link?: ICtaLink;
     variant?: 'accent' | 'primary' | 'secondary';
     ctaVariant?: 'accent' | 'primary' | 'secondary';
 }>();
