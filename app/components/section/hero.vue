@@ -2,13 +2,21 @@
     <!-- Image Only hero type (full-width banner) -->
     <div
         v-if="hero && hero.type === 'bannerImage' && hero.media"
-        class="w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden"
+        class="w-full h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden relative"
     >
+        <div
+            v-if="isLoading"
+            class="w-full h-full bg-gray-200 animate-pulse absolute inset-0"
+        />
         <NuxtImg
             :src="getMediaUrl(hero.media.url)"
             :alt="hero.media.alt || 'Hero image'"
             :style="getFocalPointStyle(hero.media)"
-            class="w-full h-full object-cover rounded-none! aspect-4/3!"
+            :class="[
+                'w-full h-full object-cover rounded-none!',
+                isLoading ? 'opacity-0' : 'opacity-100'
+            ]"
+            @load="onImageLoad"
         />
     </div>
 
@@ -19,31 +27,55 @@
     >
         <div class="container mx-auto" :class="getHeroContainerClasses(hero)">
             <!-- Image section (for imageOnly - centered with 4/3 ratio) -->
-            <NuxtImg
+            <div
                 v-if="hero.media && hero.type === 'imageOnly'"
-                :src="getMediaUrl(hero.media.url)"
-                :alt="hero.media.alt || 'Hero image'"
-                class="w-full object-cover aspect-4/3 col-span-12 sm:col-span-6 sm:col-start-4"
-                :style="getFocalPointStyle(hero.media)"
-            />
+                class="relative col-span-12 sm:col-span-6 sm:col-start-4"
+            >
+                <div
+                    v-if="isLoading"
+                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
+                />
+                <NuxtImg
+                    :src="getMediaUrl(hero.media.url)"
+                    :alt="hero.media.alt || 'Hero image'"
+                    :class="[
+                        'w-full object-cover aspect-4/3',
+                        isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
+                    ]"
+                    :style="getFocalPointStyle(hero.media)"
+                    @load="onImageLoad"
+                />
+            </div>
 
             <!-- Image section (for splitContentImage with desktop position left) -->
-            <NuxtImg
+            <div
                 v-if="
                     hero.media &&
                     hero.type === 'splitContentImage' &&
                     hero.imagePositionDesktop === 'left'
                 "
-                :src="getMediaUrl(hero.media.url)"
-                :alt="hero.media.alt || 'Hero image'"
-                class="w-full object-cover aspect-4/3"
+                class="relative"
                 :class="
                     hero.imagePositionMobile === 'top'
                         ? 'col-span-12 row-start-1 md:col-span-5'
                         : 'col-span-12 row-start-2 md:col-span-5 md:row-start-1'
                 "
-                :style="getFocalPointStyle(hero.media)"
-            />
+            >
+                <div
+                    v-if="isLoading"
+                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
+                />
+                <NuxtImg
+                    :src="getMediaUrl(hero.media.url)"
+                    :alt="hero.media.alt || 'Hero image'"
+                    :class="[
+                        'w-full object-cover aspect-4/3',
+                        isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
+                    ]"
+                    :style="getFocalPointStyle(hero.media)"
+                    @load="onImageLoad"
+                />
+            </div>
 
             <!-- Content section -->
             <div
@@ -101,22 +133,34 @@
             </div>
 
             <!-- Image section (for splitContentImage with desktop position right) -->
-            <NuxtImg
+            <div
                 v-if="
                     hero.media &&
                     hero.type === 'splitContentImage' &&
                     hero.imagePositionDesktop !== 'left'
                 "
-                :src="getMediaUrl(hero.media.url)"
-                :alt="hero.media.alt || 'Hero image'"
-                class="rounded-[var(--border-radius)] w-full object-cover aspect-4/3"
-                :style="getFocalPointStyle(hero.media)"
+                class="relative"
                 :class="
                     hero.imagePositionMobile === 'top'
                         ? 'col-span-12 row-start-1 md:col-span-5 md:col-start-8 md:row-start-1'
                         : 'col-span-12 row-start-2 md:col-span-5 md:col-start-8 md:row-start-1'
                 "
-            />
+            >
+                <div
+                    v-if="isLoading"
+                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
+                />
+                <NuxtImg
+                    :src="getMediaUrl(hero.media.url)"
+                    :alt="hero.media.alt || 'Hero image'"
+                    :class="[
+                        'rounded-[var(--border-radius)] w-full object-cover aspect-4/3',
+                        isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
+                    ]"
+                    :style="getFocalPointStyle(hero.media)"
+                    @load="onImageLoad"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -128,6 +172,13 @@ const config = useRuntimeConfig();
 defineProps<{
     hero: any;
 }>();
+
+// Loading state for skeleton
+const isLoading = ref(true);
+
+const onImageLoad = () => {
+    isLoading.value = false;
+};
 
 // Helper function to extract text from Payload's rich text format
 const getTextFromRichText = (richText: any): string => {

@@ -1,11 +1,24 @@
 <template>
-    <NuxtImg
-        v-if="media"
-        :src="getMediaUrl(media.url)"
-        :alt="media.alt || 'Media image'"
-        :class="['w-full rounded-[var(--border-radius)] object-cover mx-auto', aspectRatioClass]"
-        :style="getFocalPointStyle(media)"
-    />
+    <div v-if="media" class="relative">
+        <div
+            v-if="isLoading"
+            :class="[
+                'w-full rounded-[var(--border-radius)] mx-auto bg-gray-200 animate-pulse',
+                aspectRatioClass
+            ]"
+        />
+        <NuxtImg
+            :src="getMediaUrl(media.url)"
+            :alt="media.alt || 'Media image'"
+            :class="[
+                'w-full rounded-[var(--border-radius)] object-cover mx-auto',
+                aspectRatioClass,
+                isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
+            ]"
+            :style="getFocalPointStyle(media)"
+            @load="onImageLoad"
+        />
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -20,6 +33,12 @@ const props = defineProps<{
     aspectRatio?: string;
     media: IMediaBlock;
 }>();
+
+const isLoading = ref(true);
+
+const onImageLoad = () => {
+    isLoading.value = false;
+};
 
 const getAspectRatioClass = (ratio?: string): string => {
     switch (ratio) {
