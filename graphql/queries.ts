@@ -56,6 +56,7 @@ export const GET_PAGE_BY_SLUG = gql`
             id
             blockType
             blockName
+            aspectRatio
             media {
               id
               alt

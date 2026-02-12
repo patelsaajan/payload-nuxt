@@ -3,7 +3,7 @@
         v-if="media"
         :src="getMediaUrl(media.url)"
         :alt="media.alt || 'Media image'"
-        class="w-full rounded-[var(--border-radius)] object-cover mx-auto aspect-4/3!"
+        :class="['w-full rounded-[var(--border-radius)] object-cover mx-auto', aspectRatioClass]"
         :style="getFocalPointStyle(media)"
     />
 </template>
@@ -13,13 +13,25 @@ import type { IMediaBlock } from "~~/types";
 
 const config = useRuntimeConfig();
 
-// Define props to match GraphQL MediaBlock structure
-defineProps<{
+const props = defineProps<{
     id?: string;
     blockType?: string;
     blockName?: string;
+    aspectRatio?: string;
     media: IMediaBlock;
 }>();
+
+const getAspectRatioClass = (ratio?: string): string => {
+    switch (ratio) {
+        case "banner":
+            return "h-48 sm:h-64 md:h-80 lg:h-96 xl:h-140";
+        case "square":
+        default:
+            return "aspect-4/3";
+    }
+};
+
+const aspectRatioClass = computed(() => getAspectRatioClass(props.aspectRatio));
 
 // Helper function to get media URL with base URL prepended if needed
 const getMediaUrl = (url: string): string => {
@@ -42,6 +54,3 @@ const getFocalPointStyle = (media: any) => {
 };
 </script>
 
-<style scoped>
-/* Optional: Add custom styles for the media block */
-</style>
