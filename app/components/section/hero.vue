@@ -9,11 +9,12 @@
             class="w-full h-full bg-gray-200 animate-pulse absolute inset-0"
         />
         <NuxtImg
+            ref="imageRef"
             :src="getMediaUrl(hero.media.url)"
             :alt="hero.media.alt || 'Hero image'"
             :style="getFocalPointStyle(hero.media)"
             :class="[
-                'w-full h-full object-cover rounded-none!',
+                'w-full h-full object-cover rounded-none',
                 isLoading ? 'opacity-0' : 'opacity-100'
             ]"
             @load="onImageLoad"
@@ -36,10 +37,11 @@
                     class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
                 />
                 <NuxtImg
+                    ref="imageRef"
                     :src="getMediaUrl(hero.media.url)"
                     :alt="hero.media.alt || 'Hero image'"
                     :class="[
-                        'w-full object-cover aspect-4/3',
+                        'w-full object-cover aspect-4/3 rounded-[var(--border-radius)]',
                         isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
                     ]"
                     :style="getFocalPointStyle(hero.media)"
@@ -66,10 +68,11 @@
                     class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
                 />
                 <NuxtImg
+                    ref="imageRef"
                     :src="getMediaUrl(hero.media.url)"
                     :alt="hero.media.alt || 'Hero image'"
                     :class="[
-                        'w-full object-cover aspect-4/3',
+                        'w-full object-cover aspect-4/3 rounded-[var(--border-radius)]',
                         isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
                     ]"
                     :style="getFocalPointStyle(hero.media)"
@@ -151,6 +154,7 @@
                     class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
                 />
                 <NuxtImg
+                    ref="imageRef"
                     :src="getMediaUrl(hero.media.url)"
                     :alt="hero.media.alt || 'Hero image'"
                     :class="[
@@ -169,16 +173,38 @@
 const config = useRuntimeConfig();
 
 // Define props
-defineProps<{
+const props = defineProps<{
     hero: any;
 }>();
 
 // Loading state for skeleton
 const isLoading = ref(true);
+const imageRef = ref<{ $el: HTMLImageElement } | null>(null);
 
 const onImageLoad = () => {
     isLoading.value = false;
 };
+
+// Check if image is already loaded (cached)
+const checkIfLoaded = () => {
+    const imgEl = imageRef.value?.$el;
+    if (imgEl?.complete && imgEl?.naturalHeight !== 0) {
+        isLoading.value = false;
+    }
+};
+
+// Reset loading state when hero changes (navigation between pages)
+watch(
+    () => props.hero?.media?.url,
+    () => {
+        isLoading.value = true;
+        nextTick(checkIfLoaded);
+    }
+);
+
+onMounted(() => {
+    checkIfLoaded();
+});
 
 // Helper function to extract text from Payload's rich text format
 const getTextFromRichText = (richText: any): string => {

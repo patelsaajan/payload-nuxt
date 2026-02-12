@@ -11,7 +11,7 @@
             :src="getMediaUrl(media.url)"
             :alt="media.alt || 'Media image'"
             :class="[
-                'w-full rounded-[var(--border-radius)] object-cover mx-auto',
+                'max-sm:w-2/3 w-full rounded-[var(--border-radius)] object-cover mx-auto',
                 aspectRatioClass,
                 isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
             ]"

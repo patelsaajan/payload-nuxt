@@ -1,7 +1,7 @@
 <template>
     <div :class="['block-content', getBackgroundClass()]">
         <div class="container mx-auto">
-            <div class="grid gap-y-20 gap-x-8" :class="getGridColumnsClass()">
+            <div class="grid gap-y-2.5 gap-x-8" :class="getGridColumnsClass()">
                 <BlockContentColumn
                     v-for="(column, index) in columns"
                     :key="index"
