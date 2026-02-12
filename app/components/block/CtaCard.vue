@@ -10,7 +10,7 @@
                 v-if="link"
                 :to="getLinkUrl()"
                 :target="link.newTab ? '_blank' : '_self'"
-                class="bg-white text-primary"
+                class="bg-white text-primary hover:bg-white hover:scale-105 transition-all duration-200"
                 :label="link.label"
                 size="lg"
             />
