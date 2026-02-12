@@ -18,9 +18,7 @@
     --ui-radius: var(--theme-border-radius);
 }
 
-img {
-    border-radius: var(--border-radius, 50px) !important;
-}
+
 
 .container {
     padding: 0 16px;

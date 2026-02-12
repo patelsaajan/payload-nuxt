@@ -3,7 +3,8 @@
         <div
             v-if="isLoading"
             :class="[
-                'w-full rounded-[var(--border-radius)] mx-auto bg-gray-200 animate-pulse',
+                'w-full mx-auto bg-gray-200 animate-pulse',
+                aspectRatio !== 'banner' && 'rounded-[var(--border-radius)]',
                 aspectRatioClass
             ]"
         />
@@ -11,7 +12,8 @@
             :src="getMediaUrl(media.url)"
             :alt="media.alt || 'Media image'"
             :class="[
-                'w-full rounded-[var(--border-radius)] object-cover mx-auto',
+                'w-full object-cover mx-auto',
+                aspectRatio !== 'banner' && 'rounded-[var(--border-radius)]',
                 aspectRatioClass,
                 isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
             ]"
@@ -43,7 +45,7 @@ const onImageLoad = () => {
 const getAspectRatioClass = (ratio?: string): string => {
     switch (ratio) {
         case "banner":
-            return "h-48 sm:h-64 md:h-80 lg:h-96 xl:h-140";
+            return "h-36 sm:h-48 md:h-60 lg:h-90 xl:h-112";
         case "square":
         default:
             return "aspect-4/3 max-sm:w-2/3";
