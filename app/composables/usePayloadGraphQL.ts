@@ -3,7 +3,7 @@ import { GET_PAGE_BY_SLUG } from '../../graphql/pages'
 import { GET_POSTS, GET_POSTS_WITH_FILTER, GET_POST_BY_SLUG } from '../../graphql/posts'
 import { GET_HEADER } from '../../graphql/header'
 import { GET_BRANDING } from '../../graphql/branding'
-import { GET_PORTFOLIO, GET_PORTFOLIO_BY_SLUG } from '../../graphql/portfolio'
+import { GET_PORTFOLIO, GET_PORTFOLIO_BY_SLUG, GET_PORTFOLIO_AFTERS } from '../../graphql/portfolio'
 
 export const usePayloadGraphQL = () => {
   const config = useRuntimeConfig()
@@ -150,6 +150,23 @@ export const usePayloadGraphQL = () => {
     )
   }
 
+  const fetchPortfolioAfters = async (limit: number = 3, page: number = 1) => {
+    return useAsyncData(
+      `portfolio-afters-${limit}-${page}`,
+      async () => {
+        try {
+          const data: any = await client.request(GET_PORTFOLIO_AFTERS, { limit, page })
+          return data.Portfolios || { docs: [], hasNextPage: false }
+          console.log('Fetched portfolio afters:', data.Portfolios)
+        } catch (error) {
+          console.error('Error fetching portfolio afters:', error)
+          return { docs: [], hasNextPage: false }
+        }
+      },
+      { getCachedData }
+    )
+  }
+
   return {
     fetchPageBySlug,
     fetchHeader,
@@ -157,6 +174,7 @@ export const usePayloadGraphQL = () => {
     fetchBranding,
     fetchPostBySlug,
     fetchPortfolio,
-    fetchPortfolioBySlug
+    fetchPortfolioBySlug,
+    fetchPortfolioAfters
   }
 }

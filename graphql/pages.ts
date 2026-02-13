@@ -107,6 +107,14 @@ export const GET_PAGE_BY_SLUG = gql`
               color
             }
           }
+
+          ... on PortfolioAftersBlock {
+            id
+            blockType
+            blockName
+            hasBackground
+            quantity
+          }
         }
       }
     }

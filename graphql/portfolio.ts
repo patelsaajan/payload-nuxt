@@ -78,3 +78,30 @@ export const GET_PORTFOLIO_BY_SLUG = gql`
     }
   }
 `;
+
+export const GET_PORTFOLIO_AFTERS = gql`
+  query GetPortfolioAfters($limit: Int, $page: Int) {
+    Portfolios(limit: $limit, page: $page, sort: "-publishedAt") {
+      docs {
+        id
+        title
+        slug
+        description
+        afterPhoto {
+          id
+          alt
+          url
+          focalX
+          focalY
+        }
+        categories {
+          id
+          title
+        }
+        publishedAt
+      }
+      limit
+      page
+    }
+  }
+`;
