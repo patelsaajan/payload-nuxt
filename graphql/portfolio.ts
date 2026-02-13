@@ -69,6 +69,7 @@ export const GET_PORTFOLIO_BY_SLUG = gql`
             focalX
             focalY
           }
+          title
           caption
         }
         categories {

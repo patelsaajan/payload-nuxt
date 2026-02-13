@@ -3,6 +3,14 @@
         :class="hasBackground ? 'bg-primary py-8': '' "
     >
         <div class="container mx-auto">
+            <div class="flex justify-between my-4">
+                <h3>Latest Work</h3>
+                 <UButton
+                    to="/portfolio"
+                    label="See More"
+                    variant="outline"
+                />
+            </div>
             <div
                 v-if="afters && afters.length > 0"
                 class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
