@@ -124,7 +124,7 @@ export const usePayloadGraphQL = () => {
       async () => {
         try {
           const data: any = await client.request(GET_PORTFOLIO, { limit, page })
-          return data.Portfolio || { docs: [], hasNextPage: false }
+          return data.Portfolios || { docs: [], hasNextPage: false }
         } catch (error) {
           console.error('Error fetching portfolio:', error)
           return { docs: [], hasNextPage: false }
@@ -140,7 +140,7 @@ export const usePayloadGraphQL = () => {
       async () => {
         try {
           const data: any = await client.request(GET_PORTFOLIO_BY_SLUG, { slug })
-          return data.Portfolio.docs[0] || null
+          return data.Portfolios.docs[0] || null
         } catch (error) {
           console.error('Error fetching portfolio by slug:', error)
           return null

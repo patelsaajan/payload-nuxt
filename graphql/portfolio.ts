@@ -2,7 +2,7 @@ import { gql } from "graphql-request";
 
 export const GET_PORTFOLIO = gql`
   query GetPortfolio($limit: Int, $page: Int) {
-    Portfolio(limit: $limit, page: $page, sort: "-publishedAt") {
+    Portfolios(limit: $limit, page: $page, sort: "-publishedAt") {
       docs {
         id
         title
@@ -39,7 +39,7 @@ export const GET_PORTFOLIO = gql`
 
 export const GET_PORTFOLIO_BY_SLUG = gql`
   query GetPortfolioBySlug($slug: String!) {
-    Portfolio(where: { slug: { equals: $slug } }) {
+    Portfolios(where: { slug: { equals: $slug } }) {
       docs {
         id
         title
