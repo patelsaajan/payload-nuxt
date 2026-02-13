@@ -7,7 +7,7 @@
             pause-on-hover
             :overlay="false"
             :ui="{ root: '[--gap:--spacing(6)] [--duration:60s]', content: 'w-auto py-1' }"
-            class="overflow-visible"
+            class="overflow-x-clip overflow-y-visible"
         >
             <div
                 v-for="(card, index) in cards"
