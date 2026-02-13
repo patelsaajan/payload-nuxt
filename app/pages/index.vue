@@ -29,24 +29,36 @@ const { fetchPageBySlug } = usePayloadGraphQL();
 // Home page always fetches the 'home' slug
 const { data: homePage } = await fetchPageBySlug("home");
 
+// Cache for resolved block components to prevent infinite re-renders
+const blockComponentCache = new Map<string, ReturnType<typeof defineAsyncComponent>>();
+
 // Dynamic block component resolver
 // Maps Payload blockType to dynamically imported component
 const getBlockComponent = (blockType: string) => {
+    // Return cached component if already resolved
+    if (blockComponentCache.has(blockType)) {
+        return blockComponentCache.get(blockType)!;
+    }
+
     // Remove 'Block' suffix, convert to PascalCase
     // Examples:
     // 'mediaBlock' -> 'Media'
     // 'cardCarousel' -> 'CardCarousel'
-
     const name = blockType.replace(/Block$/, "");
     const fileName = name.charAt(0).toUpperCase() + name.slice(1);
+
     // Use defineAsyncComponent for dynamic imports
     // This creates a lazy-loaded component that only loads when needed
-    return defineAsyncComponent(() =>
+    const component = defineAsyncComponent(() =>
         import(`~/components/block/${fileName}.vue`).catch(() => {
             // Fallback component if the block type doesn't exist
             console.warn(`Block component not found: ${fileName}`);
             return { template: "<div>Block component not found</div>" };
         }),
     );
+
+    // Cache the component
+    blockComponentCache.set(blockType, component);
+    return component;
 };
 </script>

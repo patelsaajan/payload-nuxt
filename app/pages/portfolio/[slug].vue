@@ -1,134 +1,152 @@
 <template>
-    <div v-if="item" class="container mx-auto py-12 px-4">
-        <!-- Header -->
-        <div class="mb-8">
-            <NuxtLink
-                to="/portfolio"
-                class="inline-flex items-center gap-2 text-sm mb-4 hover:opacity-80 transition-opacity"
-                style="color: var(--color-text)"
-            >
-                <Icon name="lucide:arrow-left" class="size-4" />
-                Back to Portfolio
-            </NuxtLink>
-            <h1 class="text-4xl font-bold mb-4">{{ item.title }}</h1>
-            <p v-if="item.description" class="text-lg opacity-80">
-                {{ item.description }}
-            </p>
+    <div v-if="item">
+        <!-- Fixed Progress Bar -->
+        <div class="fixed top-0 left-0 right-0 z-50 h-2.5 bg-gray-200">
+            <div
+                class="h-full bg-primary transition-all duration-150"
+                :style="{ width: `${scrollProgress}%` }"
+            />
         </div>
 
-        <!-- Before & After Comparison -->
-        <div v-if="item.beforePhoto && item.afterPhoto" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-6">Before & After</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Before -->
+        <!-- Hero Section with After Photo -->
+        <section v-if="item.afterPhoto" class="pt-8 pb-16">
+            <div class="container mx-auto px-4">
+                <h1 class="text-3xl md:text-4xl font-bold mb-4">{{ item.title }}</h1>
+                <time :datetime="item.publishedAt">{{ formatDate(item.publishedAt) }}</time>
+
+                <!-- Hero Image -->
                 <div class="relative">
                     <div
-                        v-if="beforeLoading"
+                        v-show="heroLoading"
                         class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
                     />
                     <NuxtImg
-                        ref="beforeImgRef"
-                        :src="getMediaUrl(item.beforePhoto.url)"
-                        :alt="item.beforePhoto.alt || 'Before'"
-                        :style="getFocalPointStyle(item.beforePhoto)"
-                        :class="[
-                            'w-full aspect-4/3 object-cover rounded-[var(--border-radius)]',
-                            beforeLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
-                        ]"
-                        @load="beforeLoading = false"
-                    />
-                    <span class="absolute bottom-4 left-4 px-3 py-1 text-sm font-medium rounded-full bg-black/70 text-white">
-                        Before
-                    </span>
-                </div>
-                <!-- After -->
-                <div class="relative">
-                    <div
-                        v-if="afterLoading"
-                        class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
-                    />
-                    <NuxtImg
-                        ref="afterImgRef"
+                        ref="heroImgRef"
                         :src="getMediaUrl(item.afterPhoto.url)"
-                        :alt="item.afterPhoto.alt || 'After'"
+                        :alt="item.afterPhoto.alt || item.title"
                         :style="getFocalPointStyle(item.afterPhoto)"
                         :class="[
-                            'w-full aspect-4/3 object-cover rounded-[var(--border-radius)]',
-                            afterLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
+                            'w-2/3 mx-auto aspect-4/3 object-cover rounded-[var(--border-radius)]',
+                            heroLoading ? 'opacity-0 absolute inset-0' : 'opacity-100'
                         ]"
-                        @load="afterLoading = false"
+                        @load="heroLoading = false"
                     />
-                    <span class="absolute bottom-4 left-4 px-3 py-1 text-sm font-medium rounded-full bg-primary text-primary-text">
-                        After
-                    </span>
                 </div>
-            </div>
-        </div>
 
-        <!-- After Only (if no before photo) -->
-        <div v-else-if="item.afterPhoto" class="mb-12">
-            <div class="relative max-w-3xl mx-auto">
-                <div
-                    v-if="afterLoading"
-                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
-                />
-                <NuxtImg
-                    ref="afterImgRef"
-                    :src="getMediaUrl(item.afterPhoto.url)"
-                    :alt="item.afterPhoto.alt || item.title"
-                    :style="getFocalPointStyle(item.afterPhoto)"
-                    :class="[
-                        'w-full aspect-4/3 object-cover rounded-[var(--border-radius)]',
-                        afterLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
-                    ]"
-                    @load="afterLoading = false"
-                />
+                <!-- Description (below image) -->
+                <p v-if="item.description" class="mt-8 text-lg leading-relaxed">
+                    {{ item.description }}
+                </p>
             </div>
-        </div>
+        </section>
 
-        <!-- Transition Photos -->
-        <div v-if="item.transitionPhotos?.length" class="mb-12">
-            <h2 class="text-2xl font-semibold mb-6">Progress</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                <div
-                    v-for="(transition, index) in transitionPhotos"
-                    :key="index"
-                    class="relative"
-                >
-                    <div
-                        v-if="transitionLoading[index]"
-                        class="w-full aspect-square bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
-                    />
-                    <NuxtImg
-                        :ref="(el: any) => setTransitionRef(index, el)"
-                        :src="getMediaUrl(transition.photo.url)"
-                        :alt="transition.photo.alt || transition.caption || `Progress ${index + 1}`"
-                        :style="getFocalPointStyle(transition.photo)"
-                        :class="[
-                            'w-full aspect-square object-cover rounded-[var(--border-radius)]',
-                            transitionLoading[index] ? 'absolute inset-0 opacity-0' : 'opacity-100'
-                        ]"
-                        @load="transitionLoading[index] = false"
-                    />
-                    <span
-                        v-if="transition.caption"
-                        class="absolute bottom-2 left-2 right-2 px-2 py-1 text-xs text-center rounded bg-black/70 text-white truncate"
-                    >
-                        {{ transition.caption }}
-                    </span>
+        <!-- Journey Section -->
+        <div class="container mx-auto px-4 pb-12">
+            <!-- Before Photo Section -->
+            <section v-if="item.beforePhoto" class="mb-20">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                    <!-- Image (1/3) -->
+                    <div class="relative md:col-span-1">
+                        <div
+                            v-show="beforeLoading"
+                            class="w-full aspect-square bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
+                        />
+                        <NuxtImg
+                            ref="beforeImgRef"
+                            :src="getMediaUrl(item.beforePhoto.url)"
+                            :alt="item.beforePhoto.alt || 'Before'"
+                            :style="getFocalPointStyle(item.beforePhoto)"
+                            :class="[
+                                'w-full aspect-square object-cover rounded-[var(--border-radius)]',
+                                beforeLoading ? 'opacity-0 absolute inset-0' : 'opacity-100'
+                            ]"
+                            @load="beforeLoading = false"
+                        />
+                    </div>
+                    <!-- Text (2/3) -->
+                    <div class="md:col-span-2">
+                        <span class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-gray-800 text-white mb-4">
+                            Starting Point
+                        </span>
+                        <h2 class="text-2xl font-bold mb-4">Where It All Began</h2>
+                        <p class="text-base leading-relaxed opacity-70">
+                            {{ item.beforePhotoCaption || 'This is where the transformation began. Every great result starts with understanding the initial situation.' }}
+                        </p>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <!-- Categories -->
-        <div v-if="item.categories?.length" class="flex flex-wrap gap-2">
-            <span
-                v-for="category in item.categories"
-                :key="category.id"
-                class="px-3 py-1 text-sm rounded-full bg-primary/10 text-primary"
+            <!-- Journey Steps (Alternating) -->
+            <section
+                v-for="(transition, index) in transitionPhotos"
+                :key="index"
+                class="mb-20"
             >
-                {{ category.title }}
-            </span>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                    <!-- Image (1/3) -->
+                    <div :class="['relative md:col-span-1', Number(index) % 2 !== 1 ? 'md:order-2' : '']">
+                        <div
+                            v-show="transitionLoading[Number(index)]"
+                            class="w-full aspect-square bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
+                        />
+                        <NuxtImg
+                            :ref="(el: any) => setTransitionRef(Number(index), el)"
+                            :src="getMediaUrl(transition.photo.url)"
+                            :alt="transition.photo.alt || transition.caption || `Step ${Number(index) + 1}`"
+                            :style="getFocalPointStyle(transition.photo)"
+                            :class="[
+                                'w-full aspect-square object-cover rounded-[var(--border-radius)]',
+                                transitionLoading[Number(index)] ? 'opacity-0 absolute inset-0' : 'opacity-100'
+                            ]"
+                            @load="transitionLoading[Number(index)] = false"
+                        />
+                    </div>
+                    <!-- Text (2/3) -->
+                    <div :class="['md:col-span-2', Number(index) % 2 !== 1 ? 'md:order-1 md:text-right' : '']">
+                        <span class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-primary text-primary-text mb-4">
+                            Step {{ Number(index) + 1 }}
+                        </span>
+                        <h2 class="text-2xl font-bold mb-4">{{ transition.caption || 'The Process' }}</h2>
+                        <p v-if="transition.caption" class="text-base leading-relaxed opacity-70">
+                            Continuing the transformation with careful attention to detail.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final Result Section -->
+            <section v-if="item.afterPhoto" class="mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                    <!-- Image (1/3) -->
+                    <div :class="['relative md:col-span-1', transitionPhotos.length % 2 !== 1 ? 'md:order-2' : '']">
+                        <div
+                            v-show="afterLoading"
+                            class="w-full aspect-square bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
+                        />
+                        <NuxtImg
+                            ref="afterImgRef"
+                            :src="getMediaUrl(item.afterPhoto.url)"
+                            :alt="item.afterPhoto.alt || 'After'"
+                            :style="getFocalPointStyle(item.afterPhoto)"
+                            :class="[
+                                'w-full aspect-square object-cover rounded-[var(--border-radius)]',
+                                afterLoading ? 'opacity-0 absolute inset-0' : 'opacity-100'
+                            ]"
+                            @load="afterLoading = false"
+                        />
+                    </div>
+                    <!-- Text (2/3) -->
+                    <div :class="['md:col-span-2', transitionPhotos.length % 2 !== 1 ? 'md:order-1 md:text-right' : '']">
+                        <span class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-primary text-primary-text mb-4">
+                            Complete
+                        </span>
+                        <h2 class="text-2xl font-bold mb-4">The Final Result</h2>
+                        <p class="text-base leading-relaxed opacity-70">
+                            {{ item.afterPhotoCaption || 'The transformation is complete. A beautiful outcome achieved through expertise and dedication.' }}
+                        </p>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
@@ -142,45 +160,88 @@
 </template>
 
 <script setup lang="ts">
+import type { TransitionPhoto } from '~~/types/portfolio';
+
 const config = useRuntimeConfig();
 const route = useRoute();
 const { fetchPortfolioBySlug } = usePayloadGraphQL();
 
+// Helper functions
+const formatDate = (dateString: string): string => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};
+
+const getMediaUrl = (url: string): string => {
+    if (!url) return "";
+    if (url.startsWith("http")) {
+        return url;
+    }
+    return `${config.public.payloadBaseUrl}${url}`;
+};
+
+const getFocalPointStyle = (media: { focalX?: number; focalY?: number }) => {
+    if (!media?.focalX || !media?.focalY) {
+        return {};
+    }
+    return {
+        objectPosition: `${media.focalX}% ${media.focalY}%`,
+    };
+};
+
+// Fetch data
 const { data: item } = await fetchPortfolioBySlug(route.params.slug as string);
 
+// Scroll progress
+const scrollProgress = ref(0);
+
+const updateScrollProgress = () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    scrollProgress.value = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+};
+
 // Loading states
+const heroLoading = ref(true);
 const beforeLoading = ref(true);
 const afterLoading = ref(true);
 const transitionLoading = ref<Record<number, boolean>>({});
 
 // Image refs
+const heroImgRef = ref<{ $el: HTMLImageElement } | null>(null);
 const beforeImgRef = ref<{ $el: HTMLImageElement } | null>(null);
 const afterImgRef = ref<{ $el: HTMLImageElement } | null>(null);
 const transitionImgRefs = ref<Record<number, { $el: HTMLImageElement } | null>>({});
 
 const setTransitionRef = (index: number, el: any) => {
-    transitionImgRefs.value[index] = el;
+    if (el) transitionImgRefs.value[index] = el;
 };
 
 // Initialize transition loading states
 if (item.value?.transitionPhotos) {
-    item.value.transitionPhotos.forEach((_: any, index: number) => {
+    item.value.transitionPhotos.forEach((_: TransitionPhoto, index: number) => {
         transitionLoading.value[index] = true;
     });
 }
 
 const checkImagesLoaded = () => {
-    // Check before image
+    const heroEl = heroImgRef.value?.$el;
+    if (heroEl?.complete && heroEl?.naturalWidth > 0) {
+        heroLoading.value = false;
+    }
     const beforeEl = beforeImgRef.value?.$el;
     if (beforeEl?.complete && beforeEl?.naturalWidth > 0) {
         beforeLoading.value = false;
     }
-    // Check after image
     const afterEl = afterImgRef.value?.$el;
     if (afterEl?.complete && afterEl?.naturalWidth > 0) {
         afterLoading.value = false;
     }
-    // Check transition images
     Object.keys(transitionLoading.value).forEach((key) => {
         const index = Number(key);
         const imgEl = transitionImgRefs.value[index]?.$el;
@@ -191,28 +252,15 @@ const checkImagesLoaded = () => {
 };
 
 onMounted(() => {
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    updateScrollProgress();
     nextTick(checkImagesLoaded);
 });
 
-// Transition photos (ordered by array arrangement)
+onUnmounted(() => {
+    window.removeEventListener('scroll', updateScrollProgress);
+});
+
+// Transition photos
 const transitionPhotos = computed(() => item.value?.transitionPhotos || []);
-
-// Helper function to get media URL
-const getMediaUrl = (url: string): string => {
-    if (!url) return "";
-    if (url.startsWith("http")) {
-        return url;
-    }
-    return `${config.public.payloadBaseUrl}${url}`;
-};
-
-// Helper function for focal point positioning
-const getFocalPointStyle = (media: any) => {
-    if (!media?.focalX || !media?.focalY) {
-        return {};
-    }
-    return {
-        objectPosition: `${media.focalX}% ${media.focalY}%`,
-    };
-};
 </script>

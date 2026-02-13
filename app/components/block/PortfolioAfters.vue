@@ -26,7 +26,7 @@
                     >
                         <template v-if="item.afterPhoto">
                             <div
-                                v-if="imageLoading[item.id]"
+                                v-show="!loadedImages[item.id]"
                                 class="absolute inset-0 bg-gray-200 animate-pulse"
                             />
                             <NuxtImg
@@ -36,7 +36,7 @@
                                 :style="getFocalPointStyle(item.afterPhoto)"
                                 :class="[
                                     'w-full h-full object-cover rounded-none! transition-transform duration-500 group-hover:scale-105',
-                                    imageLoading[item.id] ? 'opacity-0' : 'opacity-100'
+                                    loadedImages[item.id] ? 'opacity-100' : 'opacity-0'
                                 ]"
                                 @load="onImageLoad(item.id)"
                             />
@@ -86,8 +86,8 @@
 <script setup lang="ts">
 import type { PortfolioAfter } from '~~/types/portfolio'
 
-const props = defineProps<{
-    hasBackground: Boolean
+defineProps<{
+    hasBackground?: boolean
 }>();
 
 const config = useRuntimeConfig()
@@ -97,36 +97,29 @@ const { fetchPortfolioAfters } = usePayloadGraphQL()
 const { data } = await fetchPortfolioAfters(3, 1)
 const afters = computed(() => (data.value?.docs || []) as PortfolioAfter[])
 
-// Image loading states
-const imageLoading = ref<Record<string, boolean>>({})
+// Image loading state - tracks which images have loaded
+const loadedImages = ref<Record<string, boolean>>({})
 const imageRefs = ref<Record<string, { $el: HTMLImageElement } | null>>({})
 
 const setImageRef = (itemId: string, el: any) => {
-    imageRefs.value[itemId] = el
+    if (el) {
+        imageRefs.value[itemId] = el
+    }
 }
 
 const onImageLoad = (itemId: string) => {
-    imageLoading.value[itemId] = false
+    loadedImages.value[itemId] = true
 }
 
+// Check if images are already loaded (cached)
 const checkImagesLoaded = () => {
-    Object.keys(imageLoading.value).forEach((itemId) => {
-        const imgEl = imageRefs.value[itemId]?.$el
+    afters.value.forEach((item) => {
+        const imgEl = imageRefs.value[item.id]?.$el
         if (imgEl?.complete && imgEl?.naturalWidth > 0) {
-            imageLoading.value[itemId] = false
+            loadedImages.value[item.id] = true
         }
     })
 }
-
-// Initialize loading states when data changes
-watch(afters, (items) => {
-    items.forEach((item) => {
-        if (imageLoading.value[item.id] === undefined) {
-            imageLoading.value[item.id] = true
-        }
-    })
-    nextTick(checkImagesLoaded)
-}, { immediate: true })
 
 onMounted(() => {
     nextTick(checkImagesLoaded)

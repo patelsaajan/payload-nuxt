@@ -52,6 +52,7 @@ export const GET_PORTFOLIO_BY_SLUG = gql`
           focalX
           focalY
         }
+        afterPhotoCaption
         beforePhoto {
           id
           alt
@@ -59,6 +60,7 @@ export const GET_PORTFOLIO_BY_SLUG = gql`
           focalX
           focalY
         }
+        beforePhotoCaption
         transitionPhotos {
           photo {
             id

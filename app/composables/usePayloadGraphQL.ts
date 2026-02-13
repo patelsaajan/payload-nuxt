@@ -157,7 +157,6 @@ export const usePayloadGraphQL = () => {
         try {
           const data: any = await client.request(GET_PORTFOLIO_AFTERS, { limit, page })
           return data.Portfolios || { docs: [], hasNextPage: false }
-          console.log('Fetched portfolio afters:', data.Portfolios)
         } catch (error) {
           console.error('Error fetching portfolio afters:', error)
           return { docs: [], hasNextPage: false }
