@@ -7,12 +7,12 @@
             pause-on-hover
             :overlay="false"
             :ui="{ root: '[--gap:--spacing(6)] [--duration:60s]', content: 'w-auto py-1' }"
-            class="overflow-x-clip"
+            class="overflow-visible"
         >
             <div
                 v-for="(card, index) in cards"
                 :key="index"
-                class="w-100 h-52 shrink-0 p-5 flex flex-col justify-between gap-4"
+                class="w-100 h-52 shrink-0 p-5 flex flex-col justify-between gap-4 shadow-sm hover:scale-105 hover:shadow-md transition-transform duration-300"
                 :style="{
                     backgroundColor: 'var(--color-secondary)',
                     borderRadius: 'var(--border-radius)',

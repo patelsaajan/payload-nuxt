@@ -13,7 +13,7 @@
                 v-for="item in items"
                 :key="item.id"
                 :to="`/portfolio/${item.slug}`"
-                class="group overflow-hidden cursor-pointer flex flex-col transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.02]"
+                class="group overflow-hidden cursor-pointer flex flex-col transition-all duration-300 shadow-sm hover:shadow-md hover:scale-[1.02]"
                 style="
                     border-radius: var(--border-radius);
                     background-color: var(--color-background);
