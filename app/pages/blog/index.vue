@@ -33,6 +33,7 @@
                             class="absolute inset-0 bg-gray-200 animate-pulse"
                         />
                         <NuxtImg
+                            :ref="(el: any) => setImageRef(post.id, el)"
                             :src="getMediaUrl((post.heroImage || post.meta?.image).url)"
                             :alt="(post.heroImage || post.meta?.image).alt || post.title"
                             :style="getFocalPointStyle(post.heroImage || post.meta?.image)"
@@ -150,10 +151,28 @@ const isLoading = ref(false);
 
 // Image loading states
 const imageLoading = ref<Record<string, boolean>>({});
+const imageRefs = ref<Record<string, { $el: HTMLImageElement } | null>>({});
+
+const setImageRef = (postId: string, el: any) => {
+    imageRefs.value[postId] = el;
+};
 
 const onImageLoad = (postId: string) => {
     imageLoading.value[postId] = false;
 };
+
+const checkImagesLoaded = () => {
+    Object.keys(imageLoading.value).forEach((postId) => {
+        const imgEl = imageRefs.value[postId]?.$el;
+        if (imgEl?.complete && imgEl?.naturalWidth > 0) {
+            imageLoading.value[postId] = false;
+        }
+    });
+};
+
+onMounted(() => {
+    nextTick(checkImagesLoaded);
+});
 
 // Initial fetch (cached with useAsyncData)
 const { data: initialData } = await fetchPosts(postsPerPage, 1);

@@ -1,7 +1,7 @@
 <template>
     <div class="flex h-full w-full">
         <div
-            class="h-full p-4 md:p-3.5 rounded-[var(--border-radius)] text-center flex flex-col items-center justify-between gap-6"
+            class="h-full p-4 md:p-3.5 rounded-[var(--border-radius)] text-center flex flex-col items-center justify-between gap-6 shadow-sm"
             :style="variantStyles"
         >
             <h3 v-if="title">{{ title }}</h3>

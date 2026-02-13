@@ -9,6 +9,7 @@
             ]"
         />
         <NuxtImg
+            ref="imgRef"
             :src="getMediaUrl(media.url)"
             :alt="media.alt || 'Media image'"
             :class="[
@@ -36,11 +37,28 @@ const props = defineProps<{
     media: IMediaBlock;
 }>();
 
+const imgRef = ref<{ $el: HTMLImageElement } | null>(null);
 const isLoading = ref(true);
 
 const onImageLoad = () => {
     isLoading.value = false;
 };
+
+const checkImageLoaded = () => {
+    const imgEl = imgRef.value?.$el;
+    if (imgEl?.complete && imgEl?.naturalWidth > 0) {
+        isLoading.value = false;
+    }
+};
+
+onMounted(() => {
+    nextTick(checkImageLoaded);
+});
+
+watch(() => props.media?.url, () => {
+    isLoading.value = true;
+    nextTick(checkImageLoaded);
+});
 
 const getAspectRatioClass = (ratio?: string): string => {
     switch (ratio) {

@@ -1,7 +1,9 @@
 import { GraphQLClient } from 'graphql-request'
-import { GET_PAGE_BY_SLUG, GET_POSTS, GET_POSTS_WITH_FILTER, GET_POST_BY_SLUG } from '../../graphql/queries'
+import { GET_PAGE_BY_SLUG } from '../../graphql/pages'
+import { GET_POSTS, GET_POSTS_WITH_FILTER, GET_POST_BY_SLUG } from '../../graphql/posts'
 import { GET_HEADER } from '../../graphql/header'
 import { GET_BRANDING } from '../../graphql/branding'
+import { GET_PORTFOLIO, GET_PORTFOLIO_BY_SLUG, GET_PORTFOLIO_AFTERS } from '../../graphql/portfolio'
 
 export const usePayloadGraphQL = () => {
   const config = useRuntimeConfig()
@@ -116,11 +118,62 @@ export const usePayloadGraphQL = () => {
     )
   }
 
+  const fetchPortfolio = async (limit: number = 10, page: number = 1) => {
+    return useAsyncData(
+      `portfolio-${limit}-${page}`,
+      async () => {
+        try {
+          const data: any = await client.request(GET_PORTFOLIO, { limit, page })
+          return data.Portfolios || { docs: [], hasNextPage: false }
+        } catch (error) {
+          console.error('Error fetching portfolio:', error)
+          return { docs: [], hasNextPage: false }
+        }
+      },
+      { getCachedData }
+    )
+  }
+
+  const fetchPortfolioBySlug = async (slug: string) => {
+    return useAsyncData(
+      `portfolio-${slug}`,
+      async () => {
+        try {
+          const data: any = await client.request(GET_PORTFOLIO_BY_SLUG, { slug })
+          return data.Portfolios.docs[0] || null
+        } catch (error) {
+          console.error('Error fetching portfolio by slug:', error)
+          return null
+        }
+      },
+      { getCachedData }
+    )
+  }
+
+  const fetchPortfolioAfters = async (limit: number = 3, page: number = 1) => {
+    return useAsyncData(
+      `portfolio-afters-${limit}-${page}`,
+      async () => {
+        try {
+          const data: any = await client.request(GET_PORTFOLIO_AFTERS, { limit, page })
+          return data.Portfolios || { docs: [], hasNextPage: false }
+        } catch (error) {
+          console.error('Error fetching portfolio afters:', error)
+          return { docs: [], hasNextPage: false }
+        }
+      },
+      { getCachedData }
+    )
+  }
+
   return {
     fetchPageBySlug,
     fetchHeader,
     fetchPosts,
     fetchBranding,
-    fetchPostBySlug
+    fetchPostBySlug,
+    fetchPortfolio,
+    fetchPortfolioBySlug,
+    fetchPortfolioAfters
   }
 }
