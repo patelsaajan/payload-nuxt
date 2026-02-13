@@ -25,3 +25,16 @@ export interface ICaseStudy {
   heroImage?: IMedia;
   content?: any;
 }
+
+// Portfolio item interface
+export interface IPortfolio {
+  id: string;
+  slug: string;
+  title: string;
+  publishedAt?: string;
+  description?: string;
+  afterPhoto: IMedia;
+  beforePhoto?: IMedia;
+  transitionPhotos?: IMedia[];
+  categories?: ICategory[];
+}
