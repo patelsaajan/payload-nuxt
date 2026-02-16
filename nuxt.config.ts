@@ -132,6 +132,9 @@ export default defineNuxtConfig({
     // Enable image optimization
     quality: 80,
 
+    // Using nuxt compaitable provider
+    provider: 'ipx',
+
     // Image formats to generate
     format: ['webp'],
 
