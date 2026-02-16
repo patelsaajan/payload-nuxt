@@ -12,6 +12,7 @@
             ref="imgRef"
             :src="getMediaUrl(media.url)"
             :alt="media.alt || 'Media image'"
+            loading="lazy"
             :class="[
                 'w-full object-cover mx-auto',
                 aspectRatio !== 'banner' && 'rounded-[var(--border-radius)]',
@@ -27,7 +28,7 @@
 <script setup lang="ts">
 import type { IMediaBlock } from "~~/types";
 
-const config = useRuntimeConfig();
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
 const props = defineProps<{
     id?: string;
@@ -71,25 +72,5 @@ const getAspectRatioClass = (ratio?: string): string => {
 };
 
 const aspectRatioClass = computed(() => getAspectRatioClass(props.aspectRatio));
-
-// Helper function to get media URL with base URL prepended if needed
-const getMediaUrl = (url: string): string => {
-    if (url.startsWith("http")) {
-        return url;
-    }
-    return `${config.public.payloadBaseUrl}${url}`;
-};
-
-// Helper function to get focal point positioning for images
-const getFocalPointStyle = (media: any) => {
-    if (!media?.focalX || !media?.focalY) {
-        return {};
-    }
-
-    // Payload stores focal point as percentages (0-100)
-    return {
-        objectPosition: `${media.focalX}% ${media.focalY}%`,
-    };
-};
 </script>
 

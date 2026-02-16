@@ -30,6 +30,7 @@
                     :src="getMediaUrl(item.afterPhoto.url)"
                     :alt="item.afterPhoto.alt || item.title"
                     :style="getFocalPointStyle(item.afterPhoto)"
+                    :loading="index < 3 ? 'eager' : 'lazy'"
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
 
@@ -54,8 +55,8 @@
 <script setup lang="ts">
 import type { PortfolioAfter } from '~~/types/portfolio'
 
-const config = useRuntimeConfig()
 const { fetchPortfolioAfters } = usePayloadGraphQL()
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 
 const { data, pending } = await fetchPortfolioAfters(12, 1)
 const items = computed(() => (data.value?.docs || []) as PortfolioAfter[])
@@ -66,19 +67,6 @@ const getAnimationDelay = (index: number): number => {
     const row = Math.floor(index / columns)
     const col = index % columns
     return (row + col) * 80
-}
-
-const getMediaUrl = (url: string): string => {
-    if (!url) return ''
-    if (url.startsWith('http')) return url
-    return `${config.public.payloadBaseUrl}${url}`
-}
-
-const getFocalPointStyle = (media: any) => {
-    if (!media?.focalX || !media?.focalY) return {}
-    return {
-        objectPosition: `${media.focalX}% ${media.focalY}%`
-    }
 }
 </script>
 

@@ -13,6 +13,8 @@
                         :src="getMediaUrl(post.heroImage.url)"
                         :alt="post.heroImage.alt || post.title"
                         :style="getFocalPointStyle(post.heroImage)"
+                        loading="eager"
+                        preload
                         class="w-full h-auto object-cover aspect-4/3"
                     />
                 </div>
@@ -67,8 +69,8 @@
 import type { IPost } from "~~/types";
 
 const route = useRoute();
-const config = useRuntimeConfig();
 const { fetchPostBySlug, fetchPosts } = usePayloadGraphQL();
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
 // Fetch post by slug from the route params
 const { data: post } = await fetchPostBySlug(route.params.slug as string);
@@ -98,25 +100,6 @@ const relatedPosts = computed(() => {
     return filtered;
 });
 
-// Helper function to get media URL with base URL prepended if needed
-const getMediaUrl = (url: string): string => {
-    if (!url) return "";
-    if (url.startsWith("http")) {
-        return url;
-    }
-    return `${config.public.payloadBaseUrl}${url}`;
-};
-
-// Helper function to get focal point positioning for images
-const getFocalPointStyle = (media: any) => {
-    if (!media?.focalX || !media?.focalY) {
-        return {};
-    }
-
-    return {
-        objectPosition: `${media.focalX}% ${media.focalY}%`,
-    };
-};
 </script>
 
 <style scoped>

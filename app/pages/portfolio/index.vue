@@ -10,7 +10,7 @@
             class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
         >
             <NuxtLink
-                v-for="item in items"
+                v-for="(item, index) in items"
                 :key="item.id"
                 :to="`/portfolio/${item.slug}`"
                 class="group overflow-hidden cursor-pointer flex flex-col transition-all duration-300 shadow-sm hover:shadow-md hover:scale-[1.02]"
@@ -36,6 +36,7 @@
                             :src="getMediaUrl(item.afterPhoto.url)"
                             :alt="item.afterPhoto.alt || item.title"
                             :style="getFocalPointStyle(item.afterPhoto)"
+                            :loading="index < 3 ? 'eager' : 'lazy'"
                             :class="[
                                 'w-full h-full object-cover rounded-none! transition-transform duration-500 group-hover:scale-105',
                                 imageLoading[item.id] ? 'opacity-0' : 'opacity-100'
@@ -111,8 +112,8 @@
 </template>
 
 <script setup lang="ts">
-const config = useRuntimeConfig();
 const { fetchPortfolio } = usePayloadGraphQL();
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
 // Pagination state
 const currentPage = ref(1);
@@ -176,22 +177,4 @@ const loadMore = async () => {
     }
 };
 
-// Helper function to get media URL
-const getMediaUrl = (url: string): string => {
-    if (!url) return "";
-    if (url.startsWith("http")) {
-        return url;
-    }
-    return `${config.public.payloadBaseUrl}${url}`;
-};
-
-// Helper function for focal point positioning
-const getFocalPointStyle = (media: any) => {
-    if (!media?.focalX || !media?.focalY) {
-        return {};
-    }
-    return {
-        objectPosition: `${media.focalX}% ${media.focalY}%`,
-    };
-};
 </script>

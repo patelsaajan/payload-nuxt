@@ -12,6 +12,7 @@
                     :src="imageUrl"
                     :alt="image?.alt || title"
                     :style="focalPointStyle"
+                    loading="lazy"
                     :class="[
                         'w-full aspect-square object-cover rounded-[var(--border-radius)]',
                         isLoading ? 'opacity-0 absolute inset-0' : 'opacity-100'
@@ -51,7 +52,7 @@ const props = defineProps<{
     flipped?: boolean
 }>()
 
-const config = useRuntimeConfig()
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 
 // Image loading state
 const isLoading = ref(true)
@@ -60,21 +61,11 @@ const imgRef = ref<{ $el: HTMLImageElement } | null>(null)
 // Computed image URL
 const imageUrl = computed(() => {
     if (!props.image?.url) return ''
-    if (props.image.url.startsWith('http')) {
-        return props.image.url
-    }
-    return `${config.public.payloadBaseUrl}${props.image.url}`
+    return getMediaUrl(props.image.url)
 })
 
 // Focal point style
-const focalPointStyle = computed(() => {
-    if (!props.image?.focalX || !props.image?.focalY) {
-        return {}
-    }
-    return {
-        objectPosition: `${props.image.focalX}% ${props.image.focalY}%`
-    }
-})
+const focalPointStyle = computed(() => getFocalPointStyle(props.image))
 
 // Badge styling based on variant
 const badgeClass = computed(() => {

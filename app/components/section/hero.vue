@@ -13,6 +13,8 @@
             :src="getMediaUrl(hero.media.url)"
             :alt="hero.media.alt || 'Hero image'"
             :style="getFocalPointStyle(hero.media)"
+            loading="eager"
+            preload
             :class="[
                 'w-full h-full object-cover rounded-none',
                 isLoading ? 'opacity-0' : 'opacity-100'
@@ -40,6 +42,8 @@
                     ref="imageRef"
                     :src="getMediaUrl(hero.media.url)"
                     :alt="hero.media.alt || 'Hero image'"
+                    loading="eager"
+                    preload
                     :class="[
                         'w-full object-cover aspect-4/3 rounded-[var(--border-radius)]',
                         isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
@@ -71,6 +75,8 @@
                     ref="imageRef"
                     :src="getMediaUrl(hero.media.url)"
                     :alt="hero.media.alt || 'Hero image'"
+                    loading="eager"
+                    preload
                     :class="[
                         'w-full object-cover aspect-4/3 rounded-[var(--border-radius)]',
                         isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
@@ -157,6 +163,8 @@
                     ref="imageRef"
                     :src="getMediaUrl(hero.media.url)"
                     :alt="hero.media.alt || 'Hero image'"
+                    loading="eager"
+                    preload
                     :class="[
                         'rounded-[var(--border-radius)] w-full object-cover aspect-4/3',
                         isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
@@ -170,7 +178,7 @@
 </template>
 
 <script setup lang="ts">
-const config = useRuntimeConfig();
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
 // Define props
 const props = defineProps<{
@@ -244,14 +252,6 @@ const getHeroContainerClasses = (hero: any): string => {
     return baseClasses;
 };
 
-// Helper function to get media URL with base URL prepended if needed
-const getMediaUrl = (url: string): string => {
-    if (url.startsWith("http")) {
-        return url;
-    }
-    return `${config.public.payloadBaseUrl}${url}`;
-};
-
 // Helper function to get background color style
 const getBackgroundStyle = (backgroundColor?: string) => {
     const colorMap: Record<string, string> = {
@@ -282,18 +282,6 @@ const getTextColorStyle = (textColor?: string) => {
 
     return {
         color: color,
-    };
-};
-
-// Helper function to get focal point positioning for images
-const getFocalPointStyle = (media: any) => {
-    if (!media?.focalX || !media?.focalY) {
-        return {};
-    }
-
-    // Payload stores focal point as percentages (0-100)
-    return {
-        objectPosition: `${media.focalX}% ${media.focalY}%`,
     };
 };
 </script>

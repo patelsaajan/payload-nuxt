@@ -42,6 +42,7 @@
                                 :src="getMediaUrl(item.afterPhoto.url)"
                                 :alt="item.afterPhoto.alt || item.title"
                                 :style="getFocalPointStyle(item.afterPhoto)"
+                                loading="lazy"
                                 :class="[
                                     'w-full h-full object-cover rounded-none! transition-transform duration-500 group-hover:scale-105',
                                     loadedImages[item.id] ? 'opacity-100' : 'opacity-0'
@@ -98,8 +99,8 @@ defineProps<{
     hasBackground?: boolean
 }>();
 
-const config = useRuntimeConfig()
 const { fetchPortfolioAfters } = usePayloadGraphQL()
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 
 // Fetch data
 const { data } = await fetchPortfolioAfters(3, 1)
@@ -133,22 +134,4 @@ onMounted(() => {
     nextTick(checkImagesLoaded)
 })
 
-// Helper function to get media URL
-const getMediaUrl = (url: string): string => {
-    if (!url) return ''
-    if (url.startsWith('http')) {
-        return url
-    }
-    return `${config.public.payloadBaseUrl}${url}`
-}
-
-// Helper function for focal point positioning
-const getFocalPointStyle = (media: any) => {
-    if (!media?.focalX || !media?.focalY) {
-        return {}
-    }
-    return {
-        objectPosition: `${media.focalX}% ${media.focalY}%`,
-    }
-}
 </script>

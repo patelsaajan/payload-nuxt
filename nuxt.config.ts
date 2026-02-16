@@ -146,7 +146,9 @@ export default defineNuxtConfig({
     },
 
     // Allow external domains (for Payload media)
-    domains: []
+    domains: [
+      process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL?.replace(/^https?:\/\//, '') || 'localhost:3000'
+    ]
   },
 
   ui: {
