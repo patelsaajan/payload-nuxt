@@ -11,7 +11,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-0">
             <!-- Image Section (Left) -->
             <div class="h-64 lg:h-auto overflow-hidden order-2 lg:order-1">
-                <img
+                <NuxtImg
                     v-if="post.heroImage || post.meta?.image"
                     :src="getMediaUrl((post.heroImage || post.meta?.image).url)"
                     :alt="
@@ -20,6 +20,7 @@
                     :style="
                         getFocalPointStyle(post.heroImage || post.meta?.image)
                     "
+                    loading="eager"
                     class="w-full h-full object-cover"
                     style="border-radius: 0 !important"
                 />
@@ -123,27 +124,7 @@ const props = defineProps<{
     post: IPost;
 }>();
 
-const config = useRuntimeConfig();
-
-// Helper function to get media URL with base URL prepended if needed
-const getMediaUrl = (url: string): string => {
-    if (!url) return "";
-    if (url.startsWith("http")) {
-        return url;
-    }
-    return `${config.public.payloadBaseUrl}${url}`;
-};
-
-// Helper function to get focal point positioning for images
-const getFocalPointStyle = (media: any) => {
-    if (!media?.focalX || !media?.focalY) {
-        return {};
-    }
-
-    return {
-        objectPosition: `${media.focalX}% ${media.focalY}%`,
-    };
-};
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 </script>
 
 <style scoped>

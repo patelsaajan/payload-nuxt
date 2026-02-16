@@ -5,11 +5,12 @@
     class="card flex flex-1 overflow-hidden shadow-md hover:shadow-xl border transition-all duration-300 h-full flex-col no-underline"
   >
     <div class="w-full h-[200px] overflow-hidden relative">
-      <img
+      <NuxtImg
         v-if="imageUrl"
         :src="imageUrl"
         :alt="imageAlt"
         :style="combinedImageStyle"
+        loading="lazy"
         class="card-image w-full h-full object-cover transition-transform duration-500 ease-out"
       />
       <div v-else :style="placeholderStyle" class="w-full h-full flex items-center justify-center">
@@ -62,18 +63,14 @@ const props = defineProps<{
   relationTo: typeRelationTo
 }>()
 
-const config = useRuntimeConfig()
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 
 // Helper function to get media URL with base URL prepended if needed
 const imageUrl = computed(() => {
   // Both posts and case studies use heroImage, posts can fallback to meta.image
   const url = props.post.heroImage?.url || props.post.meta?.image?.url || ''
-
   if (!url) return ''
-  if (url.startsWith('http')) {
-    return url
-  }
-  return `${config.public.payloadBaseUrl}${url}`
+  return getMediaUrl(url)
 })
 
 // Get image alt text
@@ -98,18 +95,10 @@ const cardStyle = computed(() => ({
   borderColor: 'color-mix(in srgb, var(--color-text) 10%, transparent)'
 }))
 
-// Helper function to get focal point positioning for images
+// Focal point positioning for images
 const focalPointStyle = computed(() => {
-  // Both posts and case studies use heroImage, posts can fallback to meta.image
   const media = props.post.heroImage || props.post.meta?.image
-
-  if (!media?.focalX || !media?.focalY) {
-    return {}
-  }
-
-  return {
-    objectPosition: `${media.focalX}% ${media.focalY}%`
-  }
+  return getFocalPointStyle(media)
 })
 
 // Combined image style with focal point

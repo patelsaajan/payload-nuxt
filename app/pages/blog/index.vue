@@ -10,7 +10,7 @@
             class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
         >
             <NuxtLink
-                v-for="post in posts"
+                v-for="(post, index) in posts"
                 :key="post.id"
                 :to="`/blog/${post.slug}`"
                 class="overflow-hidden cursor-pointer flex flex-col transition-all duration-300 shadow-sm hover:shadow-lg hover:scale-[1.03]"
@@ -37,6 +37,7 @@
                             :src="getMediaUrl((post.heroImage || post.meta?.image).url)"
                             :alt="(post.heroImage || post.meta?.image).alt || post.title"
                             :style="getFocalPointStyle(post.heroImage || post.meta?.image)"
+                            :loading="index < 4 ? 'eager' : 'lazy'"
                             :class="[
                                 'w-full h-full object-cover rounded-none!',
                                 imageLoading[post.id] ? 'opacity-0' : 'opacity-100'
@@ -139,8 +140,8 @@
 </template>
 
 <script setup lang="ts">
-const config = useRuntimeConfig();
 const { fetchPosts } = usePayloadGraphQL();
+const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
 // Pagination state
 const currentPage = ref(1);
@@ -205,23 +206,4 @@ const loadMore = async () => {
     }
 };
 
-// Helper function to get media URL with base URL prepended if needed
-const getMediaUrl = (url: string): string => {
-    if (!url) return "";
-    if (url.startsWith("http")) {
-        return url;
-    }
-    return `${config.public.payloadBaseUrl}${url}`;
-};
-
-// Helper function to get focal point positioning for images
-const getFocalPointStyle = (media: any) => {
-    if (!media?.focalX || !media?.focalY) {
-        return {};
-    }
-
-    return {
-        objectPosition: `${media.focalX}% ${media.focalY}%`,
-    };
-};
 </script>
