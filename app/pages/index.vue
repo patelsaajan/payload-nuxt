@@ -30,11 +30,11 @@ const { fetchPageBySlug } = usePayloadGraphQL();
 const { data: homePage } = await fetchPageBySlug("home");
 
 useSeoMeta({
-    title: homePage.value.meta.title || 'Home',
-    ogTitle: homePage.value.meta.socialTitle || 'Home',
-    description: homePage.value.meta.description,
-    ogDescription: homePage.value.meta.description,
-    ogImage: homePage.value.meta.image.url
+    title: homePage.value?.meta?.title || 'Home',
+    ogTitle: homePage.value?.meta?.socialTitle || 'Home',
+    description: homePage.value?.meta?.description,
+    ogDescription: homePage.value?.meta?.description,
+    ogImage: homePage.value?.meta?.image?.url
 })
 
 // Cache for resolved block components to prevent infinite re-renders
