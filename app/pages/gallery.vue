@@ -55,6 +55,10 @@
 <script setup lang="ts">
 import type { PortfolioAfter } from '~~/types/portfolio'
 
+useHead({
+    title: 'Gallery',
+})
+
 const { fetchPortfolioAfters } = usePayloadGraphQL()
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 

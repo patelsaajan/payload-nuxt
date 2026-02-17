@@ -40,6 +40,10 @@ if (!page.value) {
     throw createError({ statusCode: 404, statusMessage: "Page not found" });
 }
 
+useHead({
+    title: page.value.title || 'Page'
+})
+
 // Dynamic block component resolver
 // Maps Payload blockType to dynamically imported component
 const getBlockComponent = (blockType: string) => {

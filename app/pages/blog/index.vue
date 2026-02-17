@@ -143,6 +143,10 @@
 const { fetchPosts } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
+useHead({
+    title: 'Blog'
+})
+
 // Pagination state
 const currentPage = ref(1);
 const postsPerPage = 4;
