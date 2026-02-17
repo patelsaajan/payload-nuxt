@@ -77,8 +77,8 @@ const { formatDate } = useFormatDate();
 const { data: post } = await fetchPostBySlug(route.params.slug as string);
 
 useSeoMeta({
-    title: post.value?.meta?.title || '',
-    ogTitle: post.value?.meta?.socialTitle || '',
+    title: post.value?.meta?.title || post.value.title ||'',
+    ogTitle: post.value?.meta?.socialTitle || post.value.title || '',
     description: post.value?.meta?.description,
     ogDescription: post.value?.meta?.description,
     ogImage: post.value?.meta?.image?.url ?? post.value?.heroImage?.url ?? ''

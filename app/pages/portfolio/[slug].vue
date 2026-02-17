@@ -88,10 +88,10 @@ const { formatDate } = useFormatDate()
 const { data: item } = await fetchPortfolioBySlug(route.params.slug as string)
 
 useSeoMeta({
-    title: item.value?.meta?.title || '',
-    ogTitle: item.value?.meta?.socialTitle || '',
-    description: item.value?.meta?.description,
-    ogDescription: item.value?.meta?.description,
+    title: item.value?.meta?.title || item.value.title || '',
+    ogTitle: item.value?.meta?.socialTitle || item.value.title || '',
+    description: item.value?.meta?.description || item.value.description,
+    ogDescription: item.value?.meta?.description || item.value.description,
     ogImage: item.value?.meta?.image?.url ?? item.value?.afterPhoto?.url ?? ''
 })
 
