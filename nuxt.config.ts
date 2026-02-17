@@ -26,6 +26,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       payloadBaseUrl: '', // Set in env
+      siteName: 'Professional Portfolio & Projects',
       cssConstants: '' // fetched from payload cms
     }
   },
@@ -171,6 +172,9 @@ export default defineNuxtConfig({
   app: {
     pageTransition: { name: 'fade', mode: 'out-in' },
     head: {
+      htmlAttrs: {
+        lang: 'en',
+      },
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
       ]

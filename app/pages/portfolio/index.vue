@@ -115,6 +115,10 @@
 const { fetchPortfolio } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
+useHead({
+    title: 'Portfolio'
+})
+
 // Pagination state
 const currentPage = ref(1);
 const itemsPerPage = 6;

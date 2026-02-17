@@ -97,6 +97,10 @@ const formatDate = (dateString: string): string => {
 // Fetch data
 const { data: item } = await fetchPortfolioBySlug(route.params.slug as string)
 
+useHead({
+    title: item.value.title || 'Portfolio Item'
+})
+
 // Scroll progress
 const scrollProgress = ref(0)
 

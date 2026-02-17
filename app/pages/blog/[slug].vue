@@ -75,6 +75,10 @@ const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 // Fetch post by slug from the route params
 const { data: post } = await fetchPostBySlug(route.params.slug as string);
 
+useHead({
+    title: post.value.title || 'Blog Title'
+})
+
 // If no post found, show 404
 if (!post.value) {
     throw createError({
