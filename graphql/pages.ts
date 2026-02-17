@@ -7,6 +7,15 @@ export const GET_PAGE_BY_SLUG = gql`
         id
         title
         slug
+        meta {
+          title
+          socialTitle
+          description
+          socialDescription
+          image {
+            url
+          }
+        }
         hero {
           type
           heading

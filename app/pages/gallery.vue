@@ -55,8 +55,9 @@
 <script setup lang="ts">
 import type { PortfolioAfter } from '~~/types/portfolio'
 
-useHead({
+useSeoMeta({
     title: 'Gallery',
+    description: 'Come and view some of my work on my gallery page',
 })
 
 const { fetchPortfolioAfters } = usePayloadGraphQL()

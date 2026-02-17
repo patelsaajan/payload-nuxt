@@ -64,6 +64,7 @@ const props = defineProps<{
 }>()
 
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
+const { formatDate } = useFormatDate()
 
 // Helper function to get media URL with base URL prepended if needed
 const imageUrl = computed(() => {
@@ -110,15 +111,7 @@ const placeholderStyle = computed(() => ({
   color: 'var(--color-secondary-text)'
 }))
 
-// Helper function to format date
-const formattedDate = computed(() => {
-  if (!props.post.publishedAt) return ''
-  return new Date(props.post.publishedAt).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
-})
+const formattedDate = computed(() => formatDate(props.post.publishedAt))
 
 //Generates the url for the post due to the relationTo being in snake_case no kabab-case
 const generateLink = computed (() => {

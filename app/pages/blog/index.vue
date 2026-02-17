@@ -63,15 +63,7 @@
                                 class="text-xs font-medium"
                                 style="color: var(--color-text)"
                             >
-                                {{
-                                    new Date(
-                                        post.publishedAt,
-                                    ).toLocaleDateString("en-US", {
-                                        year: "numeric",
-                                        month: "short",
-                                        day: "numeric",
-                                    })
-                                }}
+                                {{ formatDate(post.publishedAt) }}
                             </span>
                         </div>
 
@@ -142,9 +134,13 @@
 <script setup lang="ts">
 const { fetchPosts } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
+const { formatDate } = useFormatDate();
 
 useHead({
-    title: 'Blog'
+    title: 'Blog',
+    meta: [{
+        name: 'description', content: 'Here our some of my latests thoughts and blog posts'
+    }]
 })
 
 // Pagination state

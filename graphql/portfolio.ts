@@ -45,6 +45,15 @@ export const GET_PORTFOLIO_BY_SLUG = gql`
         title
         slug
         description
+        meta {
+          title
+          socialTitle
+          description
+          socialDescription
+          image {
+            url
+          }
+        }
         afterPhoto {
           id
           alt

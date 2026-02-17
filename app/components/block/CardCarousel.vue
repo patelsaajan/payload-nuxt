@@ -30,7 +30,7 @@
                         v-if="card.date"
                         class="text-xs opacity-60 shrink-0"
                     >
-                        {{ formatDate(card.date) }}
+                        {{ formatDate(card.date, 'short') }}
                     </p>
                 </div>
             </div>
@@ -49,12 +49,5 @@ defineProps<{
     cards: ICard[];
 }>();
 
-const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-    });
-};
+const { formatDate } = useFormatDate()
 </script>

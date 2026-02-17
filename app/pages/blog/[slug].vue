@@ -26,7 +26,7 @@
                         v-if="post.publishedAt"
                         class="text-gray-600 dark:text-gray-400 mb-8"
                     >
-                        {{ new Date(post.publishedAt).toLocaleDateString() }}
+                        {{ formatDate(post.publishedAt) }}
                     </div>
                 </div>
 
@@ -71,12 +71,17 @@ import type { IPost } from "~~/types";
 const route = useRoute();
 const { fetchPostBySlug, fetchPosts } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
+const { formatDate } = useFormatDate();
 
 // Fetch post by slug from the route params
 const { data: post } = await fetchPostBySlug(route.params.slug as string);
 
-useHead({
-    title: post.value.title || 'Blog Title'
+useSeoMeta({
+    title: post.value?.meta?.title || '',
+    ogTitle: post.value?.meta?.socialTitle || '',
+    description: post.value?.meta?.description,
+    ogDescription: post.value?.meta?.description,
+    ogImage: post.value?.meta?.image?.url ?? post.value?.heroImage?.url ?? ''
 })
 
 // If no post found, show 404

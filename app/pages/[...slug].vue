@@ -40,8 +40,12 @@ if (!page.value) {
     throw createError({ statusCode: 404, statusMessage: "Page not found" });
 }
 
-useHead({
-    title: page.value.title || 'Page'
+useSeoMeta({
+    title: page.value?.meta?.title || '',
+    ogTitle: page.value?.meta?.socialTitle || '',
+    description: page.value?.meta?.description,
+    ogDescription: page.value?.meta?.description,
+    ogImage: page.value?.meta?.image?.url ?? ''
 })
 
 // Dynamic block component resolver

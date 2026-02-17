@@ -59,16 +59,7 @@
                         class="text-sm font-medium"
                         style="color: var(--color-accent)"
                     >
-                        {{
-                            new Date(post.publishedAt).toLocaleDateString(
-                                "en-US",
-                                {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                },
-                            )
-                        }}
+                        {{ formatDate(post.publishedAt) }}
                     </span>
                 </div>
 
@@ -125,6 +116,7 @@ const props = defineProps<{
 }>();
 
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
+const { formatDate } = useFormatDate();
 </script>
 
 <style scoped>
