@@ -41,8 +41,8 @@ if (!page.value) {
 }
 
 useSeoMeta({
-    title: page.value?.meta?.title || '',
-    ogTitle: page.value?.meta?.socialTitle || '',
+    title: page.value?.meta?.title || page.value.title || '',
+    ogTitle: page.value?.meta?.socialTitle || page.value.title || '',
     description: page.value?.meta?.description,
     ogDescription: page.value?.meta?.description,
     ogImage: page.value?.meta?.image?.url ?? ''
