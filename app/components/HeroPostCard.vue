@@ -12,10 +12,10 @@
             <!-- Image Section (Left) -->
             <div class="h-64 lg:h-auto overflow-hidden order-2 lg:order-1">
                 <NuxtImg
-                    v-if="post.heroImage || post.meta?.image"
-                    :src="getMediaUrl((post.heroImage || post.meta?.image).url)"
+                    v-if="post.heroImage"
+                    :src="getMediaUrl(post.heroImage?.url)"
                     :alt="
-                        (post.heroImage || post.meta?.image).alt || post.title
+                        post.heroImage.alt || post.title
                     "
                     :style="
                         getFocalPointStyle(post.heroImage || post.meta?.image)
