@@ -51,6 +51,7 @@ const props = defineProps<{
 }>();
 
 const config = useRuntimeConfig();
+const { formatDate } = useFormatDate();
 
 // Get image URL
 const imageUrl = computed(() => {
@@ -99,13 +100,5 @@ const placeholderStyle = computed(() => ({
     color: "var(--color-secondary-text)",
 }));
 
-// Format date
-const formattedDate = computed(() => {
-    if (!props.post.publishedAt) return "";
-    return new Date(props.post.publishedAt).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-    });
-});
+const formattedDate = computed(() => formatDate(props.post.publishedAt));
 </script>

@@ -115,8 +115,9 @@
 const { fetchPortfolio } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
-useHead({
-    title: 'Portfolio'
+useSeoMeta({
+    title: 'Portfolio',
+    description: 'Come and view some of my work on my portfolio page',
 })
 
 // Pagination state

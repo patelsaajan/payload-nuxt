@@ -7,7 +7,7 @@
         :default-value="normalisedDefaultValue"
         :color="timelineVariant"
         :reverse="true"
-        :orientation="orientation ? orientation : 'vertical'"
+        :orientation="orientation"
         size="3xl"
         :ui="{
           indicator: timelineVariant === 'secondary' ? 'text-secondary-text!' : 'text-primary-text!',
@@ -23,18 +23,19 @@
 
 <script setup lang="ts">
 import type { TimelineItem } from '@nuxt/ui'
-import type { sep } from 'node:path';
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   id: string
   blockType: string
   blockName?: string
   title?: string
   defaultValue: number | null
-  orientation: 'vertical' | 'horizontal'
+  orientation?: 'vertical' | 'horizontal'
   timelineVariant?: 'primary' | 'secondary' | 'accent'
   items: TimelineItem[]
-}>()
+}>(), {
+  orientation: 'vertical'
+})
 
 const normalisedDefaultValue = computed(() => {
   return props.defaultValue !== null ? props.defaultValue - 1 : props.items.length - 1

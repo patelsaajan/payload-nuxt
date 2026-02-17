@@ -14,14 +14,6 @@ export const GET_POSTS = gql`
           focalX
           focalY
         }
-        meta {
-          description
-          image {
-            id
-            alt
-            url
-          }
-        }
         categories {
           id
         }
@@ -54,14 +46,6 @@ export const GET_POSTS_WITH_FILTER = gql`
           alt
           url
         }
-        meta {
-          description
-          image {
-            id
-            alt
-            url
-          }
-        }
         categories {
           id
         }
@@ -78,20 +62,18 @@ export const GET_POST_BY_SLUG = gql`
         id
         title
         slug
+        meta {
+          title
+          socialTitle
+          description
+          socialDescription
+        }
         heroImage {
           id
           alt
           url
           focalX
           focalY
-        }
-        meta {
-          description
-          image {
-            id
-            alt
-            url
-          }
         }
         content
         categories {

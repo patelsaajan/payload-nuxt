@@ -82,23 +82,17 @@
 <script setup lang="ts">
 const route = useRoute()
 const { fetchPortfolioBySlug } = usePayloadGraphQL()
-
-// Helper functions
-const formatDate = (dateString: string): string => {
-    if (!dateString) return ''
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    })
-}
+const { formatDate } = useFormatDate()
 
 // Fetch data
 const { data: item } = await fetchPortfolioBySlug(route.params.slug as string)
 
-useHead({
-    title: item.value.title || 'Portfolio Item'
+useSeoMeta({
+    title: item.value?.meta?.title || '',
+    ogTitle: item.value?.meta?.socialTitle || '',
+    description: item.value?.meta?.description,
+    ogDescription: item.value?.meta?.description,
+    ogImage: item.value?.meta?.image?.url ?? item.value?.afterPhoto?.url ?? ''
 })
 
 // Scroll progress
