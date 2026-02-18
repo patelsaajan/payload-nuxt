@@ -19,27 +19,27 @@
             v-else
             class="gallery-grid grid grid-cols-2 sm:grid-cols-3 gap-4"
         >
-            <NuxtLink
+            <div
                 v-for="(item, index) in items"
                 :key="item.id"
-                :to="`/portfolio/${item.slug}`"
-                class="relative aspect-square overflow-hidden rounded-[var(--border-radius)] group gallery-item"
+                class="relative aspect-square overflow-hidden rounded-[var(--border-radius)] group gallery-item cursor-pointer"
                 :style="{ '--delay': `${getAnimationDelay(index)}ms` }"
+                @click="openModal(item, index)"
             >
                 <NuxtImg
-                    :src="getMediaUrl(item.afterPhoto.url)"
-                    :alt="item.afterPhoto.alt || item.title"
-                    :style="getFocalPointStyle(item.afterPhoto)"
+                    :src="getMediaUrl(item.url)"
+                    :alt="item.alt || 'Gallery Photo'"
+                    :style="getFocalPointStyle(item)"
                     :loading="index < 3 ? 'eager' : 'lazy'"
                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
 
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                     <span class="text-white text-sm font-medium">
-                        {{ item.title }}
+                        {{ item.title ? item.title : `Gallery Item ${index + 1}` }}
                     </span>
                 </div>
-            </NuxtLink>
+            </div>
         </div>
 
         <!-- Empty state -->
@@ -49,22 +49,63 @@
         >
             <p>No gallery items found.</p>
         </div>
+
+        <!-- Gallery Modal -->
+        <UModal
+            v-model:open="isModalOpen"
+            :title="selectedItem?.title || `Gallery Item ${selectedIndex + 1}`"
+            :description="selectedItem?.alt || 'Gallery image'"
+            :ui="{ content: 'sm:max-w-3xl bg-[var(--color-secondary)] overflow-hidden' }"
+        >
+            <template #content>
+                <div class="overflow-hidden">
+                    <NuxtImg
+                        v-if="selectedItem"
+                        :src="getMediaUrl(selectedItem.url)"
+                        :alt="selectedItem.alt || 'Gallery Photo'"
+                        :style="getFocalPointStyle(selectedItem)"
+                        class="w-full aspect-[4/3] object-cover"
+                    />
+                    <div class="p-6 text-[var(--color-secondary-text)]">
+                        <h2 class="text-2xl font-bold">
+                            {{ selectedItem?.title || `Gallery Item ${selectedIndex + 1}` }}
+                        </h2>
+                        <RichText
+                            v-if="selectedItem?.caption"
+                            :content="selectedItem.caption"
+                            class="mt-3 opacity-80"
+                        />
+                    </div>
+                </div>
+            </template>
+        </UModal>
     </div>
 </template>
 
 <script setup lang="ts">
-import type { PortfolioAfter } from '~~/types/portfolio'
+import type { IMedia } from '~~/types/common'
 
 useSeoMeta({
     title: 'Gallery',
     description: 'Come and view some of my work on my gallery page',
 })
 
-const { fetchPortfolioAfters } = usePayloadGraphQL()
+const { fetchGallery } = usePayloadGraphQL()
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 
-const { data, pending } = await fetchPortfolioAfters(12, 1)
-const items = computed(() => (data.value?.docs || []) as PortfolioAfter[])
+const { data, pending } = await fetchGallery(12, 1)
+const items = computed(() => (data.value || []) as IMedia[])
+
+// Modal state
+const isModalOpen = ref(false)
+const selectedItem = ref<IMedia | null>(null)
+const selectedIndex = ref(0)
+
+const openModal = (item: IMedia, index: number) => {
+    selectedItem.value = item
+    selectedIndex.value = index
+    isModalOpen.value = true
+}
 
 // Diagonal stagger timing
 const getAnimationDelay = (index: number): number => {
