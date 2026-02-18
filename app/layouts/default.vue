@@ -5,17 +5,12 @@
         class="mb-4"
       >
         <div class="container mx-auto">
-          <UNavigationMenu
-            color="primary"
-            variant="link"
+          <LayoutNavMenu 
             :items="items"
-            class="w-full"
-          :ui="{
-              item: 'ml-0',
-              link: 'pl-0 pr-8 ml-0',
-
-            }"
-           />
+          />
+          <LayoutMobileNavMenu
+            :items="items"
+          />
         </div>
       </header>
       <main class="flex-1">
@@ -26,7 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+import NavMenu from '~/components/layout/NavMenu.vue'
+
 
 const route = useRoute()
 const { fetchHeader } = usePayloadGraphQL()
