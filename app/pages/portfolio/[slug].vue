@@ -83,6 +83,7 @@
 const route = useRoute()
 const { fetchPortfolioBySlug } = usePayloadGraphQL()
 const { formatDate } = useFormatDate()
+const config = useRuntimeConfig()
 
 // Fetch data
 const { data: item } = await fetchPortfolioBySlug(route.params.slug as string)
@@ -92,7 +93,7 @@ useSeoMeta({
     ogTitle: item.value?.meta?.socialTitle || item.value.title || '',
     description: item.value?.meta?.description || item.value.description,
     ogDescription: item.value?.meta?.description || item.value.description,
-    ogImage: item.value?.meta?.image?.url ?? item.value?.afterPhoto?.url ?? ''
+    ogImage: item.value?.meta?.image?.url ? config.public.payloadBaseUrl + item.value.meta.image.url : '/favicon.ico'
 })
 
 // Scroll progress

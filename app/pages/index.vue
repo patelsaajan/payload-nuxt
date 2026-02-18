@@ -25,6 +25,7 @@
 
 <script setup lang="ts">
 const { fetchPageBySlug } = usePayloadGraphQL();
+const config = useRuntimeConfig()
 
 // Home page always fetches the 'home' slug
 const { data: homePage } = await fetchPageBySlug("home");
@@ -33,8 +34,8 @@ useSeoMeta({
     title: homePage.value?.meta?.title || 'Home',
     ogTitle: homePage.value?.meta?.socialTitle || 'Home',
     description: homePage.value?.meta?.description,
-    ogDescription: homePage.value?.meta?.description,
-    ogImage: homePage.value?.meta?.image?.url
+    ogDescription: homePage.value?.meta?.socialDescription,
+    ogImage: homePage.value?.meta?.image?.url ? config.public.payloadBaseUrl + homePage.value.meta.image.url : '/favicon.ico'
 })
 
 // Cache for resolved block components to prevent infinite re-renders

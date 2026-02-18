@@ -72,6 +72,7 @@ const route = useRoute();
 const { fetchPostBySlug, fetchPosts } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 const { formatDate } = useFormatDate();
+const config = useRuntimeConfig()
 
 // Fetch post by slug from the route params
 const { data: post } = await fetchPostBySlug(route.params.slug as string);
@@ -80,8 +81,8 @@ useSeoMeta({
     title: post.value?.meta?.title || post.value.title ||'',
     ogTitle: post.value?.meta?.socialTitle || post.value.title || '',
     description: post.value?.meta?.description,
-    ogDescription: post.value?.meta?.description,
-    ogImage: post.value?.meta?.image?.url ?? post.value?.heroImage?.url ?? ''
+    ogDescription: post.value?.meta?.socialDescription,
+    ogImage: post.value?.meta?.image?.url ? config.public.payloadBaseUrl + post.value.meta.image.url : '/favicon.ico'
 })
 
 // If no post found, show 404
