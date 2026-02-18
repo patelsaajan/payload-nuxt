@@ -4,6 +4,7 @@ import { GET_POSTS, GET_POSTS_WITH_FILTER, GET_POST_BY_SLUG } from '../../graphq
 import { GET_HEADER } from '../../graphql/header'
 import { GET_BRANDING } from '../../graphql/branding'
 import { GET_PORTFOLIO, GET_PORTFOLIO_BY_SLUG, GET_PORTFOLIO_AFTERS } from '../../graphql/portfolio'
+import { GET_GALLERY_BY_PAGE} from '../../graphql/media'
 
 export const usePayloadGraphQL = () => {
   const config = useRuntimeConfig()
@@ -150,7 +151,7 @@ export const usePayloadGraphQL = () => {
     )
   }
 
-  const fetchPortfolioAfters = async (limit: number = 3, page: number = 1) => {
+  const fetchPortfolioAfters = async (limit: number = 9, page: number = 1) => {
     return useAsyncData(
       `portfolio-afters-${limit}-${page}`,
       async () => {
@@ -166,6 +167,23 @@ export const usePayloadGraphQL = () => {
     )
   }
 
+  const fetchGallery = async (limit: number = 12, page: number = 1) => {
+    return useAsyncData(
+      `gallery-${limit}-${page}`,
+      async () => {
+        try {
+          const data: any = await client.request(GET_GALLERY_BY_PAGE, { limit, page })
+          console.log('data', data.allMedia.docs)
+          return data.allMedia.docs || { docs: [], hasNextPage: false }
+        } catch (error) {
+          console.error('Error fetching gallery:', error)
+          return { docs: [], hasNextPage: false }
+        }
+      },
+      { getCachedData }
+    )
+  }
+
   return {
     fetchPageBySlug,
     fetchHeader,
@@ -174,6 +192,7 @@ export const usePayloadGraphQL = () => {
     fetchPostBySlug,
     fetchPortfolio,
     fetchPortfolioBySlug,
-    fetchPortfolioAfters
+    fetchPortfolioAfters,
+    fetchGallery
   }
 }

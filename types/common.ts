@@ -5,6 +5,8 @@ export interface IMedia {
   id?: string;
   url: string;
   alt?: string;
+  caption?: string;
+  title?: string;
   focalX?: number;
   focalY?: number;
 }
