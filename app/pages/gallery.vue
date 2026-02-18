@@ -22,8 +22,9 @@
             <div
                 v-for="(item, index) in items"
                 :key="item.id"
-                class="relative aspect-square overflow-hidden rounded-[var(--border-radius)] group gallery-item"
+                class="relative aspect-square overflow-hidden rounded-[var(--border-radius)] group gallery-item cursor-pointer"
                 :style="{ '--delay': `${getAnimationDelay(index)}ms` }"
+                @click="openModal(item, index)"
             >
                 <NuxtImg
                     :src="getMediaUrl(item.url)"
@@ -48,6 +49,36 @@
         >
             <p>No gallery items found.</p>
         </div>
+
+        <!-- Gallery Modal -->
+        <UModal
+            v-model:open="isModalOpen"
+            :title="selectedItem?.title || `Gallery Item ${selectedIndex + 1}`"
+            :description="selectedItem?.alt || 'Gallery image'"
+            :ui="{ content: 'sm:max-w-3xl bg-[var(--color-secondary)] overflow-hidden' }"
+        >
+            <template #content>
+                <div class="overflow-hidden">
+                    <NuxtImg
+                        v-if="selectedItem"
+                        :src="getMediaUrl(selectedItem.url)"
+                        :alt="selectedItem.alt || 'Gallery Photo'"
+                        :style="getFocalPointStyle(selectedItem)"
+                        class="w-full aspect-[4/3] object-cover"
+                    />
+                    <div class="p-6 text-[var(--color-secondary-text)]">
+                        <h2 class="text-2xl font-bold">
+                            {{ selectedItem?.title || `Gallery Item ${selectedIndex + 1}` }}
+                        </h2>
+                        <RichText
+                            v-if="selectedItem?.caption"
+                            :content="selectedItem.caption"
+                            class="mt-3 opacity-80"
+                        />
+                    </div>
+                </div>
+            </template>
+        </UModal>
     </div>
 </template>
 
@@ -64,6 +95,17 @@ const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 
 const { data, pending } = await fetchGallery(12, 1)
 const items = computed(() => (data.value || []) as IMedia[])
+
+// Modal state
+const isModalOpen = ref(false)
+const selectedItem = ref<IMedia | null>(null)
+const selectedIndex = ref(0)
+
+const openModal = (item: IMedia, index: number) => {
+    selectedItem.value = item
+    selectedIndex.value = index
+    isModalOpen.value = true
+}
 
 // Diagonal stagger timing
 const getAnimationDelay = (index: number): number => {

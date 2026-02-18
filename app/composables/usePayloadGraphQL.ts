@@ -173,7 +173,6 @@ export const usePayloadGraphQL = () => {
       async () => {
         try {
           const data: any = await client.request(GET_GALLERY_BY_PAGE, { limit, page })
-          console.log('data', data.allMedia.docs)
           return data.allMedia.docs || { docs: [], hasNextPage: false }
         } catch (error) {
           console.error('Error fetching gallery:', error)
