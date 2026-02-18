@@ -25,7 +25,7 @@ export default defineAppConfig({
           {
             color: 'primary',
             variant: 'link',
-            class: 'text-red-500 cursor-pointer'
+            class: 'text-primary cursor-pointer rounded-[var(--border-radius)]'
           }
         ]
       },

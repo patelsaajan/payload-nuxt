@@ -28,6 +28,7 @@
 <script setup lang="ts">
 const route = useRoute();
 const { fetchPageBySlug } = usePayloadGraphQL();
+const config = useRuntimeConfig()
 
 // Get slug from route params, join array if nested routes
 const slug = Array.isArray(route.params.slug)
@@ -43,9 +44,11 @@ if (!page.value) {
 useSeoMeta({
     title: page.value?.meta?.title || page.value.title || '',
     ogTitle: page.value?.meta?.socialTitle || page.value.title || '',
+    twitterTitle: page.value?.meta?.socialTitle || page.value.title || '',
     description: page.value?.meta?.description,
-    ogDescription: page.value?.meta?.description,
-    ogImage: page.value?.meta?.image?.url ?? ''
+    ogDescription: page.value?.meta?.socialDescription,
+    twitterDescription: page.value?.meta?.socialDescription,
+    ogImage: page.value?.meta?.image?.url ? config.public.payloadBaseUrl + page.value.meta.image.url : '/favicon.ico'
 })
 
 // Dynamic block component resolver
