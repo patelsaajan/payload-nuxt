@@ -82,7 +82,7 @@ useSeoMeta({
     ogTitle: post.value?.meta?.socialTitle || post.value.title || '',
     description: post.value?.meta?.description,
     ogDescription: post.value?.meta?.socialDescription,
-    ogImage: post.value.heroImage.url ? config.public.payloadBaseUrl + post.value.heroImage.url : '/favicon.ico'
+    ogImage: post.value?.heroImage?.url ? config.public.payloadBaseUrl + post.value.heroImage.url : '/favicon.ico'
 })
 
 // If no post found, show 404
