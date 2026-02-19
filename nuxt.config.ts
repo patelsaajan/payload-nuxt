@@ -17,10 +17,15 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-  prerender: {
-    crawlLinks: true,
-    routes: ['/']
-  }
+    prerender: {
+      crawlLinks: true,
+      routes: ['/'],
+      ignore: ['/preview/**'],
+    },
+  },
+
+  routeRules: {
+    '/preview/**': { ssr: false },
   },
 
   runtimeConfig: {
