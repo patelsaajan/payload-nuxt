@@ -3,7 +3,7 @@ import { GET_PAGE_BY_SLUG } from '../../graphql/pages'
 import { GET_POSTS, GET_POSTS_WITH_FILTER, GET_POST_BY_SLUG } from '../../graphql/posts'
 import { GET_HEADER } from '../../graphql/header'
 import { GET_BRANDING } from '../../graphql/branding'
-import { GET_PORTFOLIO, GET_PORTFOLIO_BY_SLUG, GET_PORTFOLIO_AFTERS } from '../../graphql/portfolio'
+import { GET_PORTFOLIO, GET_PORTFOLIO_BY_SLUG, GET_PORTFOLIO_AFTERS } from '../../graphql/portfolios'
 import { GET_GALLERY_BY_PAGE} from '../../graphql/media'
 
 export const usePayloadGraphQL = () => {
