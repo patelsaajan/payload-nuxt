@@ -65,6 +65,10 @@
 <script setup lang="ts">
 import { useLivePreview } from '@payloadcms/live-preview-vue'
 
+definePageMeta({
+  middleware: ['preview-auth-client'],
+})
+
 setPageLayout('preview')
 
 const route = useRoute()
