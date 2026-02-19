@@ -21,7 +21,8 @@
 </template>
 
 <script setup lang="ts">
-import NavMenu from '~/components/layout/NavMenu.vue'
+import type { NavigationMenuItem } from '@nuxt/ui'
+
 
 
 const route = useRoute()
