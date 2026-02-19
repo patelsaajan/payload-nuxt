@@ -61,16 +61,25 @@ const { data: page } = useLivePreview({
     depth: 2,
 })
 
+// Cache for block components to prevent hydration issues
+const blockComponentCache: Record<string, ReturnType<typeof defineAsyncComponent>> = {}
+
 // Dynamic block component resolver
 const getBlockComponent = (blockType: string) => {
+    if (blockComponentCache[blockType]) {
+        return blockComponentCache[blockType]
+    }
+
     const name = blockType.replace(/Block$/, "")
     const fileName = name.charAt(0).toUpperCase() + name.slice(1)
 
-    return defineAsyncComponent(() =>
+    blockComponentCache[blockType] = defineAsyncComponent(() =>
         import(`~/components/block/${fileName}.vue`).catch(() => {
             console.warn(`Block component not found: ${fileName}`)
             return { template: "<div>Block component not found</div>" }
         }),
     )
+
+    return blockComponentCache[blockType]
 }
 </script>
