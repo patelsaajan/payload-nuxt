@@ -51,25 +51,29 @@ useSeoMeta({
     ogImage: page.value?.meta?.image?.url ? config.public.payloadBaseUrl + page.value.meta.image.url : '/favicon.ico'
 })
 
+// Cache for block components to prevent hydration issues
+const blockComponentCache: Record<string, ReturnType<typeof defineAsyncComponent>> = {}
+
 // Dynamic block component resolver
 // Maps Payload blockType to dynamically imported component
 const getBlockComponent = (blockType: string) => {
+    // Return cached component if already defined
+    if (blockComponentCache[blockType]) {
+        return blockComponentCache[blockType]
+    }
+
     // Remove 'Block' suffix, convert to PascalCase
-    // Examples:
-    // 'mediaBlock' -> 'Media'
-    // 'cardCarousel' -> 'CardCarousel'
+    const name = blockType.replace(/Block$/, "")
+    const fileName = name.charAt(0).toUpperCase() + name.slice(1)
 
-    const name = blockType.replace(/Block$/, "");
-    const fileName = name.charAt(0).toUpperCase() + name.slice(1);
-
-    // Use defineAsyncComponent for dynamic imports
-    // This creates a lazy-loaded component that only loads when needed
-    return defineAsyncComponent(() =>
+    // Cache and return the async component
+    blockComponentCache[blockType] = defineAsyncComponent(() =>
         import(`~/components/block/${fileName}.vue`).catch(() => {
-            // Fallback component if the block type doesn't exist
-            console.warn(`Block component not found: ${fileName}`);
-            return { template: "<div>Block component not found</div>" };
+            console.warn(`Block component not found: ${fileName}`)
+            return { template: "<div>Block component not found</div>" }
         }),
-    );
-};
+    )
+
+    return blockComponentCache[blockType]
+}
 </script>
