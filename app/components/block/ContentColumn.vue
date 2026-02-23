@@ -19,6 +19,9 @@
 <script setup lang="ts">
 import type { IContentColumn, IContentLink } from "~~/types";
 
+// Provide context for child components to know they're inside a content-column
+provide('isInContentColumn', true);
+
 // Define props for a single column
 const props = defineProps<IContentColumn>();
 
