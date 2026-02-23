@@ -1,8 +1,6 @@
 <template>
     <div class="mt- flex flex-col gap-20 justify-center" v-if="page">
-        <span class="container mx-auto">
-            <h2>{{ page.title }}</h2>
-        </span>
+        
         <SectionHero :hero="page.hero" />
 
         <!-- Render layout blocks dynamically -->

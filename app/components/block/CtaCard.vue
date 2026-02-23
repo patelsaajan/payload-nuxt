@@ -6,12 +6,12 @@
         <div
             class="group h-full w-full p-4 md:p-3.5 rounded-[var(--border-radius)] flex items-center justify-between gap-6 shadow-sm"
             :class="[
-                media ? (mediaPosition === 'right' ? 'flex-row' : 'flex-row-reverse') : 'flex-col text-center'
+                media ? (mediaPosition === 'right' ? 'flex-row' : 'flex-row-reverse') : 'flex-col'
             ]"
             :style="variantStyles"
         >
             <!-- Content Section -->
-            <div class="flex flex-col items-center justify-center gap-6" :class="{ 'flex-1': media }">
+            <div class="flex flex-col items-center justify-center gap-6 text-center" :class="{ 'flex-1': media }">
                 <h3 v-if="title">{{ title }}</h3>
                 <p v-if="content" class="max-w-xl opacity-90">{{ content }}</p>
                 <UButton

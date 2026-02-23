@@ -118,17 +118,28 @@ export default defineNuxtConfig({
       }
     },
     'nitro:config': async (nitroConfig) => {
+      const payloadUrl = process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL
+
+      // Initialize prerender routes
+      nitroConfig.prerender = nitroConfig.prerender || {}
+      nitroConfig.prerender.routes = nitroConfig.prerender.routes || []
+
       // Fetch all blog slugs from Payload
-      const response = await fetch(`${process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL}/api/posts?limit=1000`).catch(() => null)
-      
-      if (response?.ok) {
-        const data = await response.json()
+      const postsResponse = await fetch(`${payloadUrl}/api/posts?limit=1000&depth=0`).catch(() => null)
+
+      if (postsResponse?.ok) {
+        const data = await postsResponse.json()
         const blogRoutes = data.docs.map((post: any) => `/blog/${post.slug}`)
-        
-        // Add to prerender routes
-        nitroConfig.prerender = nitroConfig.prerender || {}
-        nitroConfig.prerender.routes = nitroConfig.prerender.routes || []
         nitroConfig.prerender.routes.push(...blogRoutes)
+      }
+
+      // Fetch all portfolio slugs from Payload
+      const portfolioResponse = await fetch(`${payloadUrl}/api/portfolios?limit=1000&depth=0`).catch(() => null)
+
+      if (portfolioResponse?.ok) {
+        const data = await portfolioResponse.json()
+        const portfolioRoutes = data.docs.map((portfolio: any) => `/portfolio/${portfolio.slug}`)
+        nitroConfig.prerender.routes.push(...portfolioRoutes)
       }
     }
   },

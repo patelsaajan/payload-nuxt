@@ -37,9 +37,7 @@ export const usePayloadGraphQL = () => {
           return null
         }
       },
-      {
-        dedupe: 'defer'
-      }
+      { getCachedData, server: true }
     )
   }
 
@@ -55,7 +53,7 @@ export const usePayloadGraphQL = () => {
           return null
         }
       },
-      { getCachedData }
+      { getCachedData, server: true }
     )
   }
 
@@ -83,7 +81,7 @@ export const usePayloadGraphQL = () => {
           return { docs: [], hasNextPage: false }
         }
       },
-      { getCachedData }
+      { getCachedData, server: true }
     )
   }
 
@@ -99,7 +97,7 @@ export const usePayloadGraphQL = () => {
           return null
         }
       },
-      { getCachedData }
+      { getCachedData, server: true }
     )
   }
 
@@ -115,7 +113,7 @@ export const usePayloadGraphQL = () => {
           return null
         }
       },
-      { getCachedData }
+      { getCachedData, server: true }
     )
   }
 
@@ -131,7 +129,7 @@ export const usePayloadGraphQL = () => {
           return { docs: [], hasNextPage: false }
         }
       },
-      { getCachedData }
+      { getCachedData, server: true }
     )
   }
 
@@ -147,7 +145,7 @@ export const usePayloadGraphQL = () => {
           return null
         }
       },
-      { getCachedData }
+      { getCachedData, server: true }
     )
   }
 
@@ -163,7 +161,7 @@ export const usePayloadGraphQL = () => {
           return { docs: [], hasNextPage: false }
         }
       },
-      { getCachedData }
+      { getCachedData, server: true }
     )
   }
 
@@ -179,7 +177,7 @@ export const usePayloadGraphQL = () => {
           return { docs: [], hasNextPage: false }
         }
       },
-      { getCachedData }
+      { getCachedData, server: true }
     )
   }
 
