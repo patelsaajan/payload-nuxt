@@ -1,5 +1,8 @@
 <template>
-    <div :class="{ 'container mx-auto': !isInContentColumn }">
+    <div 
+        class=" size-full"
+        :class="{ 'container mx-auto': !isInContentColumn }"
+    >
         <div
             class="group h-full w-full p-4 md:p-3.5 rounded-[var(--border-radius)] flex items-center justify-between gap-6 shadow-sm"
             :class="[
@@ -15,7 +18,9 @@
                     v-if="link"
                     :to="getLinkUrl()"
                     :target="link.newTab ? '_blank' : '_self'"
-                    class="bg-white text-primary hover:bg-white hover:scale-105 transition-all duration-200"
+                    :class="isOutlined
+                        ? ''
+                        : 'bg-white text-primary hover:bg-white hover:scale-105 transition-all duration-200'"
                     :label="link.label"
                     size="lg"
                 />
@@ -53,6 +58,11 @@ const props = defineProps<{
     media?: IMedia;
     mediaPosition?: 'left' | 'right';
 }>();
+
+const isOutlined = computed(() => {
+    const v = props.ctaVariant || props.variant;
+    return v === 'outlined';
+});
 
 const getMediaUrl = () => {
     if (!props.media?.url) return '';

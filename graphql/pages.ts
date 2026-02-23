@@ -107,6 +107,14 @@ export const GET_PAGE_BY_SLUG = gql`
             title
             content
             ctaVariant: variant
+            mediaPosition
+            media {
+            id
+            alt
+            url
+            focalX
+            focalY
+            }
             link {
               type
               url
