@@ -85,14 +85,14 @@ const { fetchPortfolioBySlug } = usePayloadGraphQL()
 const { formatDate } = useFormatDate()
 const config = useRuntimeConfig()
 
-// Fetch data
-const { data: item } = await fetchPortfolioBySlug(route.params.slug as string)
+// Fetch data - handle errors gracefully
+const { data: item, error } = await fetchPortfolioBySlug(route.params.slug as string)
 
 useSeoMeta({
-    title: item.value?.meta?.title || item.value.title || '',
-    ogTitle: item.value?.meta?.socialTitle || item.value.title || '',
-    description: item.value?.meta?.description || item.value.description,
-    ogDescription: item.value?.meta?.description || item.value.description,
+    title: item.value?.meta?.title || item.value?.title || '',
+    ogTitle: item.value?.meta?.socialTitle || item.value?.title || '',
+    description: item.value?.meta?.description || item.value?.description,
+    ogDescription: item.value?.meta?.description || item.value?.description,
     ogImage: item.value?.meta?.image?.url ? config.public.payloadBaseUrl + item.value.meta.image.url : '/favicon.ico'
 })
 

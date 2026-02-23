@@ -152,10 +152,12 @@ onMounted(() => {
     nextTick(checkImagesLoaded);
 });
 
-// Initial fetch
-const { data: initialData } = await fetchPortfolio(itemsPerPage, 1);
-items.value = initialData.value?.docs || [];
-hasNextPage.value = initialData.value?.hasNextPage || false;
+// Initial fetch - handle errors gracefully
+const { data: initialData, error } = await fetchPortfolio(itemsPerPage, 1);
+if (!error.value) {
+    items.value = initialData.value?.docs || [];
+    hasNextPage.value = initialData.value?.hasNextPage || false;
+}
 
 // Initialize loading states
 items.value.forEach((item: any) => {

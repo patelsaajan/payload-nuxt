@@ -102,9 +102,12 @@ defineProps<{
 const { fetchPortfolioAfters } = usePayloadGraphQL()
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 
-// Fetch data
-const { data } = await fetchPortfolioAfters(3, 1)
-const afters = computed(() => (data.value?.docs || []) as PortfolioAfter[])
+// Fetch data - silently handle errors
+const { data, error } = await fetchPortfolioAfters(3, 1)
+const afters = computed(() => {
+    if (error.value) return []
+    return (data.value?.docs || []) as PortfolioAfter[]
+})
 
 // Image loading state - tracks which images have loaded
 const loadedImages = ref<Record<string, boolean>>({})
