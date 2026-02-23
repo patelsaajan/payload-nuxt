@@ -1,6 +1,6 @@
 <template>
     <div 
-        class=" size-full"
+        class=" size-full cta-card"
         :class="{ 'container mx-auto': !isInContentColumn }"
     >
         <div
@@ -20,7 +20,7 @@
                     :target="link.newTab ? '_blank' : '_self'"
                     :class="isOutlined
                         ? ''
-                        : 'bg-white text-primary hover:bg-white hover:scale-105 transition-all duration-200'"
+                        : 'bg-white text-primary hover:bg-white'"
                     :label="link.label"
                     size="lg"
                 />
@@ -28,11 +28,7 @@
 
             <!-- Media Section -->
             <div v-if="media" class="flex-1 overflow-hidden rounded-[var(--border-radius)]">
-                <NuxtImg
-                    :src="getMediaUrl()"
-                    :alt="media.alt || title || ''"
-                    class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
-                />
+                <BlockMedia :media="media" />
             </div>
         </div>
     </div>
@@ -43,8 +39,6 @@ import type { ICtaLink, IMedia } from '~~/types'
 
 // Check if this component is inside a content-column parent
 const isInContentColumn = inject('isInContentColumn', false);
-
-const config = useRuntimeConfig();
 
 const props = defineProps<{
     id?: string;
@@ -63,11 +57,6 @@ const isOutlined = computed(() => {
     const v = props.ctaVariant || props.variant;
     return v === 'outlined';
 });
-
-const getMediaUrl = () => {
-    if (!props.media?.url) return '';
-    return `${config.public.payloadBaseUrl}${props.media.url}`;
-};
 
 const getLinkUrl = () => {
     if (!props.link) return '/';
@@ -123,3 +112,13 @@ const variantStyles = computed(() => {
     }
 });
 </script>
+
+<style scoped>
+.cta-card :deep(img) {
+    transition: transform 0.5s ease;
+}
+
+.cta-card:hover :deep(img) {
+    transform: scale(1.05);
+}
+</style>

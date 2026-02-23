@@ -10,6 +10,7 @@
         />
         <NuxtImg
             ref="imgRef"
+            preload
             :src="getMediaUrl(media.url)"
             :alt="media.alt || 'Media image'"
             loading="lazy"
@@ -17,7 +18,7 @@
                 'w-full object-cover mx-auto',
                 aspectRatio !== 'banner' && 'rounded-[var(--border-radius)]',
                 aspectRatioClass,
-                isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100'
+                isLoading ? 'absolute inset-0 opacity-0' : 'opacity-100',
             ]"
             :style="getFocalPointStyle(media)"
             @load="onImageLoad"
@@ -26,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IMediaBlock } from "~~/types";
+import type { IMedia } from "~~/types";
 
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
@@ -35,7 +36,7 @@ const props = defineProps<{
     blockType?: string;
     blockName?: string;
     aspectRatio?: string;
-    media: IMediaBlock;
+    media: IMedia;
 }>();
 
 const imgRef = ref<{ $el: HTMLImageElement } | null>(null);
