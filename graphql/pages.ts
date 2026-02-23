@@ -112,8 +112,6 @@ export const GET_PAGE_BY_SLUG = gql`
               url
               label
               newTab
-              appearance
-              color
             }
           }
 
