@@ -9,16 +9,6 @@ export interface IBaseBlock {
   blockName?: string;
 }
 
-// Media block
-export interface IMediaBlock {
-  blockType: 'mediaBlock';
-  id?: string;
-  url: string;
-  alt?: string;
-  focalX?: number;
-  focalY?: number;
-}
-
 // Button block
 export interface IButtonBlock extends IBaseBlock {
   blockType: 'buttonBlock';
@@ -67,7 +57,6 @@ export interface ICtaCardBlock extends IBaseBlock {
 
 // Union type for all block types
 export type Block =
-  | IMediaBlock
   | IContentBlock
   | IButtonBlock
   | ICardCarouselBlock
