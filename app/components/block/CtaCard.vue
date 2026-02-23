@@ -1,7 +1,7 @@
 <template>
-    <div class="flex h-full w-full">
+    <div :class="{ 'container mx-auto': !isInContentColumn }">
         <div
-            class="h-full p-4 md:p-3.5 rounded-[var(--border-radius)] text-center flex flex-col items-center justify-between gap-6 shadow-sm"
+            class="h-full w-full p-4 md:p-3.5 rounded-[var(--border-radius)] text-center flex flex-col items-center justify-between gap-6 shadow-sm"
             :style="variantStyles"
         >
             <h3 v-if="title">{{ title }}</h3>
@@ -20,6 +20,9 @@
 
 <script setup lang="ts">
 import type { ICtaLink } from '~~/types'
+
+// Check if this component is inside a content-column parent
+const isInContentColumn = inject('isInContentColumn', false);
 
 const props = defineProps<{
     id?: string;
