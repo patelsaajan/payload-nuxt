@@ -9,13 +9,21 @@
                     style="border-radius: var(--border-radius)"
                     class="mb-8"
                 >
+                    <div
+                        v-show="isLoading"
+                        class="aspect-4/3 w-full bg-gray-200 animate-pulse flex items-center justify-center"
+                    >
+                    <span class="text-gray-400 text-3xl font-medium">{{ config.public.siteName }}</span>
+                </div>
                     <NuxtImg
+                        v-show="!isLoading"
                         :src="getMediaUrl(post.heroImage.url)"
                         :alt="post.heroImage.alt || post.title"
                         :style="getFocalPointStyle(post.heroImage)"
                         loading="eager"
                         preload
                         class="w-full h-auto object-cover aspect-4/3"
+                        @load="onImageLoad"
                     />
                 </div>
 
@@ -73,6 +81,24 @@ const { fetchPostBySlug, fetchPosts } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 const { formatDate } = useFormatDate();
 const config = useRuntimeConfig()
+
+const imgRef = ref<{ $el: HTMLImageElement } | null>(null);
+const isLoading = ref(true);
+
+const onImageLoad = () => {
+    isLoading.value = false;
+};
+
+const checkImageLoaded = () => {
+    const imgEl = imgRef.value?.$el;
+    if (imgEl?.complete && imgEl?.naturalWidth > 0) {
+        isLoading.value = false;
+    }
+};
+
+onMounted(() => {
+    nextTick(checkImageLoaded);
+});
 
 // Fetch post by slug from the route params
 const { data: post } = await fetchPostBySlug(route.params.slug as string);

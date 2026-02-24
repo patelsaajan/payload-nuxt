@@ -6,16 +6,29 @@
     >
         <!-- Thumbnail -->
         <div
-            class="thumbnail w-28 h-28 flex-shrink-0 overflow-hidden"
+            class="thumbnail w-28 h-28 flex-shrink-0 overflow-hidden relative"
             :style="{ borderRadius: 'calc(var(--border-radius) / 2)' }"
         >
-            <img
-                v-if="imageUrl"
-                :src="imageUrl"
-                :alt="imageAlt"
-                :style="focalPointStyle"
-                class="w-full h-full object-cover"
-            />
+            <template v-if="imageUrl">
+                <div
+                    v-show="isLoading"
+                    class="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center"
+                >
+                    <span class="text-gray-400 text-xs font-medium">{{ config.public.siteName }}</span>
+                </div>
+                <NuxtImg
+                    ref="imgRef"
+                    :src="imageUrl"
+                    :alt="imageAlt"
+                    :style="focalPointStyle"
+                    :class="[
+                        'w-full h-full object-cover',
+                        isLoading ? 'opacity-0' : 'opacity-100'
+                    ]"
+                    loading="lazy"
+                    @load="onImageLoad"
+                />
+            </template>
             <div
                 v-else
                 class="w-full h-full flex items-center justify-center text-xs"
@@ -53,6 +66,24 @@ const props = defineProps<{
 const config = useRuntimeConfig();
 const { formatDate } = useFormatDate();
 
+const imgRef = ref<{ $el: HTMLImageElement } | null>(null);
+const isLoading = ref(true);
+
+const onImageLoad = () => {
+    isLoading.value = false;
+};
+
+const checkImageLoaded = () => {
+    const imgEl = imgRef.value?.$el;
+    if (imgEl?.complete && imgEl?.naturalWidth > 0) {
+        isLoading.value = false;
+    }
+};
+
+onMounted(() => {
+    nextTick(checkImageLoaded);
+});
+
 // Get image URL
 const imageUrl = computed(() => {
     const url = props.post.heroImage?.url || props.post.meta?.image?.url || "";
@@ -62,6 +93,11 @@ const imageUrl = computed(() => {
         return url;
     }
     return `${config.public.payloadBaseUrl}${url}`;
+});
+
+watch(imageUrl, () => {
+    isLoading.value = true;
+    nextTick(checkImageLoaded);
 });
 
 // Get image alt text
@@ -100,5 +136,5 @@ const placeholderStyle = computed(() => ({
     color: "var(--color-secondary-text)",
 }));
 
-const formattedDate = computed(() => formatDate(props.post.publishedAt));
+const formattedDate = computed(() => props.post.publishedAt ? formatDate(props.post.publishedAt) : '');
 </script>

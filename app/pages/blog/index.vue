@@ -30,8 +30,10 @@
                     <template v-if="post.heroImage || post.meta?.image">
                         <div
                             v-if="imageLoading[post.id]"
-                            class="absolute inset-0 bg-gray-200 animate-pulse"
-                        />
+                            class="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center"
+                        >
+                            <span class="text-gray-400 text-xl font-medium">{{ config.public.siteName }}</span>
+                        </div>
                         <NuxtImg
                             :ref="(el: any) => setImageRef(post.id, el)"
                             :src="getMediaUrl((post.heroImage || post.meta?.image).url)"
@@ -135,6 +137,7 @@
 const { fetchPosts } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 const { formatDate } = useFormatDate();
+const config = useRuntimeConfig()
 
 useHead({
     title: 'Blog',
