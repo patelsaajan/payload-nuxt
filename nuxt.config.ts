@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-import { writeFileSync, mkdirSync, existsSync, copyFileSync } from 'fs'
+import { writeFileSync, existsSync, copyFileSync } from 'fs'
 import { resolve } from 'path'
 import { GET_THEME_SETTINGS } from './graphql/theme'
 import { GraphQLClient } from 'graphql-request'
@@ -32,7 +32,8 @@ export default defineNuxtConfig({
     public: {
       payloadBaseUrl: '', // Set in env
       siteName: 'Professional Portfolio & Projects',
-      cssConstants: '' // fetched from payload cms
+      cssConstants: '', // fetched from payload cms
+      enabledCollections: '', // NUXT_PUBLIC_ENABLED_COLLECTIONS - comma-separated list of additional collections
     }
   },
 
@@ -119,10 +120,23 @@ export default defineNuxtConfig({
     },
     'nitro:config': async (nitroConfig) => {
       const payloadUrl = process.env.NUXT_PUBLIC_PAYLOAD_BASE_URL
+      const enabledCollections = (process.env.NUXT_PUBLIC_ENABLED_COLLECTIONS || '')
+        .split(',')
+        .map(s => s.trim().toLowerCase())
+        .filter(Boolean)
 
-      // Initialize prerender routes
+      // Initialize prerender config
       nitroConfig.prerender = nitroConfig.prerender || {}
       nitroConfig.prerender.routes = nitroConfig.prerender.routes || []
+      nitroConfig.prerender.ignore = nitroConfig.prerender.ignore || []
+
+      // Ignore disabled collection routes during prerendering
+      if (!enabledCollections.includes('portfolios')) {
+        nitroConfig.prerender.ignore.push('/portfolio', '/portfolio/**')
+      }
+      if (!enabledCollections.includes('gallery')) {
+        nitroConfig.prerender.ignore.push('/gallery')
+      }
 
       // Fetch all blog slugs from Payload
       const postsResponse = await fetch(`${payloadUrl}/api/posts?limit=1000&depth=0`).catch(() => null)
@@ -133,13 +147,15 @@ export default defineNuxtConfig({
         nitroConfig.prerender.routes.push(...blogRoutes)
       }
 
-      // Fetch all portfolio slugs from Payload
-      const portfolioResponse = await fetch(`${payloadUrl}/api/portfolios?limit=1000&depth=0`).catch(() => null)
+      // Fetch all portfolio slugs from Payload (only if portfolios collection is enabled)
+      if (enabledCollections.includes('portfolios')) {
+        const portfolioResponse = await fetch(`${payloadUrl}/api/portfolios?limit=1000&depth=0`).catch(() => null)
 
-      if (portfolioResponse?.ok) {
-        const data = await portfolioResponse.json()
-        const portfolioRoutes = data.docs.map((portfolio: any) => `/portfolio/${portfolio.slug}`)
-        nitroConfig.prerender.routes.push(...portfolioRoutes)
+        if (portfolioResponse?.ok) {
+          const data = await portfolioResponse.json()
+          const portfolioRoutes = data.docs.map((portfolio: any) => `/portfolio/${portfolio.slug}`)
+          nitroConfig.prerender.routes.push(...portfolioRoutes)
+        }
       }
     }
   },

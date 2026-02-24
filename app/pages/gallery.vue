@@ -26,12 +26,22 @@
                 :style="{ '--delay': `${getAnimationDelay(index)}ms` }"
                 @click="openModal(item, index)"
             >
+                <div
+                    v-show="imageLoading[item.id]"
+                    class="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center"
+                >
+                    <span class="text-gray-400 text-3xl font-medium">{{ config.public.siteName }}</span>
+                </div>
                 <NuxtImg
                     :src="getMediaUrl(item.url)"
                     :alt="item.alt || 'Gallery Photo'"
                     :style="getFocalPointStyle(item)"
                     :loading="index < 3 ? 'eager' : 'lazy'"
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    :class="[
+                        'w-full h-full object-cover transition-transform duration-500 group-hover:scale-110',
+                        imageLoading[item.id] ? 'opacity-0' : 'opacity-100'
+                    ]"
+                    @load="onImageLoad(item.id)"
                 />
 
                 <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
@@ -85,16 +95,37 @@
 <script setup lang="ts">
 import type { IMedia } from '~~/types/common'
 
+definePageMeta({
+    middleware: ['collection-guard']
+})
+
 useSeoMeta({
     title: 'Gallery',
     description: 'Come and view some of my work on my gallery page',
 })
 
+const config = useRuntimeConfig()
 const { fetchGallery } = usePayloadGraphQL()
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 
 const { data, pending } = await fetchGallery(12, 1)
 const items = computed(() => (data.value || []) as IMedia[])
+
+// Image loading state
+const imageLoading = ref<Record<string, boolean>>({})
+
+const onImageLoad = (itemId: string) => {
+    imageLoading.value[itemId] = false
+}
+
+// Initialize loading states when items change
+watch(items, (newItems) => {
+    newItems.forEach((item) => {
+        if (imageLoading.value[item.id] === undefined) {
+            imageLoading.value[item.id] = true
+        }
+    })
+}, { immediate: true })
 
 // Modal state
 const isModalOpen = ref(false)

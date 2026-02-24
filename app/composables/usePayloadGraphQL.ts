@@ -118,6 +118,12 @@ export const usePayloadGraphQL = () => {
   }
 
   const fetchPortfolio = async (limit: number = 10, page: number = 1) => {
+    const { isCollectionEnabled } = useEnabledCollections()
+
+    if (!isCollectionEnabled('portfolios')) {
+      return useAsyncData('portfolio-disabled', async () => ({ docs: [], hasNextPage: false }), { server: true })
+    }
+
     return useAsyncData(
       `portfolio-${limit}-${page}`,
       async () => {
@@ -134,6 +140,12 @@ export const usePayloadGraphQL = () => {
   }
 
   const fetchPortfolioBySlug = async (slug: string) => {
+    const { isCollectionEnabled } = useEnabledCollections()
+
+    if (!isCollectionEnabled('portfolios')) {
+      return useAsyncData('portfolio-slug-disabled', async () => null, { server: true })
+    }
+
     return useAsyncData(
       `portfolio-${slug}`,
       async () => {
@@ -150,6 +162,12 @@ export const usePayloadGraphQL = () => {
   }
 
   const fetchPortfolioAfters = async (limit: number = 9, page: number = 1) => {
+    const { isCollectionEnabled } = useEnabledCollections()
+
+    if (!isCollectionEnabled('portfolios')) {
+      return useAsyncData('portfolio-afters-disabled', async () => ({ docs: [], hasNextPage: false }), { server: true })
+    }
+
     return useAsyncData(
       `portfolio-afters-${limit}-${page}`,
       async () => {
@@ -166,6 +184,12 @@ export const usePayloadGraphQL = () => {
   }
 
   const fetchGallery = async (limit: number = 12, page: number = 1) => {
+    const { isCollectionEnabled } = useEnabledCollections()
+
+    if (!isCollectionEnabled('gallery')) {
+      return useAsyncData('gallery-disabled', async () => [], { server: true })
+    }
+
     return useAsyncData(
       `gallery-${limit}-${page}`,
       async () => {

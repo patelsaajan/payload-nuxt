@@ -2,7 +2,7 @@
 
 // Media/Image interface
 export interface IMedia {
-  id?: string;
+  id: string;
   url: string;
   alt?: string;
   caption?: string;
