@@ -33,6 +33,7 @@
                     <span class="text-gray-400 text-3xl font-medium">{{ config.public.siteName }}</span>
                 </div>
                 <NuxtImg
+                    :ref="(el: any) => setImageRef(item.id, el)"
                     :src="getMediaUrl(item.url)"
                     :alt="item.alt || 'Gallery Photo'"
                     :style="getFocalPointStyle(item)"
@@ -45,7 +46,7 @@
                 />
 
                 <div class="absolute inset-0 bg-gradient-to-t from-primary/70 via-transparent to-transparent group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                    <span class="text-white text-sm font-medium">
+                    <span class="text-white text-base font-medium">
                         {{ item.title ? item.title : `Gallery Item ${index + 1}` }}
                     </span>
                 </div>
@@ -113,9 +114,26 @@ const items = computed(() => (data.value || []) as IMedia[])
 
 // Image loading state
 const imageLoading = ref<Record<string, boolean>>({})
+const imageRefs = ref<Record<string, { $el: HTMLImageElement } | null>>({})
+
+const setImageRef = (itemId: string, el: any) => {
+    if (el) {
+        imageRefs.value[itemId] = el
+    }
+}
 
 const onImageLoad = (itemId: string) => {
     imageLoading.value[itemId] = false
+}
+
+// Check if images are already loaded (cached)
+const checkImagesLoaded = () => {
+    items.value.forEach((item) => {
+        const imgEl = imageRefs.value[item.id]?.$el
+        if (imgEl?.complete && imgEl?.naturalWidth > 0) {
+            imageLoading.value[item.id] = false
+        }
+    })
 }
 
 // Initialize loading states when items change
@@ -125,7 +143,12 @@ watch(items, (newItems) => {
             imageLoading.value[item.id] = true
         }
     })
+    nextTick(checkImagesLoaded)
 }, { immediate: true })
+
+onMounted(() => {
+    nextTick(checkImagesLoaded)
+})
 
 // Modal state
 const isModalOpen = ref(false)
