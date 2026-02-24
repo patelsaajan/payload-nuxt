@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-import { writeFileSync, mkdirSync, existsSync, copyFileSync } from 'fs'
+import { writeFileSync, existsSync, copyFileSync } from 'fs'
 import { resolve } from 'path'
 import { GET_THEME_SETTINGS } from './graphql/theme'
 import { GraphQLClient } from 'graphql-request'

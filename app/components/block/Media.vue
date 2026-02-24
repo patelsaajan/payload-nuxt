@@ -1,13 +1,5 @@
 <template>
     <div v-if="media" class="relative">
-        <div
-            v-if="isLoading"
-            :class="[
-                'w-full mx-auto bg-gray-200 animate-pulse',
-                aspectRatio !== 'banner' && 'rounded-[var(--border-radius)]',
-                aspectRatioClass
-            ]"
-        />
         <NuxtImg
             ref="imgRef"
             preload

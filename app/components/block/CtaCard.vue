@@ -4,9 +4,9 @@
         :class="{ 'container mx-auto': !isInContentColumn }"
     >
         <div
-            class="group h-full w-full p-4 md:p-3.5 rounded-[var(--border-radius)] flex items-center justify-between gap-6 shadow-sm"
+            class="group h-full w-full p-4 md:p-3.5 rounded-[var(--border-radius)] flex items-center justify-between gap-6 shadow-sm flex-col-reverse"
             :class="[
-                media ? (mediaPosition === 'right' ? 'flex-row' : 'flex-row-reverse') : 'flex-col'
+                media ? (mediaPosition === 'right' ? 'md:flex-row' : 'md:flex-row-reverse') : 'flex-col'
             ]"
             :style="variantStyles"
         >
