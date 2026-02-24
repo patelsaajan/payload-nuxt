@@ -80,6 +80,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    middleware: ['collection-guard']
+})
+
 const route = useRoute()
 const { fetchPortfolioBySlug } = usePayloadGraphQL()
 const { formatDate } = useFormatDate()

@@ -112,6 +112,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+    middleware: ['collection-guard']
+})
+
 const { fetchPortfolio } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 

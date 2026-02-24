@@ -85,6 +85,10 @@
 <script setup lang="ts">
 import type { IMedia } from '~~/types/common'
 
+definePageMeta({
+    middleware: ['collection-guard']
+})
+
 useSeoMeta({
     title: 'Gallery',
     description: 'Come and view some of my work on my gallery page',
