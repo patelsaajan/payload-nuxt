@@ -1,5 +1,15 @@
 <template>
     <div v-if="media" class="relative">
+        <div
+            v-show="isLoading"
+            :class="[
+                'bg-gray-200 animate-pulse flex items-center justify-center w-full mx-auto',
+                aspectRatio !== 'banner' && 'rounded-[var(--border-radius)]',
+                aspectRatioClass,
+            ]"
+        >
+            <span class="text-gray-400 text-3xl font-medium">{{ config.public.siteName }}</span>
+        </div>
         <NuxtImg
             ref="imgRef"
             preload
@@ -21,6 +31,7 @@
 <script setup lang="ts">
 import type { IMedia } from "~~/types";
 
+const config = useRuntimeConfig();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
 const props = defineProps<{
