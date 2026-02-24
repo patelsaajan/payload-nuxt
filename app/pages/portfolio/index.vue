@@ -29,8 +29,10 @@
                     <template v-if="item.afterPhoto">
                         <div
                             v-if="imageLoading[item.id]"
-                            class="absolute inset-0 bg-gray-200 animate-pulse"
-                        />
+                            class="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center"
+                        >
+                            <span class="text-gray-400 text-xl font-medium">{{ config.public.siteName }}</span>
+                        </div>
                         <NuxtImg
                             :ref="(el: any) => setImageRef(item.id, el)"
                             :src="getMediaUrl(item.afterPhoto.url)"
@@ -116,6 +118,7 @@ definePageMeta({
     middleware: ['collection-guard']
 })
 
+const config = useRuntimeConfig();
 const { fetchPortfolio } = usePayloadGraphQL();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 

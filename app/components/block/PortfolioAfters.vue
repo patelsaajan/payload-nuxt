@@ -36,8 +36,10 @@
                             <template v-if="item.afterPhoto">
                                 <div
                                     v-show="!loadedImages[item.id]"
-                                    class="absolute inset-0 bg-gray-200 animate-pulse"
-                                />
+                                    class="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center"
+                                >
+                                    <span class="text-gray-400 text-xl font-medium">{{ config.public.siteName }}</span>
+                                </div>
                                 <NuxtImg
                                     :ref="(el: any) => setImageRef(item.id, el)"
                                     :src="getMediaUrl(item.afterPhoto.url)"
@@ -101,6 +103,7 @@ defineProps<{
     hasBackground?: boolean
 }>();
 
+const config = useRuntimeConfig()
 const { isCollectionEnabled } = useEnabledCollections()
 const isEnabled = isCollectionEnabled('portfolios')
 

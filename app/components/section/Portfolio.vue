@@ -5,8 +5,10 @@
             <div :class="['relative md:col-span-1', flipped ? 'md:order-2' : '']">
                 <div
                     v-show="isLoading"
-                    class="w-full aspect-square bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
-                />
+                    class="w-full aspect-square bg-gray-200 animate-pulse rounded-[var(--border-radius)] flex items-center justify-center"
+                >
+                    <span class="text-gray-400 text-3xl font-medium">{{ config.public.siteName }}</span>
+                </div>
                 <NuxtImg
                     ref="imgRef"
                     :src="imageUrl"
@@ -52,6 +54,7 @@ const props = defineProps<{
     flipped?: boolean
 }>()
 
+const config = useRuntimeConfig()
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers()
 
 // Image loading state

@@ -6,8 +6,10 @@
     >
         <div
             v-if="isLoading"
-            class="w-full h-full bg-gray-200 animate-pulse absolute inset-0"
-        />
+            class="w-full h-full bg-gray-200 animate-pulse absolute inset-0 flex items-center justify-center"
+        >
+            <span class="text-gray-400 text-4xl font-medium">{{ config.public.siteName }}</span>
+        </div>
         <NuxtImg
             ref="imageRef"
             :src="getMediaUrl(hero.media.url)"
@@ -36,8 +38,10 @@
             >
                 <div
                     v-if="isLoading"
-                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
-                />
+                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)] flex items-center justify-center"
+                >
+                    <span class="text-gray-400 text-3xl font-medium">{{ config.public.siteName }}</span>
+                </div>
                 <NuxtImg
                     ref="imageRef"
                     :src="getMediaUrl(hero.media.url)"
@@ -69,8 +73,10 @@
             >
                 <div
                     v-if="isLoading"
-                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
-                />
+                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)] flex items-center justify-center"
+                >
+                    <span class="text-gray-400 text-3xl font-medium">{{ config.public.siteName }}</span>
+                </div>
                 <NuxtImg
                     ref="imageRef"
                     :src="getMediaUrl(hero.media.url)"
@@ -157,8 +163,10 @@
             >
                 <div
                     v-if="isLoading"
-                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)]"
-                />
+                    class="w-full aspect-4/3 bg-gray-200 animate-pulse rounded-[var(--border-radius)] flex items-center justify-center"
+                >
+                    <span class="text-gray-400 text-3xl font-medium">{{ config.public.siteName }}</span>
+                </div>
                 <NuxtImg
                     ref="imageRef"
                     :src="getMediaUrl(hero.media.url)"
@@ -178,6 +186,7 @@
 </template>
 
 <script setup lang="ts">
+const config = useRuntimeConfig();
 const { getMediaUrl, getFocalPointStyle } = useMediaHelpers();
 
 // Define props
