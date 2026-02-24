@@ -120,6 +120,15 @@ export const GET_PAGE_BY_SLUG = gql`
               url
               label
               newTab
+              reference {
+                relationTo
+                value {
+                ... on Page {
+                    id
+                    slug
+                  }
+                }
+              }
             }
           }
 

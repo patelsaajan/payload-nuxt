@@ -46,6 +46,7 @@ const props = defineProps<{
     blockName?: string;
     title?: string;
     content?: string;
+    type?: string
     link?: ICtaLink;
     variant?: 'accent' | 'primary' | 'secondary' | 'outlined';
     ctaVariant?: 'accent' | 'primary' | 'secondary' | 'outlined';
