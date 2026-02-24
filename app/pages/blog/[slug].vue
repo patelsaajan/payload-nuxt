@@ -16,6 +16,7 @@
                     <span class="text-gray-400 text-3xl font-medium">{{ config.public.siteName }}</span>
                 </div>
                     <NuxtImg
+                        ref="imgRef"
                         v-show="!isLoading"
                         :src="getMediaUrl(post.heroImage.url)"
                         :alt="post.heroImage.alt || post.title"
@@ -97,6 +98,12 @@ const checkImageLoaded = () => {
 };
 
 onMounted(() => {
+    nextTick(checkImageLoaded);
+});
+
+// Reset loading state when navigating between posts
+watch(() => post.value?.heroImage?.url, () => {
+    isLoading.value = true;
     nextTick(checkImageLoaded);
 });
 
