@@ -21,7 +21,7 @@
                     v-if="props.item.afterPhoto"
                     key="Portfolio After Photo"
                     class="relative aspect-square overflow-hidden rounded-[var(--border-radius)] group gallery-item col-span-2 row-span-2 cursor-zoom-in"
-                    @click="openModal(props.item.afterPhoto, props.item.afterPhotoTitle ?? 'After Photo', props.item.afterPhotoCaption)"
+                    @click="openModal(props.item.afterPhoto, props.item.afterPhotoTitle || 'After Photo', props.item.afterPhotoCaption)"
                 >
                     <div
                         v-show="imageLoading['after']"
@@ -52,7 +52,7 @@
                     v-if="props.item.beforePhoto"
                     key="Portfolio Before Photo"
                     class="relative aspect-square overflow-hidden rounded-[var(--border-radius)] group gallery-item col-span-1 row-span-1 cursor-zoom-in"
-                    @click="openModal(props.item.beforePhoto, props.item.beforePhotoTitle ?? 'Before Photo', props.item.beforePhotoCaption)"
+                    @click="openModal(props.item.beforePhoto, props.item.beforePhotoTitle || 'Before Photo', props.item.beforePhotoCaption)"
                 >
                     <div
                         v-show="imageLoading['before']"
