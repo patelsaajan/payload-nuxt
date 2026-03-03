@@ -28,9 +28,10 @@
             <SectionPortfolio
                 v-if="item.beforePhoto"
                 :image="item.beforePhoto"
-                title="Where It All Began"
+                :title="item.beforePhotoTitle ?? 'Initial Photo'"
                 :description="item.beforePhotoCaption"
                 badge="Starting Point"
+                load="eager"
                 variant="start"
             />
 
@@ -43,6 +44,7 @@
                 :description="transition.caption"
                 :badge="`Step ${Number(index) + 1}`"
                 variant="transition"
+                load="lazy"
                 :flipped="Number(index) % 2 !== 1"
             />
 
@@ -50,10 +52,11 @@
             <SectionPortfolio
                 v-if="item.afterPhoto"
                 :image="item.afterPhoto"
-                title="The Final Result"
+                :title="item.afterPhotoTitle ?? 'The Final Result'"
                 :description="item.afterPhotoCaption"
                 badge="Complete"
                 variant="finished"
+                load="lazy"
                 :flipped="transitionPhotos.length % 2 !== 1"
             />
         </div>

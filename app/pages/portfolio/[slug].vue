@@ -1,7 +1,7 @@
 <template>
     <div v-if="item">
         <PortfolioExpanded
-            v-if="item.expanded"
+            v-if="item.expandedLayout"
             :item="item"
         />
         <PortfolioSimple

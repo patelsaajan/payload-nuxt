@@ -14,7 +14,7 @@
                     :src="imageUrl"
                     :alt="image?.alt || title"
                     :style="focalPointStyle"
-                    loading="lazy"
+                    :loading="load ?? 'lazy'"
                     :class="[
                         'w-full aspect-square object-cover rounded-[var(--border-radius)]',
                         isLoading ? 'opacity-0 absolute inset-0' : 'opacity-100'
@@ -52,6 +52,7 @@ const props = defineProps<{
     badge?: string
     variant?: 'start' | 'transition' | 'finished'
     flipped?: boolean
+    load: 'eager' | 'lazy'
 }>()
 
 const config = useRuntimeConfig()
