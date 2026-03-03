@@ -69,7 +69,7 @@
             :ui="{ content: 'sm:max-w-3xl bg-[var(--color-secondary)] overflow-hidden' }"
         >
             <template #content>
-                <div class="overflow-hidden">
+                <div class="overflow-y-auto">
                     <NuxtImg
                         v-if="selectedItem"
                         :src="getMediaUrl(selectedItem.url)"
@@ -184,6 +184,10 @@ const getAnimationDelay = (index: number): number => {
 
     animation: swivel-in 0.6s cubic-bezier(.22,.61,.36,1) forwards;
     animation-delay: var(--delay);
+}
+
+:deep(a) {
+    font-weight: bold;
 }
 
 @keyframes swivel-in {
