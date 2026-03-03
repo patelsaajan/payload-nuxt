@@ -22,10 +22,6 @@ export const GET_PORTFOLIO = gql`
           focalX
           focalY
         }
-        categories {
-          id
-          title
-        }
         publishedAt
       }
       totalDocs
@@ -45,6 +41,7 @@ export const GET_PORTFOLIO_BY_SLUG = gql`
         title
         slug
         description
+        expandedLayout
         meta {
           title
           socialTitle
@@ -62,6 +59,7 @@ export const GET_PORTFOLIO_BY_SLUG = gql`
           focalY
         }
         afterPhotoCaption
+        afterPhotoTitle
         beforePhoto {
           id
           alt
@@ -70,6 +68,7 @@ export const GET_PORTFOLIO_BY_SLUG = gql`
           focalY
         }
         beforePhotoCaption
+        beforePhotoTitle
         transitionPhotos {
           photo {
             id
@@ -80,10 +79,6 @@ export const GET_PORTFOLIO_BY_SLUG = gql`
           }
           title
           caption
-        }
-        categories {
-          id
-          title
         }
         publishedAt
       }

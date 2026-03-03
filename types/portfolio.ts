@@ -4,7 +4,9 @@ export type Portfolio = {
   slug: string
   description: string
   afterPhoto: PortfolioPhoto
+  afterPhotoTitle?: string
   afterPhotoCaption?: string
+  beforePhotoTitle?: string
   beforePhoto?: PortfolioPhoto
   beforePhotoCaption?: string
   transitionPhotos?: TransitionPhoto[]
