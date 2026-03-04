@@ -42,6 +42,7 @@ export const GET_PAGE_BY_SLUG = gql`
             focalY
           }
         }
+
         layout {
           ... on ContentBlock {
             id
@@ -61,6 +62,7 @@ export const GET_PAGE_BY_SLUG = gql`
               }
             }
           }
+
           ... on MediaBlock {
             id
             blockType
@@ -74,6 +76,7 @@ export const GET_PAGE_BY_SLUG = gql`
               focalY
             }
           }
+
           ... on TimelineBlock {
             id
             blockType
@@ -89,6 +92,7 @@ export const GET_PAGE_BY_SLUG = gql`
               icon
             }
           }
+
           ... on CardCarouselBlock {
             id
             blockType
@@ -100,6 +104,7 @@ export const GET_PAGE_BY_SLUG = gql`
               content
             }
           }
+
           ... on CtaCardBlock {
             id
             blockType
@@ -138,6 +143,18 @@ export const GET_PAGE_BY_SLUG = gql`
             blockName
             hasBackground
             quantity
+          }
+
+          ... on RadialHubBlock {
+            id
+            blockType
+            blockName
+            title
+            items {
+              icon
+              title
+              description
+            }
           }
         }
       }
