@@ -101,10 +101,6 @@ export const GET_PORTFOLIO_AFTERS = gql`
           focalX
           focalY
         }
-        categories {
-          id
-          title
-        }
         publishedAt
       }
       limit

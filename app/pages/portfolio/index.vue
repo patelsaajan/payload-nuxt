@@ -45,13 +45,6 @@
                             ]"
                             @load="onImageLoad(item.id)"
                         />
-                        <!-- Before/After indicator -->
-                        <div
-                            v-if="item.beforePhoto"
-                            class="absolute top-3 left-3 px-2 py-1 text-xs font-medium rounded-full bg-primary text-primary-text"
-                        >
-                            Before & After
-                        </div>
                     </template>
                     <div
                         v-else
