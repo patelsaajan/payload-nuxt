@@ -237,7 +237,7 @@ const onWheel = (event: WheelEvent) => {
   if (!rect) return
 
   const vh = window.innerHeight
-  const enteringFromTop = scrollingDown && rect.top < vh * 0.7 && rect.top > 0
+  const enteringFromTop = scrollingDown && rect.top < vh * 0.8 && rect.top > 0
   const enteringFromBottom = scrollingUp && rect.bottom > vh * 0.3 && rect.bottom < vh
 
   // Engage lock on entering (only if not already completed)
@@ -252,7 +252,7 @@ const onWheel = (event: WheelEvent) => {
       setTimeout(() => {
         isReady = true
       }, 500)
-    }, 750)
+    }, 1000)
     return
   }
 
