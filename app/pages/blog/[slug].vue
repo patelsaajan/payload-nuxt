@@ -101,14 +101,14 @@ onMounted(() => {
     nextTick(checkImageLoaded);
 });
 
+// Fetch post by slug from the route params
+const { data: post } = await fetchPostBySlug(route.params.slug as string);
+
 // Reset loading state when navigating between posts
 watch(() => post.value?.heroImage?.url, () => {
     isLoading.value = true;
     nextTick(checkImageLoaded);
 });
-
-// Fetch post by slug from the route params
-const { data: post } = await fetchPostBySlug(route.params.slug as string);
 
 useSeoMeta({
     title: post.value?.meta?.title || post.value.title ||'',
