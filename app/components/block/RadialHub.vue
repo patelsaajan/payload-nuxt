@@ -4,13 +4,13 @@
         ref="wrapperRef"
         class="min-h-100vh] flex items-center"
     >
-        <!-- Desktop Layout (lg+) - Radial wheel -->
-        <div class="hidden lg:grid grid-cols-5 items-center gap-4 w-full">
+        <!-- Desktop Layout (2xl+) - Radial wheel -->
+        <div class="hidden 2xl:grid grid-cols-5 items-center gap-4 w-full">
             <div class="relative circle-wrapper col-span-2">
                 <!-- Rotating container -->
                 <div
                     ref="circleParentRef"
-                    class="circle-parent duration-300"
+                    class="circle-parent duration-300 -translate-x-95"
                     :style="{'--degSpacing': degSpacing}"
                 >
                     <!-- SVG for circle outline and connecting lines -->
@@ -47,7 +47,7 @@
                         :style="{ '--i': index }"
                     >
                         <UIcon
-                            class="circle-icon opacity-80 scale-60 duration-300"
+                            class="circle-icon opacity-80 scale-50 duration-300"
                             :class="index === activeIndex ? 'bg-primary text-primary-foreground scale-100 opacity-100' : ''"
                             :name='item.icon'
                             size="200"
@@ -56,7 +56,7 @@
                 </div>
 
                 <!-- Static title (doesn't rotate) -->
-                <h2 class="circle-title text-wrap w-[250px] text-center">
+                <h2 class="circle-title text-wrap w-[250px] text-center -translate-x-95">
                     {{ title }}
                 </h2>
             </div>
@@ -80,6 +80,7 @@
                         class="cursor-pointer hover:bg-accent rounded-[var(--border-radius)]"
                         size="lg"
                         @click="onClick()"
+                        :disabled="activeIndex === 0"
                     >
                         <UIcon
                             name="lucide:arrow-up"
@@ -90,6 +91,7 @@
                         class="cursor-pointer hover:bg-accent rounded-[var(--border-radius)]"
                         size="lg"
                         @click="onClick('down')"
+                        :disabled="activeIndex === iconCount - 1"
                     >
                         <UIcon
                             name="lucide:arrow-down"
@@ -100,38 +102,35 @@
             </div>
         </div>
 
-        <!-- Medium Layout (md) - Card-based without wheel -->
-        <div class="hidden md:flex lg:hidden flex-col gap-8 w-full px-4">
-            <div class="text-center">
-                <h2 class="mb-2">{{ title }}</h2>
-                <span class="text-base text-muted-foreground">
-                    {{ activeIndex + 1 }} / {{ iconCount }}
-                </span>
-            </div>
+        <!-- Mobile & Tablet Layout - Card-based without wheel -->
+        <div class="flex 2xl:hidden flex-col gap-8 w-full container mx-auto">
+            
+            <h2 class="mb-2">{{ title }}</h2>
+            
 
-            <div class="flex items-center gap-6">
+            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
                 <!-- Icon display -->
                 <div class="flex-shrink-0">
                     <Transition name="fade" mode="out-in">
                         <div
                             :key="activeIndex"
-                            class="w-32 h-32 rounded-full bg-primary flex items-center justify-center"
+                            class="w-24 h-24 sm:w-32 sm:h-32 rounded-[var(--border-radius)] bg-primary flex items-center justify-center"
                         >
                             <UIcon
                                 :name="activeItem?.icon || ''"
                                 size="80"
-                                class="text-primary-foreground"
+                                class="bg-background"
                             />
                         </div>
                     </Transition>
                 </div>
 
                 <!-- Content -->
-                <div class="flex-1">
+                <div class="flex-1 text-center md:text-left">
                     <Transition name="fade" mode="out-in">
                         <div :key="activeIndex" class="flex flex-col gap-2">
                             <h3>{{ activeItem?.title }}</h3>
-                            <p class="text-lg text-muted-foreground">
+                            <p class="text-2xl">
                                 {{ activeItem?.description }}
                             </p>
                         </div>
@@ -139,95 +138,37 @@
                 </div>
 
                 <!-- Navigation -->
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-row gap-2">
                     <UButton
-                        variant="outline"
+                        class="hover:bg-accent"
                         size="lg"
                         @click="onClick()"
+                        :disabled="activeIndex === 0"
                     >
-                        <UIcon name="lucide:chevron-up" size="24" />
+                        <UIcon name="lucide:arrow-left" size="44" />
                     </UButton>
                     <UButton
-                        variant="outline"
+                        class="hover:bg-accent"
                         size="lg"
                         @click="onClick('down')"
+                        :disabled="activeIndex === iconCount - 1"
                     >
-                        <UIcon name="lucide:chevron-down" size="24" />
+                        <UIcon name="lucide:arrow-right" size="44" />
                     </UButton>
                 </div>
             </div>
 
             <!-- Icon dots indicator -->
             <div class="flex justify-center gap-2">
-                <button
+                <UButton
                     v-for="(item, index) in items"
                     :key="index"
-                    class="w-3 h-3 rounded-full transition-colors duration-300"
-                    :class="index === activeIndex ? 'bg-primary' : 'bg-muted'"
+                    :aria-label="`Go to ${item.title}`"
+                    :aria-current="activeIndex === index ? 'true' : undefined"
+                    class="w-4 h-4 rounded-full transition-colors duration-300 cursor-pointer"
+                    :class="index === activeIndex ? 'bg-accent scale-125' : 'bg-primary'"
                     @click="setActiveIndex(index)"
                 />
-            </div>
-        </div>
-
-        <!-- Mobile Layout (sm) - Simplified stack -->
-        <div class="flex md:hidden flex-col gap-6 w-full px-4">
-            <div class="text-center">
-                <h2 class="mb-2">{{ title }}</h2>
-                <span class="text-sm text-muted-foreground">
-                    {{ activeIndex + 1 }} / {{ iconCount }}
-                </span>
-            </div>
-
-            <div class="flex flex-col items-center gap-4">
-                <Transition name="fade" mode="out-in">
-                    <div
-                        :key="activeIndex"
-                        class="w-24 h-24 rounded-full bg-primary flex items-center justify-center"
-                    >
-                        <UIcon
-                            :name="activeItem?.icon || ''"
-                            size="56"
-                            class="text-primary-foreground"
-                        />
-                    </div>
-                </Transition>
-
-                <Transition name="fade" mode="out-in">
-                    <div :key="activeIndex" class="text-center">
-                        <h3 class="mb-2">{{ activeItem?.title }}</h3>
-                        <p class="text-muted-foreground">
-                            {{ activeItem?.description }}
-                        </p>
-                    </div>
-                </Transition>
-
-                <!-- Navigation row -->
-                <div class="flex items-center gap-4">
-                    <UButton
-                        variant="outline"
-                        @click="onClick()"
-                    >
-                        <UIcon name="lucide:chevron-left" size="20" />
-                    </UButton>
-
-                    <!-- Dots -->
-                    <div class="flex gap-2">
-                        <button
-                            v-for="(item, index) in items"
-                            :key="index"
-                            class="w-2 h-2 rounded-full transition-colors duration-300"
-                            :class="index === activeIndex ? 'bg-primary' : 'bg-muted'"
-                            @click="setActiveIndex(index)"
-                        />
-                    </div>
-
-                    <UButton
-                        variant="outline"
-                        @click="onClick('down')"
-                    >
-                        <UIcon name="lucide:chevron-right" size="20" />
-                    </UButton>
-                </div>
             </div>
         </div>
     </div>
@@ -245,6 +186,7 @@ let isLocked = false
 let isReady = false
 let hasReachedEnd = false
 let hasReachedStart = false
+let hasCompletedViewing = false
 
 const props = defineProps<{
   id: string
@@ -325,8 +267,8 @@ const onWheel = (event: WheelEvent) => {
   const enteringFromTop = scrollingDown && rect.top < vh * 0.7 && rect.top > 0
   const enteringFromBottom = scrollingUp && rect.bottom > vh * 0.3 && rect.bottom < vh
 
-  // Engage lock on entering
-  if (!isLocked && (enteringFromTop || enteringFromBottom)) {
+  // Engage lock on entering (only if not already completed)
+  if (!isLocked && !hasCompletedViewing && (enteringFromTop || enteringFromBottom)) {
     event.preventDefault()
     snapToCenter()
     setTimeout(() => {
@@ -336,8 +278,8 @@ const onWheel = (event: WheelEvent) => {
       // Delay isReady to prevent immediate rotation from scroll momentum
       setTimeout(() => {
         isReady = true
-      }, 400)
-    }, 600)
+      }, 500)
+    }, 750)
     return
   }
 
@@ -347,9 +289,10 @@ const onWheel = (event: WheelEvent) => {
   // Check if at boundary - require two scrolls to exit
   if (scrollingDown && activeIndex.value === iconCount.value - 1) {
     if (hasReachedEnd) {
-      // Second scroll at end - unlock and allow normal scroll
+      // Second scroll at end - unlock and disable scroll lock permanently
       isLocked = false
       isReady = false
+      hasCompletedViewing = true
       return
     }
     // First scroll at end - mark but stay locked
@@ -408,7 +351,6 @@ onUnmounted(() => {
     position: relative;
     width: 1000px;
     height: 1000px;
-    transform: translateX(-30%);
 }
 
 .circle-parent {
