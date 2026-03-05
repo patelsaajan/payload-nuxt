@@ -10,7 +10,7 @@
                 <!-- Rotating container -->
                 <div
                     ref="circleParentRef"
-                    class="circle-parent duration-300 -translate-x-95"
+                    class="circle-parent duration-300 -translate-x-85"
                     :style="{'--degSpacing': degSpacing}"
                 >
                     <!-- SVG for circle outline and connecting lines -->
@@ -29,10 +29,10 @@
                         <!-- Lines from center to icons -->
                         <g v-for="index in iconCount" :key="'line-' + index">
                             <line
-                                :x1="500 + 120 * Math.cos((index - 1) * (2 * Math.PI / iconCount))"
-                                :y1="500 + 120 * Math.sin((index - 1) * (2 * Math.PI / iconCount))"
-                                :x2="500 + 280 * Math.cos((index - 1) * (2 * Math.PI / iconCount))"
-                                :y2="500 + 280 * Math.sin((index - 1) * (2 * Math.PI / iconCount))"
+                                :x1="500 + 140 * Math.cos((index - 1) * (2 * Math.PI / iconCount))"
+                                :y1="500 + 140 * Math.sin((index - 1) * (2 * Math.PI / iconCount))"
+                                :x2="500 + 300 * Math.cos((index - 1) * (2 * Math.PI / iconCount))"
+                                :y2="500 + 300 * Math.sin((index - 1) * (2 * Math.PI / iconCount))"
                                 stroke="currentColor"
                                 stroke-width="3"
                                 class="text-primary/75"
@@ -56,9 +56,15 @@
                 </div>
 
                 <!-- Static title (doesn't rotate) -->
-                <h2 class="circle-title text-wrap w-[250px] text-center -translate-x-95">
-                    {{ title }}
-                </h2>
+                <div
+                    class="circle-title flex items-center text-wrap size-[240px] text-center -translate-x-85 bg-primary rounded-full"
+                >
+                    <h2
+                        class="text-background"
+                    >
+                        {{ title }}
+                    </h2>
+                </div>
             </div>
             <div class="grid grid-cols-3 col-span-3">
                 <div class="col-span-2 flex flex-col gap-4 max-w-3xl relative">
@@ -104,71 +110,38 @@
 
         <!-- Mobile & Tablet Layout - Card-based without wheel -->
         <div class="flex 2xl:hidden flex-col gap-8 w-full container mx-auto">
-            
-            <h2 class="mb-2">{{ title }}</h2>
-            
 
-            <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16">
-                <!-- Icon display -->
-                <div class="flex-shrink-0">
-                    <Transition name="fade" mode="out-in">
-                        <div
-                            :key="activeIndex"
-                            class="w-24 h-24 sm:w-32 sm:h-32 rounded-[var(--border-radius)] bg-primary flex items-center justify-center"
-                        >
-                            <UIcon
-                                :name="activeItem?.icon || ''"
-                                size="80"
-                                class="bg-background"
-                            />
-                        </div>
-                    </Transition>
-                </div>
-
-                <!-- Content -->
-                <div class="flex-1 text-center md:text-left">
-                    <Transition name="fade" mode="out-in">
-                        <div :key="activeIndex" class="flex flex-col gap-2">
-                            <h3>{{ activeItem?.title }}</h3>
-                            <p class="text-2xl">
-                                {{ activeItem?.description }}
-                            </p>
-                        </div>
-                    </Transition>
-                </div>
-
-                <!-- Navigation -->
-                <div class="flex flex-row gap-2">
-                    <UButton
-                        class="hover:bg-accent"
-                        size="lg"
-                        @click="onClick()"
-                        :disabled="activeIndex === 0"
-                    >
-                        <UIcon name="lucide:arrow-left" size="44" />
-                    </UButton>
-                    <UButton
-                        class="hover:bg-accent"
-                        size="lg"
-                        @click="onClick('down')"
-                        :disabled="activeIndex === iconCount - 1"
-                    >
-                        <UIcon name="lucide:arrow-right" size="44" />
-                    </UButton>
-                </div>
-            </div>
-
-            <!-- Icon dots indicator -->
-            <div class="flex justify-center gap-2">
+            <!-- Icon pagination -->
+            <div class="flex flex-wrap justify-center items-center gap-8">
                 <UButton
                     v-for="(item, index) in items"
                     :key="index"
+                    variant="link"
                     :aria-label="`Go to ${item.title}`"
                     :aria-current="activeIndex === index ? 'true' : undefined"
-                    class="w-4 h-4 rounded-full transition-colors duration-300 cursor-pointer"
-                    :class="index === activeIndex ? 'bg-accent scale-125' : 'bg-primary'"
+                    class="w-16 h-16 flex items-center justify-center cursor-pointer"
                     @click="setActiveIndex(index)"
-                />
+                >
+                    <UIcon
+                        :name="item.icon"
+                        size="60"
+                        :class="activeIndex === index ? 'scale-200 text-primary' : 'text-black/70 hover:scale-150 hover:text-primary/70'"
+                        class="duration-300 transition-transform"
+                    />
+                </UButton>
+            </div>
+
+            <h2 class="text-center">{{ title }}</h2>
+
+            <!-- Content -->
+            <div class="text-center">
+                <Transition name="fade" mode="out-in">
+                    <div :key="activeIndex" class="">
+                        <p class="text-2xl">
+                            <span class="font-bold">{{ activeItem?.title }}:</span> {{ activeItem?.description }}
+                        </p>
+                    </div>
+                </Transition>
             </div>
         </div>
     </div>
