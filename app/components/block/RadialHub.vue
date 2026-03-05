@@ -251,7 +251,7 @@ const onWheel = (event: WheelEvent) => {
       // Delay isReady to prevent immediate rotation from scroll momentum
       setTimeout(() => {
         isReady = true
-      }, 500)
+      }, 400)
     }, 1000)
     return
   }
