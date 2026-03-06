@@ -111,27 +111,27 @@
         <!-- Mobile & Tablet Layout - Card-based without wheel -->
         <div class="flex 2xl:hidden flex-col gap-8 w-full container mx-auto">
 
+            <h2 class="text-center">{{ title }}</h2>
+
             <!-- Icon pagination -->
-            <div class="flex flex-wrap justify-center items-center gap-8">
+            <div class="flex flex-wrap justify-center items-center gap-8 mx-6">
                 <UButton
                     v-for="(item, index) in items"
                     :key="index"
                     variant="link"
                     :aria-label="`Go to ${item.title}`"
                     :aria-current="activeIndex === index ? 'true' : undefined"
-                    class="w-16 h-16 flex items-center justify-center cursor-pointer"
+                    class="w-16 h-16 flex items-center justify-center cursor-pointer hover:scale-120 duration-300 transition"
+                    :class="activeIndex === index ? 'text-secondary bg-primary scale-140 pointer-events-none' : 'text-primary bg-secondary'"
                     @click="setActiveIndex(index)"
                 >
                     <UIcon
                         :name="item.icon"
                         size="60"
-                        :class="activeIndex === index ? 'scale-200 text-primary' : 'text-black/70 hover:scale-150 hover:text-primary/70'"
                         class="duration-300 transition-transform"
                     />
                 </UButton>
             </div>
-
-            <h2 class="text-center">{{ title }}</h2>
 
             <!-- Content -->
             <div class="text-center">
