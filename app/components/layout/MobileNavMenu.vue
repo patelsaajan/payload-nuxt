@@ -1,6 +1,6 @@
 <template>
     <div
-      class="flex justify-between overflow-x-visible w-full relative sm:hidden items-center mt-4"
+      class="flex justify-between overflow-x-visible w-full relative sm:hidden items-center py-4"
     >
         <span class="font-bold text-2xl">{{ config.public.siteName }}</span>
           <div
