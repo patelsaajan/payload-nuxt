@@ -1,5 +1,5 @@
 <template>
-  <footer class="py-8 mt-16 bg-background border-t border-text/10">
+  <footer class="py-8 bg-background border-t border-text/10">
     <div class="container mx-auto">
       <div class="flex flex-col items-center gap-6">
         <!-- Social Links -->

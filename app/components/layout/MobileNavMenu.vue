@@ -1,6 +1,6 @@
 <template>
     <div
-      class="flex justify-between overflow-x-visible w-full relative sm:hidden items-center py-4"
+      class="flex justify-between overflow-x-visible w-full relative md:hidden items-center py-4"
     >
         <span class="font-bold text-2xl">{{ config.public.siteName }}</span>
           <div
@@ -24,7 +24,7 @@
       >
         <div
           v-if="showMobileMenu"
-          class="absolute top-0 right-0 w-full h-screen bg-background p-4 z-50 flex flex-col pt-4 items-center"
+          class="absolute top-0 right-0 w-full h-screen bg-background z-50 flex flex-col pt-4 items-center"
         >
           <!-- Close Button -->
           <span class="flex w-full justify-end">
@@ -44,7 +44,7 @@
             class="cursor-pointer font-semibold w-fit hover:text-primary transform hover:scale-105 transition-all duration-100 mt-4"
           >
           <span class="flex items-center gap-4">
-            <UIcon 
+            <UIcon
               :name="item.icon"
               size="30"
             />
@@ -85,12 +85,7 @@
     pendingRoute = path
     showMobileMenu.value = false
   }
-  
-  function navigateExternal(url: string) {
-    pendingRoute = url
-    showMobileMenu.value = false
-  }
-  
+
   function onAfterLeave() {
     if (!pendingRoute) return
     if (pendingRoute.startsWith('http')) {

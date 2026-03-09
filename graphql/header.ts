@@ -13,6 +13,15 @@ export const GET_HEADER = gql`
         }
         icon
       }
+      ctaNavItem {
+        enabled
+        link {
+          type
+          label
+          url
+          newTab
+        }
+      }
     }
   }
 `
