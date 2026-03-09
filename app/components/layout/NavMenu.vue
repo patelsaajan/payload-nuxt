@@ -1,6 +1,6 @@
 <template>
     <div
-        class=" justify-between w-full items-center hidden sm:flex"
+        class=" justify-between w-full items-center hidden sm:flex py-4"
     >
         <span class="font-bold text-2xl">{{ config.public.siteName }}</span>
         <UNavigationMenu

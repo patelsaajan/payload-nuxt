@@ -2,9 +2,9 @@
   <div class="bg-background text-text min-h-screen flex flex-col">
       <header
         v-if="header"
-        class="mb-4"
+        class="sticky top-0 z-50 mb-4"
       >
-        <div class="w-full px-4 lg:px-16">
+        <div class="w-full px-4 lg:px-16 bg-background">
           <LayoutNavMenu 
             :items="items"
           />

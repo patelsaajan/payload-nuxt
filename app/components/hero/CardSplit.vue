@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[calc(100vh-100px)] mx-4 md:mx-16">
+    <div class="h-[calc(100vh-110px)] lg:h-[calc(100vh-160px)] mx-4 md:mx-16">
         <!-- Mobile Layout (stacked with overlap) -->
         <div class="xl:hidden relative h-full">
             <!-- Image (full height) -->
