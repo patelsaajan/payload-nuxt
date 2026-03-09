@@ -4,7 +4,7 @@
         v-if="header"
         class="mb-4"
       >
-        <div class="w-full px-16">
+        <div class="w-full px-4 lg:px-16">
           <LayoutNavMenu 
             :items="items"
           />

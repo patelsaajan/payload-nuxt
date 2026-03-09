@@ -1,14 +1,15 @@
 <template>
-    <div class="flex justify-between w-full items-center">
+    <div
+        class=" justify-between w-full items-center hidden sm:flex"
+    >
         <span class="font-bold text-2xl">{{ config.public.siteName }}</span>
         <UNavigationMenu
         color="primary"
         variant="link"
         :items="items"
-        class="hidden sm:block"
         :ui="{
             item: 'ml-0',
-            link: 'pl-0 pr-8 ml-0',
+            link: 'pl-0 pr-8 ml-0 text-base',
 
         }"
         />
