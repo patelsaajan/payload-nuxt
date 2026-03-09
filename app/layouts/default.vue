@@ -20,8 +20,7 @@
       <!-- Mobile Sticky CTA -->
       <div
         v-if="ctaItem"
-        class="md:hidden p-4 z-50"
-        :class="isFooterVisible ? 'relative' : 'fixed bottom-0 left-0 right-0'"
+        class="md:hidden sticky bottom-0 p-4 z-50"
       >
         <UButton
           :to="ctaItem.isExternal ? undefined : ctaItem.url"
@@ -35,13 +34,12 @@
         </UButton>
       </div>
 
-      <LayoutFooter ref="footerRef" />
+      <LayoutFooter />
     </div>
 </template>
 
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
-import type { ComponentPublicInstance } from 'vue'
 
 
 
@@ -101,27 +99,4 @@ const ctaItem = computed(() => {
   }
 })
 
-// Footer visibility detection
-const footerRef = ref<ComponentPublicInstance | null>(null)
-const isFooterVisible = ref(false)
-
-onMounted(() => {
-  const el = footerRef.value?.$el as HTMLElement | undefined
-  if (!el) return
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0]) {
-        isFooterVisible.value = entries[0].isIntersecting
-      }
-    },
-    { threshold: 0 }
-  )
-
-  observer.observe(el)
-
-  onUnmounted(() => {
-    observer.disconnect()
-  })
-})
 </script>
