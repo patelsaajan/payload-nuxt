@@ -26,7 +26,7 @@
                             class="text-primary/75"
                         />
 
-                        <!-- Lines from center to icons -->
+                        Lines from center to icons
                         <g v-for="index in iconCount" :key="'line-' + index">
                             <line
                                 :x1="500 + 140 * Math.cos((index - 1) * (2 * Math.PI / iconCount))"
@@ -34,8 +34,9 @@
                                 :x2="500 + 300 * Math.cos((index - 1) * (2 * Math.PI / iconCount))"
                                 :y2="500 + 300 * Math.sin((index - 1) * (2 * Math.PI / iconCount))"
                                 stroke="currentColor"
-                                stroke-width="3"
+                                :stroke-width="activeIndex === index - 1 ? '6' : '3'"        
                                 class="text-primary/75"
+
                             />
                         </g>
                     </svg>
@@ -60,7 +61,7 @@
                     class="circle-title flex items-center text-wrap size-[240px] text-center -translate-x-85 bg-primary rounded-full"
                 >
                     <h2
-                        class="text-background"
+                        class="text-primary"
                     >
                         {{ title }}
                     </h2>

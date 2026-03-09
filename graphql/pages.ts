@@ -24,15 +24,30 @@ export const GET_PAGE_BY_SLUG = gql`
           textColor
           imagePositionMobile
           imagePositionDesktop
+          brandName
+          credentials
+          location
+          headline
           links {
             link {
               type
               url
               label
               newTab
-              appearance
-              color
+              reference {
+                relationTo
+                value {
+                  ... on Page {
+                    id
+                    slug
+                  }
+                }
+              }
             }
+          }
+          list {
+            icon
+            text
           }
           media {
             id
@@ -42,7 +57,6 @@ export const GET_PAGE_BY_SLUG = gql`
             focalY
           }
         }
-
         layout {
           ... on ContentBlock {
             id

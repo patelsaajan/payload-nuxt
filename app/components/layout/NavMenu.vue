@@ -1,19 +1,25 @@
 <template>
-    <UNavigationMenu
-    color="primary"
-    variant="link"
-    :items="items"
-    class="w-full hidden sm:block"
-    :ui="{
-        item: 'ml-0',
-        link: 'pl-0 pr-8 ml-0',
+    <div class="flex justify-between w-full items-center">
+        <span class="font-bold text-2xl">{{ config.public.siteName }}</span>
+        <UNavigationMenu
+        color="primary"
+        variant="link"
+        :items="items"
+        class="hidden sm:block"
+        :ui="{
+            item: 'ml-0',
+            link: 'pl-0 pr-8 ml-0',
 
-    }"
-    />
+        }"
+        />
+        <span></span>
+</div>
 </template>
 
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
+
+const config = useRuntimeConfig()
 
 const props =  defineProps<{
     items: NavigationMenuItem[]
