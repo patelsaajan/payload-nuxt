@@ -1,10 +1,11 @@
 <template>
     <div
-      class="flex justify-between overflow-x-visible w-full relative sm:hidden"
+      class="flex justify-between overflow-x-visible w-full relative sm:hidden items-center mt-4"
     >
+        <span class="font-bold text-2xl">{{ config.public.siteName }}</span>
           <div
           v-if="showNav"
-          class="flex w-full justify-end mt-4"
+          class="flex w-full justify-end"
           >
               <UButton
                   key="menu-btn"
@@ -59,6 +60,8 @@
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import type { NavigationMenuItem } from '@nuxt/ui'
+
+  const config = useRuntimeConfig()
 
   
   const router = useRouter()
