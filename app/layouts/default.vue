@@ -24,7 +24,8 @@
         :class="isFooterVisible ? 'relative' : 'fixed bottom-0 left-0 right-0'"
       >
         <UButton
-          :to="ctaItem.to"
+          :to="ctaItem.isExternal ? undefined : ctaItem.url"
+          :href="ctaItem.isExternal ? ctaItem.url : undefined"
           :target="ctaItem.target"
           color="accent"
           size="xl"
@@ -40,6 +41,7 @@
 
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
+import type { ComponentPublicInstance } from 'vue'
 
 
 
@@ -47,15 +49,22 @@ const route = useRoute()
 const { fetchHeader } = usePayloadGraphQL()
 const { data: header } = await fetchHeader()
 
-// Helper to ensure URL starts with /
-const ensureLeadingSlash = (url: string): string => {
+// Helper to format URL - external URLs stay as-is, internal get leading slash
+const formatUrl = (url: string): string => {
   if (!url) return '/'
+  if (url.startsWith('http://') || url.startsWith('https://')) return url
   return url.startsWith('/') ? url : `/${url}`
+}
+
+// Check if URL is external
+const isExternalUrl = (url: string): boolean => {
+  return url?.startsWith('http://') || url?.startsWith('https://')
 }
 
 // Helper to check if a nav item should be active
 const isActive = (navUrl: string): boolean => {
-  const cleanUrl = ensureLeadingSlash(navUrl)
+  if (isExternalUrl(navUrl)) return false
+  const cleanUrl = formatUrl(navUrl)
   const currentPath = route.path
 
   // Exact match
@@ -73,7 +82,7 @@ const items = computed<NavigationMenuItem[][]>(() => [
   header.value?.navItems?.map((navItem: any) => ({
     label: navItem.link.label,
     icon: navItem.icon,
-    to: ensureLeadingSlash(navItem.link.url),
+    to: formatUrl(navItem.link.url),
     target: navItem.link.newTab ? '_blank' : undefined,
     active: isActive(navItem.link.url)
   })) || []
@@ -83,28 +92,33 @@ const items = computed<NavigationMenuItem[][]>(() => [
 const ctaItem = computed(() => {
   const cta = header.value?.ctaNavItem
   if (!cta?.enabled || !cta?.link) return null
+  const url = cta.link.url
   return {
     label: cta.link.label,
-    to: ensureLeadingSlash(cta.link.url),
+    url: formatUrl(url),
+    isExternal: isExternalUrl(url),
     target: cta.link.newTab ? '_blank' : undefined
   }
 })
 
 // Footer visibility detection
-const footerRef = ref<HTMLElement | null>(null)
+const footerRef = ref<ComponentPublicInstance | null>(null)
 const isFooterVisible = ref(false)
 
 onMounted(() => {
-  if (!footerRef.value?.$el) return
+  const el = footerRef.value?.$el as HTMLElement | undefined
+  if (!el) return
 
   const observer = new IntersectionObserver(
-    ([entry]) => {
-      isFooterVisible.value = entry.isIntersecting
+    (entries) => {
+      if (entries[0]) {
+        isFooterVisible.value = entries[0].isIntersecting
+      }
     },
     { threshold: 0 }
   )
 
-  observer.observe(footerRef.value.$el)
+  observer.observe(el)
 
   onUnmounted(() => {
     observer.disconnect()

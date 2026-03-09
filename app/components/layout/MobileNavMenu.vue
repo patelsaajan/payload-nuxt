@@ -2,7 +2,7 @@
     <div
       class="flex justify-between overflow-x-visible w-full relative md:hidden items-center py-4"
     >
-        <span class="font-bold text-2xl">{{ config.public.siteName }}</span>
+        <span class="font-bold text-2xl w-fit">{{ config.public.siteName }}</span>
           <div
           v-if="showNav"
           class="flex w-full justify-end"

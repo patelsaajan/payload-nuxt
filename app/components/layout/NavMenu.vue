@@ -14,7 +14,8 @@
         />
         <UButton
             v-if="cta"
-            :to="cta.to"
+            :to="cta.isExternal ? undefined : cta.url"
+            :href="cta.isExternal ? cta.url : undefined"
             :target="cta.target"
             color="accent"
             size="lg"
@@ -32,7 +33,8 @@ const config = useRuntimeConfig()
 
 interface CtaItem {
     label: string
-    to: string
+    url: string
+    isExternal: boolean
     target?: string
 }
 
